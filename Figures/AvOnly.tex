@@ -1,0 +1,281 @@
+% This file was created by matlab2tikz.
+%
+\documentclass[tikz]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgfplots}
+\usepackage{grffile}
+\pgfplotsset{compat=newest}
+\usetikzlibrary{plotmarks}
+\usetikzlibrary{arrows.meta}
+\usepgfplotslibrary{patchplots}
+\usepackage{amsmath}
+
+\begin{document}
+\definecolor{mycolor1}{rgb}{0.00000,0.44700,0.74100}%
+%
+\begin{tikzpicture}
+
+\begin{axis}[%
+width=1.121in,
+height=3.566in,
+at={(0.88in,0.481in)},
+scale only axis,
+xmin=0,
+xmax=10,
+xlabel style={font=\color{white!15!black}},
+xlabel={Time (Years)},
+ymin=-0.2,
+ymax=0.2,
+ylabel style={font=\color{white!15!black}},
+ylabel={Average $(\ddot{x}_{t,p}^j -\ddot{\mu}_{t|\mathtt{T},p}^j)$},
+axis background/.style={fill=white},
+xmajorgrids,
+ymajorgrids
+]
+\addplot [color=mycolor1, forget plot]
+  table[row sep=crcr]{%
+1	0.00027142\\
+2	0.0012219\\
+3	0.0021126\\
+4	0.0028707\\
+5	0.003445\\
+6	0.0040771\\
+7	0.0045566\\
+8	0.0053896\\
+9	0.0061938\\
+10	0.0065236\\
+};
+
+\addplot[area legend, draw=none, fill=black, fill opacity=0.2, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1	0.015321\\
+2	0.016357\\
+3	0.017423\\
+4	0.01827\\
+5	0.01918\\
+6	0.020316\\
+7	0.021065\\
+8	0.022138\\
+9	0.023344\\
+10	0.023979\\
+10	-0.010932\\
+9	-0.010956\\
+8	-0.011359\\
+7	-0.011952\\
+6	-0.012162\\
+5	-0.01229\\
+4	-0.012529\\
+3	-0.013198\\
+2	-0.013914\\
+1	-0.014778\\
+}--cycle;
+
+\addplot[area legend, draw=none, fill=black, fill opacity=0.2, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1	0.030371\\
+2	0.031493\\
+3	0.032734\\
+4	0.033669\\
+5	0.034914\\
+6	0.036555\\
+7	0.037573\\
+8	0.038887\\
+9	0.040494\\
+10	0.041434\\
+10	-0.028387\\
+9	-0.028106\\
+8	-0.028108\\
+7	-0.02846\\
+6	-0.028401\\
+5	-0.028024\\
+4	-0.027928\\
+3	-0.028508\\
+2	-0.029049\\
+1	-0.029828\\
+}--cycle;
+\end{axis}
+
+\begin{axis}[%
+width=1.121in,
+height=3.566in,
+at={(2.518in,0.481in)},
+scale only axis,
+xmin=0,
+xmax=10,
+xlabel style={font=\color{white!15!black}},
+xlabel={Time (Years)},
+ymin=-2,
+ymax=2,
+ylabel style={font=\color{white!15!black}},
+ylabel={Average $(\dot{x}_{t,p}^j -\dot{\mu}_{t|\mathtt{T},p}^j)$},
+axis background/.style={fill=white},
+xmajorgrids,
+ymajorgrids
+]
+\addplot [color=mycolor1, forget plot]
+  table[row sep=crcr]{%
+1	-0.041428\\
+2	-0.040724\\
+3	-0.039019\\
+4	-0.036497\\
+5	-0.03322\\
+6	-0.029426\\
+7	-0.025152\\
+8	-0.020115\\
+9	-0.014302\\
+10	-0.0079805\\
+};
+
+\addplot[area legend, draw=none, fill=black, fill opacity=0.2, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1	0.089483\\
+2	0.099752\\
+3	0.11131\\
+4	0.12394\\
+5	0.13762\\
+6	0.15223\\
+7	0.16761\\
+8	0.18402\\
+9	0.20159\\
+10	0.21988\\
+10	-0.23584\\
+9	-0.23019\\
+8	-0.22425\\
+7	-0.21791\\
+6	-0.21109\\
+5	-0.20406\\
+4	-0.19694\\
+3	-0.18935\\
+2	-0.1812\\
+1	-0.17234\\
+}--cycle;
+
+\addplot[area legend, draw=none, fill=black, fill opacity=0.2, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1	0.22039\\
+2	0.24023\\
+3	0.26164\\
+4	0.28438\\
+5	0.30846\\
+6	0.33389\\
+7	0.36037\\
+8	0.38816\\
+9	0.41748\\
+10	0.44774\\
+10	-0.4637\\
+9	-0.44608\\
+8	-0.42839\\
+7	-0.41067\\
+6	-0.39275\\
+5	-0.3749\\
+4	-0.35738\\
+3	-0.33968\\
+2	-0.32167\\
+1	-0.30325\\
+}--cycle;
+\end{axis}
+
+\begin{axis}[%
+width=1.121in,
+height=3.566in,
+at={(4.156in,0.481in)},
+scale only axis,
+xmin=0,
+xmax=10,
+xlabel style={font=\color{white!15!black}},
+xlabel={Time (Years)},
+ymin=-10,
+ymax=10,
+ylabel style={font=\color{white!15!black}},
+ylabel={Average $({x}_{t,p}^j -{\mu}_{t|\mathtt{T},p}^j)$},
+axis background/.style={fill=white},
+xmajorgrids,
+ymajorgrids
+]
+\addplot [color=mycolor1, forget plot]
+  table[row sep=crcr]{%
+1	0.10179\\
+2	0.06064\\
+3	0.020696\\
+4	-0.017121\\
+5	-0.05204\\
+6	-0.083409\\
+7	-0.11075\\
+8	-0.13345\\
+9	-0.15073\\
+10	-0.1619\\
+};
+
+\addplot[area legend, draw=none, fill=black, fill opacity=0.2, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1	1.8587\\
+2	1.8412\\
+3	1.836\\
+4	1.8451\\
+5	1.8708\\
+6	1.9149\\
+7	1.979\\
+8	2.0643\\
+9	2.1718\\
+10	2.3025\\
+10	-2.6263\\
+9	-2.4733\\
+8	-2.3312\\
+7	-2.2005\\
+6	-2.0817\\
+5	-1.9749\\
+4	-1.8794\\
+3	-1.7946\\
+2	-1.7199\\
+1	-1.6551\\
+}--cycle;
+
+\addplot[area legend, draw=none, fill=black, fill opacity=0.2, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1	3.6155\\
+2	3.6218\\
+3	3.6513\\
+4	3.7074\\
+5	3.7936\\
+6	3.9133\\
+7	4.0688\\
+8	4.262\\
+9	4.4944\\
+10	4.7669\\
+10	-5.0907\\
+9	-4.7958\\
+8	-4.5289\\
+7	-4.2903\\
+6	-4.0801\\
+5	-3.8977\\
+4	-3.7417\\
+3	-3.6099\\
+2	-3.5005\\
+1	-3.4119\\
+}--cycle;
+\end{axis}
+
+\begin{axis}[%
+width=5.833in,
+height=4.375in,
+at={(0in,0in)},
+scale only axis,
+xmin=0,
+xmax=1,
+ymin=0,
+ymax=1,
+axis line style={draw=none},
+ticks=none,
+axis x line*=bottom,
+axis y line*=left
+]
+\end{axis}
+\end{tikzpicture}%
+\end{document}

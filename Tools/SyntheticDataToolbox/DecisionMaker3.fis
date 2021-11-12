@@ -1,0 +1,49 @@
+[System]
+Name='DecisionMaker3'
+Type='mamdani'
+Version=2.0
+NumInputs=2
+NumOutputs=1
+NumRules=9
+AndMethod='min'
+OrMethod='max'
+ImpMethod='min'
+AggMethod='max'
+DefuzzMethod='centroid'
+
+[Input1]
+Name='Condition'
+Range=[25 100]
+NumMFs=4
+MF1='Damaged':'trimf',[50 75 100]
+MF2='Excellent':'trimf',[75 100 101]
+MF3='VDamaged':'trimf',[25 50 75]
+MF4='TDamaged':'trimf',[25 25 50]
+
+[Input2]
+Name='Priority'
+Range=[0 3]
+NumMFs=3
+MF1='low':'gaussmf',[0.4242 0.4995]
+MF2='mid':'gaussmf',[0.4242 1.5]
+MF3='High':'gaussmf',[0.4247 2.5]
+
+[Output1]
+Name='Intervention'
+Range=[0 4]
+NumMFs=4
+MF1='PM':'trapmf',[1 1 1.9999 1.9999]
+MF2='M':'trapmf',[2 2 2.9999 2.9999]
+MF3='Rehab':'trapmf',[3 3 4 4]
+MF4='NA':'trapmf',[0 0 0.9999 0.9999]
+
+[Rules]
+3 2, 3 (1) : 1
+3 1, 2 (1) : 1
+3 3, 3 (1) : 1
+2 3, 1 (1) : 1
+1 1, 1 (1) : 1
+1 2, 2 (1) : 1
+1 3, 3 (1) : 1
+2 1, 4 (1) : 1
+2 2, 4 (1) : 1

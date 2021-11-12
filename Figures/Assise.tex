@@ -1,0 +1,284 @@
+% This file was created by matlab2tikz.
+%
+\documentclass[tikz]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{pgfplots}
+\usepackage{grffile}
+\pgfplotsset{compat=newest}
+\usetikzlibrary{plotmarks}
+\usetikzlibrary{arrows.meta}
+\usepgfplotslibrary{patchplots}
+\usepackage{amsmath}
+
+\begin{document}
+\definecolor{mycolor1}{rgb}{1.00000,0.00000,1.00000}%
+\definecolor{mycolor2}{rgb}{0.85000,0.32500,0.09800}%
+%
+\begin{tikzpicture}
+
+\begin{axis}[%
+width=3.186in,
+height=2.37in,
+at={(0.056in,1.974in)},
+scale only axis,
+unbounded coords=jump,
+xmin=2007,
+xmax=2021,
+xtick={2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021},
+xticklabel style={rotate=45},
+xlabel style={font=\color{white!15!black}},
+xlabel={Time (Year)},
+ymin=25,
+ymax=100,
+ylabel style={font=\color{white!15!black}},
+ylabel={Condition $\tilde{\mu}_{t|T}$},
+axis background/.style={fill=white},
+xmajorgrids,
+ymajorgrids
+]
+\addplot [color=mycolor1, dashed, line width=1.0pt, mark=*, mark options={solid, fill=white, draw=mycolor1}, forget plot]
+  table[row sep=crcr]{%
+2007	99.027\\
+2008	98.927\\
+2009	98.816\\
+2010	98.693\\
+2011	98.558\\
+2012	98.41\\
+2013	98.248\\
+2014	98.072\\
+2015	97.882\\
+2016	97.677\\
+2017	97.457\\
+2018	97.222\\
+2019	96.971\\
+2020	96.705\\
+2021	96.424\\
+};
+
+\addplot[area legend, draw=none, fill=mycolor1, fill opacity=0.2, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2007	99.947\\
+2008	99.929\\
+2009	99.907\\
+2010	99.878\\
+2011	99.842\\
+2012	99.796\\
+2013	99.739\\
+2014	99.67\\
+2015	99.588\\
+2016	99.493\\
+2017	99.385\\
+2018	99.266\\
+2019	99.14\\
+2020	99.01\\
+2021	98.881\\
+2021	93.306\\
+2020	93.704\\
+2019	94.06\\
+2018	94.38\\
+2017	94.669\\
+2016	94.931\\
+2015	95.171\\
+2014	95.394\\
+2013	95.601\\
+2012	95.795\\
+2011	95.978\\
+2010	96.149\\
+2009	96.31\\
+2008	96.459\\
+2007	96.595\\
+}--cycle;
+
+\addplot[area legend, draw=none, fill=black, fill opacity=0.2, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2007	99.684\\
+2008	99.627\\
+2009	99.562\\
+2010	99.486\\
+2011	99.398\\
+2012	99.297\\
+2013	99.182\\
+2014	99.053\\
+2015	98.909\\
+2016	98.75\\
+2017	98.578\\
+2018	98.393\\
+2019	98.198\\
+2020	97.995\\
+2021	97.787\\
+2021	94.905\\
+2020	95.249\\
+2019	95.565\\
+2018	95.856\\
+2017	96.124\\
+2016	96.372\\
+2015	96.603\\
+2014	96.818\\
+2013	97.018\\
+2012	97.205\\
+2011	97.379\\
+2010	97.542\\
+2009	97.693\\
+2008	97.832\\
+2007	97.96\\
+}--cycle;
+\addplot [color=mycolor2, only marks, mark=*, mark options={solid, fill=blue, draw=blue}, forget plot]
+  table[row sep=crcr]{%
+2007	nan\\
+2008	98.485\\
+2009	nan\\
+2010	nan\\
+2011	97.548\\
+2012	nan\\
+2013	nan\\
+2014	98.047\\
+2015	nan\\
+2016	nan\\
+2017	98.047\\
+2018	nan\\
+2019	nan\\
+2020	nan\\
+2021	nan\\
+};
+\node[right, align=left]
+at (axis cs:2008,92.226) {98};
+\node[right, align=left]
+at (axis cs:2011,89.466) {98};
+\node[right, align=left]
+at (axis cs:2014,92.28) {98};
+\node[right, align=left]
+at (axis cs:2017,94.46) {98};
+\addplot [color=blue, line width=1.0pt, only marks, forget plot]
+ plot [error bars/.cd, y dir=both, y explicit, error bar style={line width=1.0pt}, error mark options={line width=1.0pt, mark size=20.0pt, rotate=90}]
+ table[row sep=crcr, y error plus index=2, y error minus index=3]{%
+2007	nan	nan	nan\\
+2008	98.485	1.4776	5.2593\\
+2009	nan	nan	nan\\
+2010	nan	nan	nan\\
+2011	97.548	2.4148	7.082\\
+2012	nan	nan	nan\\
+2013	nan	nan	nan\\
+2014	98.047	1.9155	4.7668\\
+2015	nan	nan	nan\\
+2016	nan	nan	nan\\
+2017	98.047	1.5837	2.5875\\
+2018	nan	nan	nan\\
+2019	nan	nan	nan\\
+2020	nan	nan	nan\\
+2021	nan	nan	nan\\
+};
+\end{axis}
+
+\begin{axis}[%
+width=2.354in,
+height=2.37in,
+at={(3.288in,1.974in)},
+scale only axis,
+xmin=2007,
+xmax=2021,
+xtick={2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021},
+xticklabel style={rotate=45},
+xlabel style={font=\color{white!15!black}},
+xlabel={Time (Year)},
+ymin=-0.59849,
+ymax=-0.01049,
+ylabel style={font=\color{white!15!black}},
+ylabel={Speed $\tilde{\dot{\mu}}_{t|T}$},
+axis background/.style={fill=white},
+xmajorgrids,
+ymajorgrids
+]
+\addplot [color=mycolor1, dashed, mark=*, mark options={solid, fill=white, draw=mycolor1}, forget plot]
+  table[row sep=crcr]{%
+2007	-0.10023\\
+2008	-0.11144\\
+2009	-0.12342\\
+2010	-0.13613\\
+2011	-0.14952\\
+2012	-0.16356\\
+2013	-0.17816\\
+2014	-0.19325\\
+2015	-0.20875\\
+2016	-0.22456\\
+2017	-0.24059\\
+2018	-0.25676\\
+2019	-0.27296\\
+2020	-0.28911\\
+2021	-0.30514\\
+};
+
+\addplot[area legend, draw=none, fill=mycolor1, fill opacity=0.2, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2007	-0.01049\\
+2008	-0.02595\\
+2009	-0.04062\\
+2010	-0.053513\\
+2011	-0.063661\\
+2012	-0.070423\\
+2013	-0.073649\\
+2014	-0.073588\\
+2015	-0.070652\\
+2016	-0.065257\\
+2017	-0.057759\\
+2018	-0.048445\\
+2019	-0.037551\\
+2020	-0.025277\\
+2021	-0.011798\\
+2021	-0.59849\\
+2020	-0.55294\\
+2019	-0.50836\\
+2018	-0.46507\\
+2017	-0.42343\\
+2016	-0.38387\\
+2015	-0.34684\\
+2014	-0.31291\\
+2013	-0.28267\\
+2012	-0.25669\\
+2011	-0.23538\\
+2010	-0.21874\\
+2009	-0.20622\\
+2008	-0.19694\\
+2007	-0.18997\\
+}--cycle;
+
+\addplot[area legend, draw=none, fill=black, fill opacity=0.2, forget plot]
+table[row sep=crcr] {%
+x	y\\
+2007	-0.05536\\
+2008	-0.068697\\
+2009	-0.082019\\
+2010	-0.094819\\
+2011	-0.10659\\
+2012	-0.11699\\
+2013	-0.1259\\
+2014	-0.13342\\
+2015	-0.1397\\
+2016	-0.14491\\
+2017	-0.14918\\
+2018	-0.1526\\
+2019	-0.15525\\
+2020	-0.15719\\
+2021	-0.15847\\
+2021	-0.45182\\
+2020	-0.42103\\
+2019	-0.39066\\
+2018	-0.36091\\
+2017	-0.33201\\
+2016	-0.30421\\
+2015	-0.2778\\
+2014	-0.25308\\
+2013	-0.23041\\
+2012	-0.21012\\
+2011	-0.19245\\
+2010	-0.17743\\
+2009	-0.16482\\
+2008	-0.15419\\
+2007	-0.1451\\
+}--cycle;
+\end{axis}
+\end{tikzpicture}%
+\end{document}
