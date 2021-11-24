@@ -3,6 +3,9 @@ TruncatedSigma=10^-4;
 UpdatedInspectorsData{1}=[UpdatedInspectorsData{1}(:,1) ...
     OptBoundsData(2,1)*ones(length(UpdatedInspectorsData{1}),1)];
 
+UpdatedInspectorsData{1}(:,3)=OptBoundsData(2,1);
+UpdatedInspectorsData{1}(:,2) = 0;
+
 % OperationIndex=find(strcmp(app.SelectOptAlgorithm.Value,...
 %     app.SelectOptAlgorithm.Items));
 

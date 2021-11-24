@@ -11,7 +11,7 @@ for i=1:length(KernelType)
         CatVec=min(AllAtt(:,i)):max(AllAtt(:,i));
         RepFactor=length(CatVec)/Ncp;
         if RepFactor>1
-            StepSample=roundup(length(1:length(CatVec))/Ncp,1);
+            StepSample=ceil(length(1:length(CatVec))/Ncp);
             IndexSample=1:StepSample:length(CatVec);
             while length(IndexSample)<Ncp
                 LastCat= setdiff(CatVec,CatVec(IndexSample));

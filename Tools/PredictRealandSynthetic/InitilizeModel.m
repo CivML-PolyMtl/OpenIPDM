@@ -53,6 +53,7 @@ elseif ~isempty(args) && length(args)==4
 end
 
 InpecBiase=[0 InpecBiase];                                                  % Make the length of the Biase vector the same length as the observation vector
+InpecBiaseTrue = [0 InpecBiaseTrue];
 OptmInsp=[0 OptmInsp];                                                      % Make the length of the Inspector vector the same length as the observation vector
 Re=[0 Re];                                                                  % Make the length of the uncertainnty vector the same length as the observation vector
 RU=zeros(1,length(Re));                                                     % Make the length of the current Inspector vector the same length as the observation vector

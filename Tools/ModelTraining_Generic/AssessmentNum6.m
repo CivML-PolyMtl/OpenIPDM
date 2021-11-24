@@ -11,6 +11,11 @@ bounds={OptBoundsData(2,2:3)};
 boundsQ={OptBoundsData(1,2:3) OptBoundsData(2,2:3) OptBoundsData(3,2:3)...
     OptBoundsData(4,2:3) OptBoundsData(5,2:3) OptBoundsData(6,2:3)};
 
+if OperationIndex>=3
+    % Inspector uncertainty bounds
+    bounds={OptBoundsData(2,2:3) [-OptBoundsData(2,3) OptBoundsData(2,3)]};
+end
+
 OptimizationAlgorithmIndex=find(strcmp(app.SelectOptAlgorithm.Value,...
     app.SelectOptAlgorithm.Items));
 

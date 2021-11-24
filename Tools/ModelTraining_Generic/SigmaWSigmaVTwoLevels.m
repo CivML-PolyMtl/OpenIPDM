@@ -2,9 +2,10 @@
 PriorKnowledgeChk=0;MeanPrior=0;StdPrior=0;
 
 OptLevel=2;
-StopCr=10^-3;
+StopCr2= 0.99;   %10^-3;
+StopCr1 = 0.999;
 LLcr=-10^12;
-LLprev=-10^16;
+LLprev=-10^18;
 j=1;
 
 if get(app.LogParams,'Value')==1 && isempty(ModelParameters)
@@ -16,18 +17,36 @@ StallVal2=10;
 StallInit1=0;
 StallInit2=0;
 
-while (LLcr-LLprev)>StopCr && StallInit2<StallVal2
-    while (LLcr-LLprev)>StopCr && StallInit1<StallVal1
+
+
+firstrun = 0;
+Stored_UpdatedInspectorData = [];
+Stored_RegressionModel = [];
+Stored_QParam = [];
+if OptimizationAlgorithmIndex==1
+    OI = 0;
+else
+    OI = 1;
+end   
+indice = 0;    
+epo = 1;
+while  (OptimizationAlgorithmIndex ~= 1 && epo)  || ((LLcr/LLprev)<= StopCr2 && (StallInit2<StallVal2))
+    while (LLcr/LLprev)<= StopCr1 &&  (OI  || ( StallInit1<StallVal1))
         LLprev=LLcr;
         if OptimizationAlgorithmIndex==1
             for i=1:length(UpdatedInspectorsData{1}(:,1))
                 fprintf('Inspector Num: %d /%d',i,length(UpdatedInspectorsData{1}(:,1)))
-                InspectParam=UpdatedInspectorsData{1}(i,3);
+                if OperationIndex>=3
+                    InspectParam=[UpdatedInspectorsData{1}(i,end) UpdatedInspectorsData{1}(i,2)];
+                else
+                    InspectParam= UpdatedInspectorsData{1}(i,end);
+                end
+                    
                 InspectID=UpdatedInspectorsData{1}(i,1);
                 if IncludeStructuralAtt
                     [Engparam,~,~,fx_NR]=Newton_Raphson_par_one(@(InspectParam) AnalysisObjective(MdataEngy,...
                         UpdatedInspectorsData{1}(:,1),InspStrucIndex,OptBoundsData,A,F,...
-                        Q, x0, s2_X0,PARAM,[InspectParam 0],UpdatedInspectorsData{1},...
+                        Q, x0, s2_X0,PARAM,InspectParam,UpdatedInspectorsData{1},...
                         InspectID,NTr,DataTransformedSpace,OptimizationProceedure,...
                         ParComp,OptLevel,GlobalCondData,PriorKnowledgeChk, MeanPrior,...
                         StdPrior,1,GradCompute,StructuralAttributes,KRparam(2:end),KRparam(1),KernelParameters{1},...
@@ -37,7 +56,7 @@ while (LLcr-LLprev)>StopCr && StallInit2<StallVal2
                 else
                     [Engparam,~,~,fx_NR]=Newton_Raphson_par_one(@(InspectParam) AnalysisObjective(MdataEngy,...
                         UpdatedInspectorsData{1}(:,1),InspStrucIndex,OptBoundsData,A,F,...
-                        Q, x0, s2_X0,PARAM,[InspectParam 0],UpdatedInspectorsData{1},...
+                        Q, x0, s2_X0,PARAM,InspectParam,UpdatedInspectorsData{1},...
                         InspectID,NTr,DataTransformedSpace,OptimizationProceedure,...
                         ParComp,OptLevel,GlobalCondData,PriorKnowledgeChk, MeanPrior,...
                         StdPrior,1,GradCompute),InspectParam,'log_transform','no',...
@@ -45,31 +64,17 @@ while (LLcr-LLprev)>StopCr && StallInit2<StallVal2
                         'bounds',bounds,'nb_failed_iteration_limit',1);
                 end
                 UpdatedInspectorsData{1}(i,3)=Engparam(1);%InspectorID26True(i);%Engparam(1);
+                if OperationIndex>=3
+                    UpdatedInspectorsData{1}(i,2) = Engparam(2);
+                end
             end
-        else
-            %% Blanche code
-            % MdataEngy the main data file contains all the 
-            % MdataEngy.YS is the observations matrix for all elements
-            % to take it to the CPU
-            Y_real = gather(reshape(MdataEngy.YS,[size(MdataEngy.YS,2),size(MdataEngy.YS,3)]));
-            Inspectorlabel = gather(reshape(MdataEngy.InspectorLabelS,[size(MdataEngy.InspectorLabelS,2),size(MdataEngy.InspectorLabelS,3)]));
-            Inspector_index = MdataEngy.AllInspectors;
-            [AKr,X_ControlPoints]=KR_Prep(MdataEngy.StrucAtt,RegressionModel.KernelType,RegressionModel.Kernel_l,length(RegressionModel.X_ControlPoints));
-			init_x(1,:)=MdataEngy.init_x;
-			init_x(2,:)=AKr*RegressionModel.InirilizedEx;
-			init_x(3,:)=0;
-			init_V = zeros(3,3,length(MdataEngy.init_x));
-			init_V(1,1,:)=PARAM(3).^2;
-			init_V(3,3,:)=PARAM(5).^2;
-			init_V(2,2,:)=diag(AKr*RegressionModel.InirilizedVar*AKr') + (RegressionModel.Sigma_W0.^2*ones(size(AKr,1),1));
-            % implement your code here based on the observations
-            %
-            %
-            % to update the inspectors estimate uncertainty estimate just
-            % update the third column in the matrix, i.e.,
-            % UpdatedInspectorsData{1}(i,3= updated param
             
+        else
+            OnlineInference_Main()
+            StallInit2 = 1 + StallVal2;
+            epo = 0;
         end
+        
         if IncludeStructuralAtt
             % validation with validation set
             if isempty(InitialEx)
@@ -141,12 +146,15 @@ while (LLcr-LLprev)>StopCr && StallInit2<StallVal2
             xlabel(app.OutputPlot1,'Time')
             drawnow;
         end
-        if get(app.LogParams,'Value')==1
-            save(sprintf('%s/Tools/ModelTraining_Generic/ParametersLog/UpdatedInspectorsData%s.mat',pwd,date),'UpdatedInspectorsData');
-        end
-        LLcr=sum(LogLikVal);
+        LLcr=sum(LogLikVal)
         if LLcr<LLprev
+            UpdatedInspectorsData = Stored_UpdatedInspectorData;
             break
+        else 
+            Stored_UpdatedInspectorData = UpdatedInspectorsData;
+        end
+        if get(app.LogParams,'Value')==1
+            save(sprintf('C:/Users/BL/Documents/PARAM/UpdatedInspectorsData%s%s.mat',Data_filename,date),'UpdatedInspectorsData');
         end
         if LLcr/LLprev>0.95
             StallInit1=StallInit1+1;
@@ -248,13 +256,19 @@ while (LLcr-LLprev)>StopCr && StallInit2<StallVal2
             drawnow;
         end
     end
-    if get(app.LogParams,'Value')==1
-        save(sprintf('%s/Tools/ModelTraining_Generic/ParametersLog/UpdatedInspectorsData%s.mat',pwd,date),'UpdatedInspectorsData');
-        save(sprintf('%s/Tools/ModelTraining_Generic/ParametersLog/PARAM%s.mat',pwd,date),'Qparam');
-    end
     LLcr=sum(LogLikVal);
     if LLcr<LLprev
+        RegressionModel = Stored_RegressionModel;
+        Qparam = Stored_QParam;
         break
+    else 
+        Stored_RegressionModel = RegressionModel;
+        Stored_QParam = Qparam;
+    end
+    if get(app.LogParams,'Value')==1
+        save(sprintf('C:/Users/BL/Documents/PARAM/UpdatedInspectorsData%s%s.mat',Data_filename,date),'UpdatedInspectorsData');
+        save(sprintf('C:/Users/BL/Documents/PARAM/PARAM%s%s.mat',Data_filename,date),'Qparam');
+        save(sprintf('C:/Users/BL/Documents/PARAM/KR_PARAM%s%s.mat',Data_filename,date),'RegressionModel');
     end
     if LLcr/LLprev>0.95
         StallInit2=StallInit2+1;
@@ -281,4 +295,4 @@ else
     TestLogLik=sum(LogLikVal);
     fprintf('Test L.L. : %d\n',TestLogLik)
 end
-LogLik=LLcr;
+LogLik=LLcr;  

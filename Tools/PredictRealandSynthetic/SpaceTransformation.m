@@ -8,7 +8,7 @@ else
 end
 % Space Transformation
 % fct_n=@(xts,nts) gammainc(xts.^nts,1/nts);
-invfct=@(yts,nts) (gammaincinv(abs(yts),1/nts))^(1/nts);                    % Horizonntal axis [0,~]
+invfct=@(yts,nts) (gammaincinv(abs(yts),1/nts)).^(1/nts);                    % Horizonntal axis [0,~]
 % dfct_n=@(xts,nts)(nts*exp(-xts^nts))/gamma(1/nts);
 n=2.^Pn;
 MapAxes=invfct(0.999,n);

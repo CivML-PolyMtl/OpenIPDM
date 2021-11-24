@@ -22,7 +22,7 @@ else
         %%
         dt=1;
         A=[1 dt (dt^2)/2;0 1 dt;0 0 1];
-        Q= param.^2*[(dt^5)/20 (dt^4)/8 (dt^3)/6;(dt^4)/8 (dt^3)/3 (dt^2)/2;(dt^3)/6 (dt^2)/2 dt];
+        Q= param.^2*[(dt^4)/4 (dt^3)/2 (dt^2)/2;(dt^3)/2 (dt^2)/1 (dt^1)/1;(dt^2)/2 (dt^1)/1 1];
         C=[1,0,0];
         % initial knowledge at time t=0
         init_x=[100;TableEstimatedParameters(5);TableEstimatedParameters(6)];
@@ -49,6 +49,9 @@ else
                     IndFinalObs=find(~isnan(y));
                     Yommited(CountVals,1)=y(IndFinalObs(end));
                     StructureInd=MdataEngyUpdate{i,ElementInd}(1,4);
+                    if MdataEngyUpdate{i,ElementInd}(1,3)<1900
+                        MdataEngyUpdate{i,ElementInd}(1,3) = MdataEngyUpdate{i,ElementInd}(2,3) - min(diff(MdataEngyUpdate{i,ElementInd}(:,3)));
+                    end
                     yearly=MdataEngyUpdate{i,ElementInd}(1,3):MdataEngyUpdate{i,ElementInd}(end-1,3)+M;
                     DeltaYears(CountVals,1)=MdataEngyUpdate{i,ElementInd}(end,3)-MdataEngyUpdate{i,ElementInd}(end-1,3);
                     [~,~,iinsp]=intersect(MdataEngyUpdate{i,ElementInd}(:,3),yearly);
@@ -82,11 +85,11 @@ else
                         [~,ia,~] = intersect(EngBias(:,3),Insp(k));
                         if isempty(ia)
                             Re(k)=mean(EngBias(:,2)).^2;
-                            InpecBiase(k)=0;%EngBias(ia,1);
+                            InpecBiase(k)= EngBias(ia,1);
                             Inspemmited=Insp(k);
                         else
                             Re(k)=EngBias(ia,2).^2;
-                            InpecBiase(k)=0;%EngBias(ia,1);
+                            InpecBiase(k)= EngBias(ia,1);
                             Inspemmited=EngBias(ia,3);
                         end
                     end
@@ -104,10 +107,9 @@ else
                     RU=1;InspBU=0;R=0;
                     % Excute
                     [loglik,~,~,~,~,~,~,~,~,~,~,~,~,x,s_Xsmooth,Vvalues]=KFsKF(app,y, A, C, Q, R, Re,...
-                        init_x, init_V,InpecBiase,OptmInsp,RU,InspBU,ObsYears,yearly,...
+                        init_x, init_V,InpecBiase,[],OptmInsp,RU,InspBU,ObsYears,yearly,...
                         InspectorLabel,StructureInd,ElementInd,TableEstimatedParameters(1,end),...
                         [],[],[],RegressionModel,AllAtt,TableEstimatedParameters,1,1);
-                    
                     XInitialValuesStore(1:3,CountVals)=x(:,1);
                     XassociatedSE(1:2,CountVals)=[ElementInd;StructureInd];
                     IndFinalObs=find(~isnan(y))+1;
