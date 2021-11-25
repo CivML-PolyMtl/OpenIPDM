@@ -135,7 +135,7 @@ for e = 1:E
             myhat           = myhat + Kt2*(mu_v2y - mu_v2); % mu_{t|t}^{V2hat}
             syhat           = syhat + (Kt2^2)*(sig_v2y - cov_v2);
             
-            %apply constraints on the deterioration speed
+            %apply constraints on sigma_V
             if sqrt(myhat)<1
                 Dc=[1 ; 1];
                 d=[0.8 ;1000000];
@@ -165,7 +165,6 @@ for e = 1:E
     
     
 end
-
 
 
 mu_v2hat = save_mu(2,:);

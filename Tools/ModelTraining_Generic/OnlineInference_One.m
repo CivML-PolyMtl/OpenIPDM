@@ -129,7 +129,7 @@ for e = 1:E
             
             
             
-            %apply constraints on the deterioration speed
+            %apply constraints on sigma_V
             if sqrt(myhat)<1
                 Dc=[1 ; 1];
                 d=[0.5 ;1000000];

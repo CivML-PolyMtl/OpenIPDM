@@ -66,7 +66,7 @@ if GPUCompute
         RUReshape(find(CurrentInspectorObs))=(CurrentInspectorParam(1)).^2;
         RU(1,:,:)=RUReshape;
         
-        if ~size(CurrentInspectorParam) == 1
+        if length(CurrentInspectorParam) ~= 1
             % update inspector bias
             InspBUReshape=reshape(InspBU,[size(InspBU,2),size(InspBU,3)]);
             InspBUReshape(find(CurrentInspectorObs))=(CurrentInspectorParam(2));
