@@ -31,7 +31,7 @@ else
 end
 
 if get(app.LogParams,'value')==1 && isempty(ModelParameters)
-    save(sprintf('%s/Tools/ModelTraining_Generic/ParametersLog/PARAM%s.mat',pwd,date),'PARAM');
+    save(sprintf('%s/Tools/ModelTraining_Generic/ParametersLog/PARAM%s%s.mat',pwd,Data_filename,date),'PARAM');
 end
 if get(app.LoglikelihoodPlot,'value')==1 && isempty(ModelParameters)
     cla(app.OutputPlot1);
