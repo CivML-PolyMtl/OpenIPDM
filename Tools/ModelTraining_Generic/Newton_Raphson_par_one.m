@@ -106,7 +106,7 @@ end
 %% double check for the objective computation 
 %%
 Term1=@(x,idx) fx_TR(x+idx*(max(delta*1E-4,delta*abs(x(logical(idx))))));
-Term2=@(x,idx) fx_TR(x-idx*max(delta*1E-4,delta*abs(x(logical(idx)))));
+Term2=@(x,idx) fx_TR(x-idx*(max(delta*1E-4,delta*abs(x(logical(idx))))));
 Term3=@(x,idx) max(delta*1E-4,delta*abs(x(logical(idx))));
 
 % grad_fct=@(x,idx) (Term1(x,idx)-Term2(x,idx))/(2*Term3(x,idx));                     %Gradient

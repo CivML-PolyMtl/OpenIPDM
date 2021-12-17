@@ -19,8 +19,11 @@ subplot(1,2,1);
 histogram(UpdatedInspectorsData{1}(:,3));
 xlabel('Estimated \sigma_V ^2(I_i)');
 subplot(1,2,2);
+hold on
 histogram(UpdatedInspectorsData{1}(:,2));
 xlabel('Estimated \mu_V (I_i)');
+xline(mean(UpdatedInspectorsData{1}(:,2)));
+hold off
 %
 %
 % %comparaison mu/sigma for each inspector

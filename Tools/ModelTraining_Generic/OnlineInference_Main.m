@@ -15,35 +15,34 @@ n_x = 3;
 I = size(Inspector_index,2);
 
 %initial hidden states
+
+
 init_x=zeros(3,size(Y_real,1));
 init_V = zeros(3,3,length(MdataEngy.init_x));
 
-init_x(1,:) = Y_real(:,2)';
-for e = 1:E
-    num_ins   = Inspectorlabel(e,2);
-    index_ins = find(UpdatedInspectorsData{1,1}==num_ins);
-    sigma_ins = UpdatedInspectorsData{1,1}(index_ins,end);
-    init_V(1,1,e)=max(PARAM(2).^2,sigma_ins.^2);
-end
-
 init_x(3,:)=0;
+% init_x(1,:)=MdataEngy.init_x;
+% init_x(1,:) = Y_real(:,2)';
+
 init_V(3,3,:)=PARAM(5).^2;
 
 % min ou max
-%             for i=1:size(Y_real,1)
-%                 IndexInit=find(~isnan(gather(Y_real(i,:))));
-%                 if length(IndexInit)==2
-%                     IndexInit=IndexInit(1:2);
-%                 elseif length(IndexInit)>2
-%                     IndexInit=IndexInit(1:3);
-%                 else
-%                     IndexInit=IndexInit(1);
-%                 end
-%                 [valmax, loc]=max(gather(Y_real(i,IndexInit)));
-%                 [tf, loc] = ismember(Inspectorlabel(i,IndexInit(loc)),UpdatedInspectorsData{1}(:,1));
-%                 init_x(1,i) = valmax ;% - UpdatedInspectorsData{1}(loc,2);
-%                 init_V(1,1,i)=max(PARAM(3).^2,(UpdatedInspectorsData{1}(loc,3))^2);
-%             end
+for i=1:size(Y_real,1)
+    IndexInit=find(~isnan(gather(Y_real(i,:))));
+    if length(IndexInit)==2
+        IndexInit=IndexInit(1:2);
+    elseif length(IndexInit)>2
+        IndexInit=IndexInit(1:3);
+    else
+        IndexInit=IndexInit(1);
+    end
+%     [valmin, loc]=min(gather(Y_real(i,IndexInit)));
+%          valmax = median(gather(Y_real(i,IndexInit)))+randn;
+    [valmax, loc]=max(gather(Y_real(i,IndexInit)));
+    [tf, loc] = ismember(Inspectorlabel(i,IndexInit(loc)),UpdatedInspectorsData{1}(:,1));
+    init_x(1,i) = (1-abs(mean(UpdatedInspectorsData{1}(:,2)))/75)*valmax;  %0.98*valmax;% + 0.4*MdataEngy.init_x(i);%(valmax + valmin) /2 ;% - UpdatedInspectorsData{1}(loc,2);
+    init_V(1,1,i)= max(PARAM(3).^2,(UpdatedInspectorsData{1}(loc,3))^2);
+end
 
 
 if isempty(RegressionModel)
@@ -56,18 +55,18 @@ if isempty(RegressionModel)
     
     if OperationIndex>=3
         %with biases
-        init_estim = [ 0, 2, PARAM(3), 8];
+        init_estim = [ 0, 1, PARAM(3), 12];
         % first run
-        [sd, mu_v] = OnlineInference_One(Y_real, Inspectorlabel, init_x, init_V, A, Q, UpdatedInspectorsData,PARAM,init_estim,NTr);
+        [sd, mu_v] = OnlineInference_One(Y_real, Inspectorlabel, init_x, init_V, A, Q, UpdatedInspectorsData,PARAM,init_estim,NTr,MdataEngy);
         % save
         UpdatedInspectorsData{1}(:,2) = mu_v';
         UpdatedInspectorsData{1}(:,3) = sd';
         
     else
         % without biases
-        init_estim = [ PARAM(3), 8];
+        init_estim = [ PARAM(3), 12];
         % first run
-        [sd ] = OnlineInference_sigma(Y_real, Inspectorlabel, init_x, init_V, A,Q, UpdatedInspectorsData,PARAM,init_estim);
+        [sd ] = OnlineInference_sigma(Y_real, Inspectorlabel, init_x, init_V, A,Q, UpdatedInspectorsData,PARAM,init_estim,MdataEngy);
         % save
         UpdatedInspectorsData{1,1}(:,end) = sd';
     end
@@ -95,15 +94,15 @@ else
     
     if OperationIndex>=3
         %with biases
-        init_estim = [ 0, 2, PARAM(3), 12]; %  [mu_v0, mu_sd_V0, sd_v0, sd_sd_v0];
-        [sd, mu_v] = OnlineInference_short(Y_real, Inspectorlabel, init_x, init_V, A, Q, UpdatedInspectorsData,PARAM,init_estim);
+        init_estim = [ 0, 1, PARAM(3), 12]; %  [mu_v0, mu_sd_V0, sd_v0, sd_sd_v0];
+        [sd, mu_v] = OnlineInference_short(Y_real, Inspectorlabel, init_x, init_V, A, Q, UpdatedInspectorsData,PARAM,init_estim,MdataEngy);
         UpdatedInspectorsData{1}(:,2) = mu_v';
         UpdatedInspectorsData{1}(:,3) = sd';
         
     else
         %without biases
         init_estim = [ PARAM(3), 12]; %  [sd_v0, sd_sd_v0];
-        [sd] = OnlineInference_sigma(Y_real, Inspectorlabel, init_x, init_V, A, Q, UpdatedInspectorsData,PARAM,init_estim);
+        [sd] = OnlineInference_sigma(Y_real, Inspectorlabel, init_x, init_V, A, Q, UpdatedInspectorsData,PARAM,init_estim,MdataEngy);
         UpdatedInspectorsData{1}(:,3) = sd';
     end
 end

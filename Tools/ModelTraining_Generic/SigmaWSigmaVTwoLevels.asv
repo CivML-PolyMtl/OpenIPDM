@@ -8,7 +8,7 @@ LLprev=-10^18;
 j=1;
 
 if get(app.LogParams,'Value')==1 && isempty(ModelParameters)
-    save(sprintf('%s/Tools/ModelTraining_Generic/ParametersLog/UpdatedInspectorsData%s.mat',pwd,date),'UpdatedInspectorsData');
+    save(sprintf('C:/Users/BL/Documents/PARAM/2_UpdatedInspectorsData%s%s.mat',Data_filename,date),'UpdatedInspectorsData');
 end
 
 StallVal1=10;
@@ -70,7 +70,7 @@ while  (OptimizationAlgorithmIndex ~= 1 && epo)  || ((LLcr/LLprev)<= StopCr2 && 
         else
             OnlineInference_Main()
             StallInit2 = 1 + StallVal2;
-            epo = 1;
+            epo = 0;
         end
         
         if IncludeStructuralAtt
@@ -152,7 +152,7 @@ while  (OptimizationAlgorithmIndex ~= 1 && epo)  || ((LLcr/LLprev)<= StopCr2 && 
             Stored_UpdatedInspectorData = UpdatedInspectorsData;
         end
         if get(app.LogParams,'Value')==1
-            save(sprintf('C:/Users/BL/Documents/PARAM/UpdatedInspectorsData%s%s.mat',Data_filename,date),'UpdatedInspectorsData');
+            save(sprintf('C:/Users/BL/Documents/PARAM/2_UpdatedInspectorsData%s%s.mat',Data_filename,date),'UpdatedInspectorsData');
         end
         if LLcr/LLprev>0.95
             StallInit1=StallInit1+1;
@@ -174,6 +174,7 @@ while  (OptimizationAlgorithmIndex ~= 1 && epo)  || ((LLcr/LLprev)<= StopCr2 && 
                 'no','convergence_tol',1E-4,'bounds',boundsQ);
             PARAM=Qparam;
             StructuralAttributes=MdataEngy.StrucAtt;
+%             KRparam =[0.10, 0.16];
             [KRparam,~,~,~]=Newton_Raphson_par(@(Kr_Param) AnalysisObjective(MdataEngy,...
                 UpdatedInspectorsData{1}(:,1),InspStrucIndex,OptBoundsData,A,F, Q,...
                 x0, s2_X0,PARAM,[0 0],UpdatedInspectorsData{1},[],NTr,...
@@ -199,7 +200,7 @@ while  (OptimizationAlgorithmIndex ~= 1 && epo)  || ((LLcr/LLprev)<= StopCr2 && 
             RegressionModel.X_ControlPoints=X_ControlPoints;
             RegressionModel.Kernel_l=KRparam(2:end);
             if get(app.LogParams,'value')==1
-                save(sprintf('%s/Tools/ModelTraining_Generic/ParametersLog/KR_PARAM%s.mat',pwd,date),'RegressionModel');
+                save(sprintf('C:/Users/BL/Documents/PARAM/2_KR_PARAM%s%s.mat',Data_filename,date),'RegressionModel');
             end
             % validation with validation set
             [~,~,~,~,~,LogLikVal]=AnalysisObjective(MdataEngy.ModelValid,...
@@ -258,16 +259,15 @@ while  (OptimizationAlgorithmIndex ~= 1 && epo)  || ((LLcr/LLprev)<= StopCr2 && 
     if LLcr<LLprev
         RegressionModel = Stored_RegressionModel;
         Qparam = Stored_QParam;
-        PARAM = Qparam;
         break
     else 
         Stored_RegressionModel = RegressionModel;
         Stored_QParam = Qparam;
     end
     if get(app.LogParams,'Value')==1
-        save(sprintf('C:/Users/BL/Documents/PARAM/UpdatedInspectorsData%s%s.mat',Data_filename,date),'UpdatedInspectorsData');
-        save(sprintf('C:/Users/BL/Documents/PARAM/PARAM%s%s.mat',Data_filename,date),'Qparam');
-        save(sprintf('C:/Users/BL/Documents/PARAM/KR_PARAM%s%s.mat',Data_filename,date),'RegressionModel');
+        save(sprintf('C:/Users/BL/Documents/PARAM/2_UpdatedInspectorsData%s%s.mat',Data_filename,date),'UpdatedInspectorsData');
+        save(sprintf('C:/Users/BL/Documents/PARAM/2_PARAM%s%s.mat',Data_filename,date),'Qparam');
+        save(sprintf('C:/Users/BL/Documents/PARAM/2_KR_PARAM%s%s.mat',Data_filename,date),'RegressionModel');
     end
     if LLcr/LLprev>0.95
         StallInit2=StallInit2+1;

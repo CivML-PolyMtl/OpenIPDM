@@ -23,15 +23,13 @@ OptimizationAlgorithmIndex=find(strcmp(app.SelectOptAlgorithm.Value,...
 if isempty(ModelParameters)
     SigmaWSigmaVOneLevel();
     PARAM=Qparam;
-    Stored_QParam = [];
 else
     Qparam=cell2mat(ModelParameters);
     PARAM=Qparam;
-    Stored_QParam = PARAM;
 end
 
 if get(app.LogParams,'value')==1 && isempty(ModelParameters)
-    save(sprintf('%s/Tools/ModelTraining_Generic/ParametersLog/PARAM%s.mat',pwd,date),'PARAM');
+    save(sprintf('C:/Users/BL/Documents/PARAM/2_PARAM%s%s.mat',Data_filename,date),'PARAM');
 end
 if get(app.LoglikelihoodPlot,'value')==1 && isempty(ModelParameters)
     cla(app.OutputPlot1);
@@ -46,9 +44,6 @@ end
 % Check the inspector parameters
 if ~isempty(InspectorsParam)
     UpdatedInspectorsData=InspectorsParam{1};
-    Stored_UpdatedInspectorData = UpdatedInspectorsData;
-else 
-    Stored_UpdatedInspectorData = [];
 end
 if app.DTransformedSpace.Value && ~isempty(app.TrueInspectorsData) && app.LogParams_2.Value
     cla(app.OutputPlot);
@@ -90,7 +85,6 @@ if IncludeStructuralAtt
     end
 else
     RegressionModel=[];
-    Stored_RegressionModel = [];
 end
 
 % Factoring Structural Attributes
@@ -105,14 +99,15 @@ if ~isempty(RegressionModel) && IncludeStructuralAtt
     KRparam(1,2:length(KRparam))=RegressionModel.Kernel_l;
     StructuralAttributes=MdataEngy.StrucAtt;
     Kr_Param=KRparam;
-    Stored_RegressionModel = RegressionModel;
+    Stored_UpdatedInspectorData = [];
+Stored_RegressionModel = [];
+Stored_QParam = [];
 elseif ~IncludeStructuralAtt
     KRparam=zeros(2,1);
     KernelParameters{1}=0;
     KernelParameters{2}=0;
     InitialEx=[];
     InitialVar=[];
-    Stored_RegressionModel = [];
 end
 
     

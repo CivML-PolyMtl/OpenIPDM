@@ -17,8 +17,8 @@ if OptProcedure==1
     if OptLevel~=1
         param(3)=param(2);
     end
-    init_V(1,1,:)=max(param(3).^2,Re(1,:,2));
     init_V(3,3,:)=param(5).^2;%(param(5).^2).*init_V(2,2,:)+init_V(2,2,:).*param(7)^2+ 
+    init_V(1,1,:)=max(param(3).^2,Re(1,:,2));
 end
 tic
 % Prepare Akr / Control Points
@@ -175,31 +175,17 @@ while RegressLoop<MultiPass && ~Converge
     end
     %% Evaluate the estimated parameters
     if RegressLoop>=MultiPass || Converge || args{6}==2
-    % initial speed state
-    Converge=1;
-    init_x(2,:)=AKr*InirilizedEx;
-    init_V(2,2,:)=diag(AKr*InirilizedVar*AKr') + (Sigma_W0^2*ones(size(AKr,1),1));%(param(4).^2).*(DifferenceObs)+(param(6).^2);
+        % initial speed state
+        Converge=1;
+        init_x(2,:)=AKr*InirilizedEx;
+        init_V(2,2,:)=diag(AKr*InirilizedVar*AKr') + (Sigma_W0^2*ones(size(AKr,1),1));%(param(4).^2).*(DifferenceObs)+(param(6).^2);
 
-    % Evaluate the Loglikelihood
-    [x, Var, ~, loglik,~,~] = kalman_filter(y, A, C, Q, R, Re...
-        , init_x, init_V,InpecBiase,CurrentInspectorObs,RU,InspBU,...
-        ObsYears,Ncurve,OptBoundsData,GlobalCondData(3,1),...
-        GlobalCondData,GPUCompute,Nsigma);
-    TrainSmootherRun(); 
-    end
-    
-    if ~isempty(TrueSpeedValues)
-        figure(1)
-        plot(TrueSpeedValues,init_x(2,:),'o')
-        axis equal
-        hold on
-        plot([0,-.6],[0,-.6]);
-        xlim([-0.6 0])
-        ylim([-0.6 0])
-        ylabel('True Speed')
-        xlabel('Estiamted Speed')
-        grid on
-        hold off
+        % Evaluate the Loglikelihood
+        [x, Var, ~, loglik,~,~] = kalman_filter(y, A, C, Q, R, Re...
+            , init_x, init_V,InpecBiase,CurrentInspectorObs,RU,InspBU,...
+            ObsYears,Ncurve,OptBoundsData,GlobalCondData(3,1),...
+            GlobalCondData,GPUCompute,Nsigma);
+        TrainSmootherRun(); 
     end
 end
 
