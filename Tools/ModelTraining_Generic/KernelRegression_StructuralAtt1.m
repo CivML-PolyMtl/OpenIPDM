@@ -17,8 +17,8 @@ if OptProcedure==1
     if OptLevel~=1
         param(3)=param(2);
     end
-    init_V(1,1,:)=max(param(3).^2,Re(1,:,2));
     init_V(3,3,:)=param(5).^2;%(param(5).^2).*init_V(2,2,:)+init_V(2,2,:).*param(7)^2+ 
+    init_V(1,1,:)=max(param(3).^2,Re(1,:,2));
 end
 tic
 % Prepare Akr / Control Points
@@ -56,6 +56,10 @@ if args{6}<=1
         ReReshape_valid=reshape(Re_Valid,[size(Re_Valid,2),size(Re_Valid,3)]);
         ReReshape_valid(find(InspectorsObs_valid{i}))=EngBiasData(i,end).^2;
         Re_Valid(1,:,:)=ReReshape_valid;
+        % update inspector bias
+        InpecBiaseReshape_valid=reshape(InpecBiase_valid,[size(InpecBiase_valid,2),size(InpecBiase_valid,3)]);
+        InpecBiaseReshape_valid(find(InspectorsObs_valid{i}))=EngBiasData(i,2);
+        InpecBiase_valid(1,:,:)=InpecBiaseReshape_valid;
     end
     CurrentInspectorObs_valid=zeros(size(InspectorsObs_valid{1}),'gpuArray');
     init_V_valid=zeros(3,3,length(MdataEngy.ModelValid.RS),'gpuArray');
@@ -64,7 +68,11 @@ if args{6}<=1
         CurrentInspectorIndex_valid=find(CurrentInspectorID==InspectorsID);
         CurrentInspectorObs=InspectorsObs_valid{CurrentInspectorIndex_valid};
         RUReshape_valid(find(CurrentInspectorObs))=(CurrentInspectorParam(1)).^2;
-        Re_Valid(1,:,:)=RUReshape_valid;
+        RU_valid(1,:,:)=RUReshape_valid;
+        % update inspector bias
+        InspBUReshape_valid=reshape(InspBU_valid,[size(InspBU_valid,2),size(InspBU_valid,3)]);
+        InspBUReshape_valid(find(CurrentInspectorObs_valid))=(CurrentInspectorParam(2));
+        InspBU_valid(1,:,:)=InspBUReshape_valid;
     end
 end
 %% Loop
@@ -167,31 +175,17 @@ while RegressLoop<MultiPass && ~Converge
     end
     %% Evaluate the estimated parameters
     if RegressLoop>=MultiPass || Converge || args{6}==2
-    % initial speed state
-    Converge=1;
-    init_x(2,:)=AKr*InirilizedEx;
-    init_V(2,2,:)=diag(AKr*InirilizedVar*AKr') + (Sigma_W0^2*ones(size(AKr,1),1));%(param(4).^2).*(DifferenceObs)+(param(6).^2);
+        % initial speed state
+        Converge=1;
+        init_x(2,:)=AKr*InirilizedEx;
+        init_V(2,2,:)=diag(AKr*InirilizedVar*AKr') + (Sigma_W0^2*ones(size(AKr,1),1));%(param(4).^2).*(DifferenceObs)+(param(6).^2);
 
-    % Evaluate the Loglikelihood
-    [x, Var, ~, loglik,~,~] = kalman_filter(y, A, C, Q, R, Re...
-        , init_x, init_V,InpecBiase,CurrentInspectorObs,RU,InspBU,...
-        ObsYears,Ncurve,OptBoundsData,GlobalCondData(3,1),...
-        GlobalCondData,GPUCompute,Nsigma);
-    TrainSmootherRun(); 
-    end
-    
-    if ~isempty(TrueSpeedValues)
-        figure(1)
-        plot(TrueSpeedValues,init_x(2,:),'o')
-        axis equal
-        hold on
-        plot([0,-.6],[0,-.6]);
-        xlim([-0.6 0])
-        ylim([-0.6 0])
-        ylabel('True Speed')
-        xlabel('Estiamted Speed')
-        grid on
-        hold off
+        % Evaluate the Loglikelihood
+        [x, Var, ~, loglik,~,~] = kalman_filter(y, A, C, Q, R, Re...
+            , init_x, init_V,InpecBiase,CurrentInspectorObs,RU,InspBU,...
+            ObsYears,Ncurve,OptBoundsData,GlobalCondData(3,1),...
+            GlobalCondData,GPUCompute,Nsigma);
+        TrainSmootherRun(); 
     end
 end
 

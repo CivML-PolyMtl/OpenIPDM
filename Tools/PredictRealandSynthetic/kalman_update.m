@@ -70,10 +70,10 @@ if ObsYears==0
     PlotSxyg=Vpred-PlotSxy*S^-1*PlotSxy';
 else
     if CurrentInspector==1
-        e = y - C*xpred-InspBU; % error (innovation) 
+        e = y - C*xpred - InspBU; % error (innovation) 
         R=RU;
     elseif CurrentInspector==0
-        e = y - C*xpred-InpecBiase; % error (innovation)
+        e = y - C*xpred - InpecBiase; % error (innovation)
         R=Re;
     else
         e = y - C*xpred; % error (innovation)

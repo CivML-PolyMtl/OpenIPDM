@@ -20,9 +20,10 @@ InspB(find(OptmInsp==1))=y(find(OptmInsp==1))-InspBU;
 InspB(find(OptmInsp==0))=y(find(OptmInsp==0))-InpecBiase(find(OptmInsp==0));
 InspB(find(isnan(OptmInsp)))=NaN;
 
+plot(t(1:t_+1),InspB(1:t_+1),'b*')
+
 InspectorLabel=[NaN;InspectorLabel'];
 text(t(1:t_+1), InspB(1:t_+1)-Rv(1:t_+1)-2, num2str(InspectorLabel(1:t_+1)));
-
 errorbar(t(1:t_+1),InspB(1:t_+1),LowV(1:t_+1)',TopV(1:t_+1)','LineStyle','none','CapSize',20,'Color','blue','Linewidth',1)
 errorbar(t(1:t_+1),InspB(1:t_+1),RlowTrue(1:t_+1)',RtopTrue(1:t_+1)','LineStyle','none','CapSize',10,'Color','black','Linewidth',1)
 
@@ -35,7 +36,7 @@ patch([t(1:t_+1),fliplr(t(1:t_+1))],[E_X(1,1:t_+1)+s_X(5,1:t_+1),fliplr(E_X(1,1:
 
 plot(t(1:t_+1),XTrue(1,1:t_+1),'--k','LineWidth',1)
 grid on
-plot(t(1:t_+1),InspB(1:t_+1),'b*')
+
 
 
 xlabel('Time[Year]')
@@ -45,7 +46,7 @@ xlim([0,T-1])
 ylim([25,100])
 xtickangle(45)
 % h=legend('Inspection','$\pm2 \sigma_{Inspector}$','$\pm2 \sigma_{True_{Inspector}}$','Median','$\pm2 \sigma_{Model}$','$\pm1 \sigma_{Model}$','True Median','$\pm2 \sigma_{True}$','True State');
-h=legend('Inspection','$\pm2 \sigma_{Inspector}$','$\pm2 \sigma_{True_{Inspector}}$','Median','$\pm2 \sigma_{Model}$','$\pm1 \sigma_{Model}$','True State');
+h=legend('Inspection','Inspection $- \mu_{Inspector}$', '$\pm2 \sigma_{Inspector}$','$\pm2 \sigma_{True_{Inspector}}$','Median','$\pm2 \sigma_{Model}$','$\pm1 \sigma_{Model}$','True State');
 
 set(h,'Interpreter','latex')
 set(h,'Position',[0.25 0.25 0.1 0.1])

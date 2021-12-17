@@ -2,15 +2,25 @@
 global OptBoundsData GlobalCondData TrueInspectorsData KernelParameters MdataEngy AnalysesStartYear TestPercent
 global UpdatedTrueStateData TrueStateAnalysisType TSStartingYear TSAnalysisDuration PriorKnowledgeChk MeanPrior StdPrior TrueStateData
 
+Data_filename=app.Data_FileName;
+
 OptimizationProceedure=find(strcmp(app.SelectOptimization.Value,app.SelectOptimization.Items));
 OperationIndex=find(strcmp(app.SelectOptimization.Value,app.SelectOptimization.Items));
+
+%%%OperationIndex  = 1 : SSM
+%%%                = 2 : SSM + KR
+%%%                = 3 : SSM + Bias
+%%%                = 4 : SSM + KR + Bias
+
 % Analysis Compute options
 ComputeOptions=app.SelectOptAlgorithm.Value;
-if find(strcmp(app.SelectOptAlgorithm.Value,app.SelectOptAlgorithm.Items))==2
-    ParComp=1;
-else
-    ParComp=2;
-end
+
+% % if find(strcmp(app.SelectOptAlgorithm.Value,app.SelectOptAlgorithm.Items))==2
+% %     ParComp=1;
+% % else
+% %     ParComp=2;
+% % end
+ParComp=2;
 GradCompute=0;  % 1 for trust region optimization
 InspStrucIndex=[];%FindInspStrucIndex(VIData{1},UpdatedInspectorsData{1}(:,1));
 
@@ -20,12 +30,17 @@ end
 %% Kalman Filter
 dt=1;
 A=[1 dt (dt^2)/2;0 1 dt;0 0 1];
-Q=@(param) param(1).^2*[(dt^5)/20 (dt^4)/8 (dt^3)/6;(dt^4)/8 (dt^3)/3 (dt^2)/2;(dt^3)/6 (dt^2)/2 dt];
+Q=@(param) param(1).^2*[(dt^4)/4 (dt^3)/2 (dt^2)/2;(dt^3)/2 (dt^2)/1 (dt^1)/1;(dt^2)/2 (dt^1)/1 1];
 F=[1,0,0]; 
 x0=zeros(3,1);
 s2_X0=zeros(3);
 UpdatedInspectorsData{1}(:,2)=OptBoundsData(2,1);
-if OperationIndex>1
+if OperationIndex >= 3
+    UpdatedInspectorsData{1}(:,3)=OptBoundsData(2,1);
+    UpdatedInspectorsData{1}(:,2) = 0;
+end
+
+if OperationIndex==2 || OperationIndex==4
     IncludeStructuralAtt=1;
     NumStructuralAtt=KernelParameters{4};
 else
@@ -49,7 +64,7 @@ end
 cla(app.OutputPlot,'reset')
 
 %%   single assessment
-if OperationIndex==1
+if OperationIndex==1 || OperationIndex==3
     % SSM
     set(app.StatusBar,'Text','Status: Running Assessment SigmaW(L1), SigmaVI, Uncertinty, Speed & Acc. (Two Level)');
     pause(0.1)

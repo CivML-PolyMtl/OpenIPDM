@@ -47,7 +47,7 @@ end
 
 SumLL=0;GPUCompute=0;kk=0;grad_fun=0;
 if OptLevel==1
-    EngBiasData(:,2)=param(2);
+    EngBiasData(:,end)=param(2);
     CurrentInspectorID=[];
 end
 

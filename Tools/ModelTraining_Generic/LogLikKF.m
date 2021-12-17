@@ -52,6 +52,11 @@ if GPUCompute
         ReReshape=reshape(Re,[size(Re,2),size(Re,3)]);
         ReReshape(find(InspectorsObs{i}))=EngBiasData(i,end).^2;
         Re(1,:,:)=ReReshape;
+        
+        % update inspector bias
+        InpecBiaseReshape=reshape(InpecBiase,[size(InpecBiase,2),size(InpecBiase,3)]);
+        InpecBiaseReshape(find(InspectorsObs{i}))=EngBiasData(i,2);
+        InpecBiase(1,:,:)=InpecBiaseReshape;
     end
     CurrentInspectorObs=zeros(size(InspectorsObs{1}),'gpuArray');
     if ~isempty(CurrentInspectorID)
@@ -60,7 +65,16 @@ if GPUCompute
         CurrentInspectorObs=InspectorsObs{CurrentInspectorIndex};
         RUReshape(find(CurrentInspectorObs))=(CurrentInspectorParam(1)).^2;
         RU(1,:,:)=RUReshape;
+        
+        if length(CurrentInspectorParam) ~= 1
+            % update inspector bias
+            InspBUReshape=reshape(InspBU,[size(InspBU,2),size(InspBU,3)]);
+            InspBUReshape(find(CurrentInspectorObs))=(CurrentInspectorParam(2));
+            InspBU(1,:,:)=InspBUReshape;
+        end
+
     end
+    
     Q=gpuArray(Q);
     A=gpuArray(A);
     C=gpuArray(C);
