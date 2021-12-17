@@ -97,7 +97,7 @@ end
 
 SEData(EmptyEng,:)=[];
 EndIndex=size(SEData,2);
-for i=1:length(StructuresData)
+for i=1:size(StructuresData,1)
     Ind=find(strcmp(StructuresData(i,1),SEData(:,1)));
     for j=1:size(StructuresData,2)-1
         if ~isempty(Ind)
@@ -253,6 +253,15 @@ for i=1:length(CID)
             SAtt7=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,STAtt7)));
             SAtt8=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,STAtt8)));
             SAtt9=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,STAtt9)));
+            if isnan(SAtt1); SAtt1 = nan(length(M),1); end
+            if isnan(SAtt2); SAtt2 = nan(length(M),1); end
+            if isnan(SAtt3); SAtt3 = nan(length(M),1); end
+            if isnan(SAtt4); SAtt4 = nan(length(M),1); end
+            if isnan(SAtt5); SAtt5 = nan(length(M),1); end
+            if isnan(SAtt6); SAtt6 = nan(length(M),1); end
+            if isnan(SAtt7); SAtt7 = nan(length(M),1); end
+            if isnan(SAtt8); SAtt8 = nan(length(M),1); end
+            if isnan(SAtt9); SAtt9 = nan(length(M),1); end
             Yr=str2num(cell2mat(ESEDsorted{i,j}(:,2)));
             AGE=Yr-str2num(cell2mat(ESEDsorted{i,j}(:,ConstructionDateCol)));
             [~,iv]=sort(Yr);
