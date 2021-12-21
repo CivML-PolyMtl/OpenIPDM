@@ -13,7 +13,7 @@ Furthermore, OpenIPDM has the capacity to handle missing data such as, missing i
 <p align="center">
 <img src="/Help/OpenIPDMMain.png" height="500">
     
-For tutorials, see: [YouTube channel](https://www.youtube.com/) where you can find tutorials
+For tutorials, see: [YouTube channel](https://www.youtube.com/).
 
 ## How to cite
 
@@ -41,7 +41,7 @@ For tutorials, see: [YouTube channel](https://www.youtube.com/) where you can fi
 
 ### Getting started
 After starting OpenIPDM, the main user interface will open along with a message box to load the database. Note that the message box will not show up, if pre-processed data already exist in the folder Network Data. 
-If you do not see anything except Matlab errors verify your Matlab version, and your Matlab path. Be sure that you run the program from the top-level of OpenBDLM-master folder, not from another folder.
+If you do not see anything except Matlab errors verify your Matlab version, and your Matlab path.
 
 ## Input
 
@@ -55,7 +55,7 @@ If you do not see anything except Matlab errors verify your Matlab version, and 
 `OpenIPDM` generally provides the following outputs:
 
 1. Deterioration state estimates. 
-2. Service-life of an intervention
+2. Service-life of an intervention.
 3. Effect of interventions.
 
 Further details about the outputs can be found in the OpenIPDM documentation manual.
