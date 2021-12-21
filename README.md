@@ -56,7 +56,7 @@ If you do not see anything except Matlab errors verify your Matlab version, and 
 
 1. Deterioration state estimates. 
 2. Service-life of an intervention
-3. Effect of intervention.
+3. Effect of interventions.
 
 Further details about the outputs can be found in the OpenIPDM documentation manual.
 
@@ -80,7 +80,7 @@ To be done...
 ## Authors
 
 * **Zachary Hamida** - *Initial code and development* - [webpage](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_ZHAMIDA.html)
-* **Blanch Laurent** - *Development* - [webpage](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_BLAURENT.html)
+* **Blanche Laurent** - *Development* - [webpage](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_BLAURENT.html)
 
 Note: OpenIPDM has been originally developed based on the inspection and interventions database of the Transportation Ministry of Quebec (MTQ).
 
