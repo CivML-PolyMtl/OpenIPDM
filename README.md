@@ -21,9 +21,9 @@ For tutorials, see: [YouTube channel](https://www.youtube.com/) where you can fi
 
 ### Prerequisites
 
-Matlab (version 2020a or higher) installed on Mac OSX or Windows
+- Matlab (version 2020a or higher) installed on Mac OSX or Windows
 
-The Matlab Statistics and Machine Learning Toolbox is required.
+- The Matlab Statistics and Machine Learning Toolbox is required.
 
 ### Installation
 
