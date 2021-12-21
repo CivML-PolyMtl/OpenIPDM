@@ -3,26 +3,7 @@ function [xnew, Vnew, loglik, VVnew,xinitc,Vinitc] = kalman_update(A, C, Q...
     ,OptBoundsData,GlobalCondData,ConstraintKFs,GPUCompute,Nsigma,varargin)
 % KALMAN_UPDATE Do a one step update of the Kalman filter
 % [xnew, Vnew, loglik] = kalman_update(A, C, Q, R, y, x, V, ...)
-%
-% INPUTS:
-% A - the system matrix
-% C - the observation matrix 
-% Q - the system covariance 
-% R - the observation covariance
-% y(:)   - the observation at time t
-% x(:) - E[X | y(:, 1:t-1)] prior mean
-% V(:,:) - Cov[X | y(:, 1:t-1)] prior covariance
-%
-% OPTIONAL INPUTS (string/value pairs [default in brackets])
-% 'initial' - 1 means x and V are taken as initial conditions (so A and Q are ignored) [0]
-% 'u'     - u(:) the control signal at time t [ [] ]
-% 'B'     - the input regression matrix
-%
-% OUTPUTS (where X is the hidden state being estimated)
-%  xnew(:) =   E[ X | y(:, 1:t) ] 
-%  Vnew(:,:) = Var[ X(t) | y(:, 1:t) ]
-%  VVnew(:,:) = Cov[ X(t), X(t-1) | y(:, 1:t) ]
-%  loglik = log P(y(:,t) | y(:,1:t-1)) log-likelihood of innovatio
+
 
 % set default params
 u = [];
