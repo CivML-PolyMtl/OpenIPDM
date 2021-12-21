@@ -25,10 +25,10 @@ Matlab (version 2020a or higher) installed on Mac OSX or Windows
 
 The Matlab Statistics and Machine Learning Toolbox is required.
 
-### Installing
+### Installation
 
 1. Download and extract the ZIP file or clone the git repository in your working directory. 
-2. The working directory includes the following folders:
+2. The working directory should include the following folders:
     - Scripts
     - Tools
     - Parameters
@@ -93,5 +93,5 @@ This project is licensed under the MIT license - see the [LICENSE.txt](LICENSE.t
 Some parts of the project have greatly benefited from existing work:
 
 * Kevin Murphy (Kalman filter, [Kalman filter toolbox for Matlab](https://www.cs.ubc.ca/~murphyk/Software/Kalman/kalman.html#other))
-* Dan Simon (Constrained Kalman filtering, [Kalman filter toolbox for Matlab](https://academic.csuohio.edu/simond/ConstrKF/))
+* Dan Simon (Constrained Kalman filtering, [Constrained Kalman filter](https://academic.csuohio.edu/simond/ConstrKF/))
 
