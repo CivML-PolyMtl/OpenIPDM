@@ -56,19 +56,18 @@ if MaterialData~=0
         end
     end
 end
-if InterventionCond==1
-    SEData(:,end)=[];
-end
+
 if InterventionCond==2
     NoInterRows=setdiff(1:size(SEData,1),AllRows)';
     SEData=SEData(NoInterRows,:);
-    SEData(:,end)=[];
 elseif InterventionCond==3
 %     InterRows=intersect(1:size(SEData,1),AllRows)';
     SEData=SEData(AllRows,:);
     UISEData=UISEData(InterAllRows,:);
-    SEData(:,end)=[];
 end
+Element_id = SEData(:,end);
+SEData(:,end)=[];
+
 StructuresDatabaseStore.SelectedFormats(strcmp(StructuresDatabaseStore.SelectedFormats,'%f'))={'%q'};
 StructuresData=readall(StructuresDatabaseStore);
 if ~isempty(StatusCond)
@@ -85,6 +84,7 @@ StructuresData=table2array(StructuresData);
 InspectorsDatabase=readall(InspectorsDatabaseStore);
 InspectorsDatabase=table2array(InspectorsDatabase);
 SEData=table2array(SEData);
+Element_id = table2array(Element_id);
 EmptyEng=[];
 for i=1:size(SEData,1)
     EngId=find(strcmp(SEData(i,end),InspectorsDatabase(:,1)));
@@ -96,6 +96,7 @@ for i=1:size(SEData,1)
 end
 
 SEData(EmptyEng,:)=[];
+Element_id(EmptyEng,:)=[];
 EndIndex=size(SEData,2);
 for i=1:size(StructuresData,1)
     Ind=find(strcmp(StructuresData(i,1),SEData(:,1)));
@@ -152,14 +153,25 @@ for i=1:length(StructuresData(:,1))
         end
     end
     %% Unique elements
-    if ~isempty(SEDsorted{i,1}(:,[StructuralElemNumSpans,StructuralElemID]))
+    if ~isempty(Element_id)
+        [ElementsNum,ElemID]=unique(Element_id);
+        jcount=0;
+        for j=1:length(ElemID)
+            V1=cell2mat(Element_id(ElemID(j)));
+            V2=cellstr(Element_id(SRows));
+            EID=find(strcmp(V1,V2));
+            if ~isempty(EID)
+                jcount=jcount+1;
+                ESEDsorted{i,jcount}=SEDsorted{i,1}(EID,:);
+            end
+        end
+    elseif ~isempty(SEDsorted{i,1}(:,[StructuralElemNumSpans,StructuralElemID]))
         [~,ElemID]=uniqueRowsCA(SEDsorted{i,1}(:,[StructuralElemNumSpans,StructuralElemID]));
         jcount=0;
         for j=1:length(ElemID)
             V1=cell2mat(SEDsorted{i,1}(ElemID(j),[StructuralElemNumSpans StructuralElemID]));
             V2=cellstr([char(SEDsorted{i,1}(:,StructuralElemNumSpans)) char(SEDsorted{i,1}(:,StructuralElemID))]);
             V2=strrep(V2,' ','');
-            
             try
                 V2=cellfun(@str2num,V2);
                 EID=find(str2double(V1)==V2);
@@ -167,6 +179,8 @@ for i=1:length(StructuresData(:,1))
                 V1=strrep(V1,' ','');
                 EID=find(strcmp(V1,V2));
             end
+            %                 V2=cellfun(@str2num,V2);
+            %                 EID=find(str2double(V1)==V2);
             if ~isempty(EID)
                 jcount=jcount+1;
                 ESEDsorted{i,jcount}=SEDsorted{i,1}(EID,:);

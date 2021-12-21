@@ -66,19 +66,29 @@ for ElementType=1:length(PrimaryElements)
             end
         end
     end
-    if InterventionCond==1
-        SEDataEC(:,end)=[];
+    MaterialData=find(strcmp(app.SelectMaterial.Items,app.SelectMaterial.Value))-1;
+    if MaterialData~=0
+        MaterialCategories=unique(SEDataEC(:,MaterialData));
+        MaterialCategories=table2array(MaterialCategories);
+        if ~isempty(MaterialCategories)
+            if ~isnumeric(MaterialCategories(1))
+                for i=1:length(MaterialCategories)
+                    SEDataEC(find(strcmp(MaterialCategories{i},table2array(SEDataEC(:,MaterialData)))),MaterialData)={sprintf('%d',i)};
+                end
+            end
+        end
     end
+    
     if InterventionCond==2
         NoInterRows=setdiff(1:size(SEDataEC,1),AllRows)';
         SEDataEC=SEDataEC(NoInterRows,:);
-        SEDataEC(:,end)=[];
     elseif InterventionCond==3
         %     InterRows=intersect(1:size(SEData,1),AllRows)';
         SEDataEC=SEDataEC(AllRows,:);
         UISEData=UISEData(InterAllRows,:);
-        SEDataEC(:,end)=[];
     end
+    Element_id = SEDataEC(:,end);
+    SEDataEC(:,end)=[];
     if ~isempty(EDQ) % Element details dataset: Struc ID, No Elem, No trav, Elem, QTE
         ElemRow=find(strcmp(ColsVal,table2array(EDQ(:,3))));
         EDQ_sub=table2array(EDQ(ElemRow,[1 2 4 5]));
@@ -109,6 +119,7 @@ for ElementType=1:length(PrimaryElements)
     InspectorsDatabase=readall(InspectorsDatabaseStore);
     InspectorsDatabase=table2array(InspectorsDatabase);
     SEDataEC=table2array(SEDataEC);
+    Element_id = table2array(Element_id);
     EmptyEng=[];
     for i=1:size(SEDataEC,1)
         EngId=find(strcmp(SEDataEC(i,end),InspectorsDatabase(:,1)));
@@ -120,8 +131,9 @@ for ElementType=1:length(PrimaryElements)
     end
     
     SEDataEC(EmptyEng,:)=[];
+    Element_id(EmptyEng,:)=[];
     EndIndex=size(SEDataEC,2);
-    for i=1:length(StructuresData)
+    for i=1:size(StructuresData,1)
         Ind=find(strcmp(StructuresData(i,1),SEDataEC(:,1)));
         for j=1:size(StructuresData,2)-1
             if ~isempty(Ind)
@@ -134,7 +146,6 @@ for ElementType=1:length(PrimaryElements)
     InspectionYearCol=find(strcmp(app.InspecYearCol.Items,app.InspecYearCol.Value))-1;
     StructuralElemID=find(strcmp(app.SelectSElementID.Items,app.SelectSElementID.Value))-1;
     StructuralElemNumSpans=find(strcmp(app.SelectSNSpans.Items,app.SelectSNSpans.Value))-1;
-    MaterialData=find(strcmp(app.SelectMaterial.Items,app.SelectMaterial.Value))-1;
     STAtt1=find(strcmp(app.SelectSAtt1.Items,app.SelectSAtt1.Value))+EndIndex-2;
     STAtt2=find(strcmp(app.SelectSAtt1.Items,app.SelectSAtt2.Value))+EndIndex-2;
     STAtt3=find(strcmp(app.SelectSAtt1.Items,app.SelectSAtt3.Value))+EndIndex-2;
@@ -143,19 +154,7 @@ for ElementType=1:length(PrimaryElements)
     STAtt6=find(strcmp(app.SelectSAtt1.Items,app.SelectSAtt6.Value))+EndIndex-2;
     STAtt7=find(strcmp(app.SelectSAtt1.Items,app.SelectSAtt7.Value))+EndIndex-2;
     STAtt8=find(strcmp(app.SelectSAtt1.Items,app.SelectSAtt8.Value))+EndIndex-2;
-    STAtt9=find(strcmp(app.SelectSAtt1.Items,app.SelectSAtt9.Value))+EndIndex-2;
-    
-    if MaterialData~=0
-        MaterialCategories=unique(SEDataEC(:,MaterialData));
-        if ~isempty(MaterialCategories)
-            if ~isnumeric(MaterialCategories(1))
-                for i=1:length(MaterialCategories)
-                    SEDataEC(find(strcmp(MaterialCategories(i),SEDataEC(:,MaterialData))),MaterialData)={sprintf('%d',i)};
-                end
-            end
-        end
-    end
-    
+    STAtt9=find(strcmp(app.SelectSAtt1.Items,app.SelectSAtt9.Value))+EndIndex-2;    
     for i=1:size(SEDataEC,1)
         DateVec=datestr(datenum(SEDataEC(i,InspectionYearCol)));
         SEDataEC(i,InspectionYearCol)={DateVec(end-3:end)};
@@ -186,7 +185,19 @@ for ElementType=1:length(PrimaryElements)
             end
         end
         %% Unique elements
-        if ~isempty(SEDsorted{i,1}(:,[StructuralElemNumSpans,StructuralElemID]))
+        if ~isempty(Element_id)
+            [ElementsNum,ElemID]=unique(Element_id);
+            jcount=0;
+            for j=1:length(ElemID)
+                V1=cell2mat(Element_id(ElemID(j)));
+                V2=cellstr(Element_id(SRows));
+                EID=find(strcmp(V1,V2));
+                if ~isempty(EID)
+                    jcount=jcount+1;
+                    ESEDsorted{i,jcount}=SEDsorted{i,1}(EID,:);
+                end
+            end
+        elseif ~isempty(SEDsorted{i,1}(:,[StructuralElemNumSpans,StructuralElemID]))
             [~,ElemID]=uniqueRowsCA(SEDsorted{i,1}(:,[StructuralElemNumSpans,StructuralElemID]));
             jcount=0;
             for j=1:length(ElemID)
@@ -208,6 +219,7 @@ for ElementType=1:length(PrimaryElements)
                 end
             end
         end
+        
     end
     
     %%
@@ -256,18 +268,6 @@ for ElementType=1:length(PrimaryElements)
         end
     end
     ESEDsorted(all(cellfun('isempty',ESEDsorted),2),:) = [];
-    % StrToRemove={'01869N'};
-    % for j=1:length(StrToRemove)
-    %      CID=sum(~cellfun(@isempty,ESEDsorted),2);
-    %     for i=1:length(CID)
-    %         if ~cellfun('isempty',ESEDsorted(i,1))
-    %             if strcmp(StrToRemove{j,1},ESEDsorted{i,1}(1,1))
-    %                 ESEDsorted(i,:)=[];
-    %                 break;
-    %             end
-    %         end
-    %     end
-    % end
     if STAtt1==EndIndex-1; STAtt1=[]; end
     if STAtt2==EndIndex-1; STAtt2=[]; end
     if STAtt3==EndIndex-1; STAtt3=[]; end
@@ -299,15 +299,15 @@ for ElementType=1:length(PrimaryElements)
                 SAtt7=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,STAtt7)));
                 SAtt8=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,STAtt8)));
                 SAtt9=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,STAtt9)));
-                %             if isnan(sum(SAtt1)); SAtt1=[]; end
-                %             if isnan(sum(SAtt2)); SAtt2=[]; end
-                %             if isnan(sum(SAtt3)); SAtt3=[]; end
-                %             if isnan(sum(SAtt4)); SAtt4=[]; end
-                %             if isnan(sum(SAtt5)); SAtt5=[]; end
-                %             if isnan(sum(SAtt6)); SAtt6=[]; end
-                %             if isnan(sum(SAtt7)); SAtt7=[]; end
-                %             if isnan(sum(SAtt8)); SAtt8=[]; end
-                %             if isnan(sum(SAtt9)); SAtt9=[]; end
+                if isnan(SAtt1); SAtt1 = nan(length(M),1); end
+                if isnan(SAtt2); SAtt2 = nan(length(M),1); end
+                if isnan(SAtt3); SAtt3 = nan(length(M),1); end
+                if isnan(SAtt4); SAtt4 = nan(length(M),1); end
+                if isnan(SAtt5); SAtt5 = nan(length(M),1); end
+                if isnan(SAtt6); SAtt6 = nan(length(M),1); end
+                if isnan(SAtt7); SAtt7 = nan(length(M),1); end
+                if isnan(SAtt8); SAtt8 = nan(length(M),1); end
+                if isnan(SAtt9); SAtt9 = nan(length(M),1); end
                 Yr=str2num(cell2mat(ESEDsorted{i,j}(:,2)));
                 AGE=Yr-str2num(cell2mat(ESEDsorted{i,j}(:,ConstructionDateCol)));
                 [~,iv]=sort(Yr);
