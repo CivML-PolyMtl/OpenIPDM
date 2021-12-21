@@ -1,5 +1,5 @@
 <p align="center">
-<img src="/Help/OpenIPDM.pdf" height="110">
+<img src="/Help/OpenIPDM.png" height="110">
 
 <p align="center">
 Open-Source Toolbox for Infrastructures Probabilistic Deterioration Modelling 
@@ -11,7 +11,7 @@ OpenIPDM also include several toolboxes that facilitate performing verification 
 Furthermore, OpenIPDM has the capacity to handle missing data such as, missing interventions or missing structural attributes.
 
 <p align="center">
-<img src="/logo/BDLM_ex1.png" height="500">
+<img src="/Help/OpenIPDMMain.png" height="500">
     
 For tutorials, see: [YouTube channel](https://www.youtube.com/) where you can find tutorials
 
