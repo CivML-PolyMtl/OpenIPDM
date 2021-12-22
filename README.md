@@ -5,7 +5,7 @@
 Open-Source Toolbox for Infrastructures Probabilistic Deterioration Modelling 
 </p>
 
-OpenIPDM is a MATLAB open-source platform that stands for infrastructures probablstic deterioration model. This software is developed to perform analyses on a network-scale visual inspection data, while accounting for the uncertainty associated with each inspector.
+OpenIPDM is a MATLAB open-source platform that stands for infrastructures probabilistic deterioration model. This software is developed to perform analyses on a network-scale visual inspection data, while accounting for the uncertainty associated with each inspector.
 The main application window in OpenIPDM enables assessing the structural deterioration behaviour and the effect of interventions at different levels starting from the structural element level up to the network level.
 OpenIPDM also include several toolboxes that facilitate performing verification and validation analyses on visual inspection data, in addition to learning model parameters.
 Furthermore, OpenIPDM has the capacity to handle missing data such as, missing interventions or missing structural attributes.
@@ -92,6 +92,6 @@ This project is licensed under the MIT license - see the [LICENSE.txt](LICENSE.t
 
 Some parts of the project have greatly benefited from existing work:
 
-* Kevin Murphy (Kalman filter, [Kalman filter toolbox for Matlab](https://www.cs.ubc.ca/~murphyk/Software/Kalman/kalman.html#other))
-* Dan Simon (Constrained Kalman filtering, [Constrained Kalman filter](https://academic.csuohio.edu/simond/ConstrKF/))
+* Kevin Murphy ([Kalman filter toolbox for Matlab](https://www.cs.ubc.ca/~murphyk/Software/Kalman/kalman.html#other))
+* Dan Simon ([Constrained Kalman filter](https://academic.csuohio.edu/simond/ConstrKF/))
 
