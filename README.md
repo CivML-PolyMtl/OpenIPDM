@@ -84,7 +84,7 @@ Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c6
 
 ## License
 
-This project is licensed under the MIT license - see the [LICENSE.txt](LICENSE.txt) file for details
+This project is licensed under the MIT license - see the [LICENSE](LICENSE.md) file for details
 
 ## Acknowledgments
 
