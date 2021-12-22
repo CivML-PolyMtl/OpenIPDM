@@ -1,0 +1,7 @@
+"StructureNum","Name","Code","StructureType","Road","RoadClass","Municipality","Label","Management","Obstacle","Lat","Long","Total Length","SlabLength","TotalWidth","Width","SurfaceArea","ConstructionYear","Status","Recommandation","Misc","Misc_2","AADT","Trucks","Lanes"
+"00001","Bridge 1","0","Steel Bridge","Highway 1","Highway","M1","M1","M1","Highway 11","45.863871","-74.348209","14614","13213","7550","6.7",99.00,"1960","Active","Not specified","1","2","12250","9","2"
+"00002","Bridge 2","0","Concrete Bridge","Highway 2","Highway","M1","M1","M1","Highway 22","45.517731","-73.819556","68000","7630","46160","31",352.00,"1966","Active","Not specified","1","2","188000","11","5"
+"00003","Bridge 3","0","Concrete Bridge","Highway 3","Highway","M1","M1","M1","Highway 33","45.643577","-73.832467","33000","6860","31580","26",216.00,"1968","Active","Not specified","1","2","188000","15","5"
+"00004","Bridge 4","1","Concrete Bridge","Road 1","International","M2","M2","M2","Highway 111","46.864564","-71.304078","348209","304078","14960","13.6",4539.00,"1989","Active","Not specified","1","2","28000","10","2"
+"00005","Bridge 5","1","Concrete Bridge","Road 2","Highway","M2","M2","M2","Highway 222","46.781505","-71.204054","119556","79170","14430","12.9",1142.00,"1984","Active","Not specified","1","2","21000","9","4"
+"00006","Bridge 6","1","Prestressed-Concrete Bridge","Road 3","Nationale","M2","M2","M2","Highway 333","46.867888","-71.226067","132467","126067","19850","15.9",2497.00,"1965","Active","Not specified","1","2","22500","20","4"
