@@ -17,13 +17,15 @@ For tutorials, see: [YouTube channel](https://www.youtube.com/).
 
 ## How to cite
 
-*OpenIPDM, an Open-Source Software for Infrastructures Probablstic Deterioration Modelling*
+*OpenIPDM, an Open-Source Software for Infrastructures Probabilistic Deterioration Modelling*
 
 ### Prerequisites
 
-- Matlab (version 2020a or higher) installed on Mac OSX or Windows
+- Matlab (version 2020a or higher) installed on Mac OSX or Windows.
 
 - The Matlab Statistics and Machine Learning Toolbox is required.
+
+- Access to GPU computing (required only for Model Training toolbox)
 
 ### Installation
 
@@ -57,12 +59,13 @@ If you do not see anything except Matlab errors verify your Matlab version, and 
 1. Deterioration state estimates. 
 2. Service-life of an intervention.
 3. Effect of interventions.
+4. Synthetic time series of visual inspections.
 
 Further details about the outputs can be found in the OpenIPDM documentation manual.
 
-
 ## Remarks
 
+The OpenIPDM package is originally developed based on the inspection and interventions database of the Transportation Ministry of Quebec (MTQ).
 
 ## Built With
 
@@ -71,18 +74,13 @@ Further details about the outputs can be found in the OpenIPDM documentation man
 
 ## Contributing
 
+Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
 
-
-## Versioning
-
-To be done...
 
 ## Authors
 
 * **Zachary Hamida** - *Initial code and development* - [webpage](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_ZHAMIDA.html)
 * **Blanche Laurent** - *Development* - [webpage](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_BLAURENT.html)
-
-Note: OpenIPDM has been originally developed based on the inspection and interventions database of the Transportation Ministry of Quebec (MTQ).
 
 ## License
 
