@@ -79,8 +79,9 @@ Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c6
 
 ## Authors
 
-* **Zachary Hamida** - *Initial code and development* - [webpage](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_ZHAMIDA.html)
-* **Blanche Laurent** - *Development* - [webpage](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_BLAURENT.html)
+* **Zachary Hamida** - *Methodology, initial code and development* - [webpage](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_ZHAMIDA.html)
+* **Blanche Laurent** - *Inspector uncertainty analytical inference* - [webpage](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_BLAURENT.html)
+* **James-A. Goulet** - *Methodology* - [webpage](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_MAIN.html)
 
 ## License
 
