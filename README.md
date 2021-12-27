@@ -11,7 +11,7 @@ OpenIPDM also include several toolboxes that facilitate performing verification 
 Furthermore, OpenIPDM has the capacity to handle missing data such as, missing interventions or missing structural attributes.
 
 <p align="center">
-<img src="/Help/OpenIPDMMain.png" height="500">
+<img src="/Help/OpenIPDMMain.png" height="400">
     
 For tutorials, see: [YouTube channel](https://www.youtube.com/).
 
