@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2022 Zachary Hamida and Blanche Laurent
+Copyright (c) 2022 Zachary Hamida, Blanche Laurent and James-A. Goulet
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
