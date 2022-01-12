@@ -10,7 +10,9 @@ BoundViolationAll=NaN(NumOfElements,Totallength);
 dt=1;
 dfct_n=@(xts,nts)(nts*exp(-xts.^nts))/gamma(1/nts);
 if NumOfFigures>0
-    RndID=randi([1,NumOfElements],NumOfFigures,1);
+    RndID = randi([1,NumOfElements],NumOfFigures,1);
+else
+    RndID = 0;
 end
 if iscell(SynInsp)
     SynInsp=cell2mat(SynInsp);
