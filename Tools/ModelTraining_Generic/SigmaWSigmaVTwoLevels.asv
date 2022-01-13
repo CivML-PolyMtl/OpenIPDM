@@ -31,7 +31,7 @@ while  (LLcr/LLprev)<= StopCr2 &&  (OI  || ( StallInit2<StallVal2))
     while (LLcr/LLprev)<= StopCr1 &&  (OI  || ( StallInit1<StallVal1))
   
         LLprev=LLcr;
-        if OptimizationAlgorithmIndex==1
+        if Op  timizationAlgorithmIndex==1
             for i=1:length(UpdatedInspectorsData{1}(:,1))
                 fprintf('Inspector Num: %d /%d',i,length(UpdatedInspectorsData{1}(:,1)))
                 if OperationIndex>=3

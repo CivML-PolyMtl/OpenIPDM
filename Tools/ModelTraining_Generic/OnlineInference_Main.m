@@ -11,7 +11,7 @@ Inspector_index = MdataEngy.AllInspectors;
 %% lenghts
 E = size(Y_real,1);
 n   = size(Y_real,2);
-n_x = size(init_x,1);
+n_x = size(3,1);
 I = size(Inspector_index,2);
 
 %% initial hidden states
