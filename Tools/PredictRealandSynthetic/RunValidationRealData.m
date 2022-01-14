@@ -1,6 +1,7 @@
 
 if isempty(AllParameters)
-    msgbox('Please Specify Model Parameters before Running the Analysis')
+    message = 'Please load the model parameters before running the analyses.';
+    uialert(app.figure1,message,'Error','Icon','error');
 else
     ActiveParametersSet=AllParameters.ActiveParametersSet;
     TableEstimatedParameters=AllParameters.TableEstimatedParameters;
@@ -210,7 +211,8 @@ else
 %         colorbar
 %         hold off
     else
-        msgbox('There are no differences between the selected databases, analyses are not possible')
+        message = 'There are no differences between the selected databases, analyses are not possible.';
+        uialert(app.figure1,message,'Error','Icon','error');
     end
         
 end

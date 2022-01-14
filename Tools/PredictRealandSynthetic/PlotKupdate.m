@@ -39,8 +39,8 @@ grid on
 
 
 
-xlabel('Time[Year]')
-ylabel('Condition')
+xlabel('Time [Year]')
+ylabel(sprintf('Deterioration Condition of $e_%d^%d$',ElementInd,StructureInd),'Interpreter','latex')
 set(gca,'xtick',t)
 xlim([0,T-1])
 ylim([25,100])
@@ -51,8 +51,9 @@ h=legend('Inspection','Inspection $- \mu_{Inspector}$', '$\pm2 \sigma_{Inspector
 set(h,'Interpreter','latex')
 set(h,'Position',[0.25 0.25 0.1 0.1])
 set(gca,'XTickLabel',num2str([StartDate:Step:EndDate]'))
-ElementInd=1;
-title(sprintf('Structure: %d, Poutre Element: %d',StructureInd,ElementInd))
+if isempty(ElementInd) || isnan(ElementInd)
+    ElementInd=1;
+end
 hold off
 
 figure(11)
@@ -65,7 +66,7 @@ patch([t(1:t_+1),fliplr(t(1:t_+1))],[E_X(2,1:t_+1)+s_X(8,1:t_+1),fliplr(E_X(2,1:
 % patch([t(1:t_+1),fliplr(t(1:t_+1))],[ExsmoothTrue(2,1:t_+1)+MVvTrue(2,1:t_+1),fliplr(ExsmoothTrue(2,1:t_+1)-MVvTrue(5,1:t_+1))],'g','FaceAlpha',0.2,'EdgeColor','none')% just added
 plot(t(1:t_+1),XbtrueTr(1,1:t_+1),'--k')
 xlabel('Time')
-ylabel('Speed')
+ylabel(sprintf('Deterioration Speed of $e_%d^%d$',ElementInd,StructureInd),'Interpreter','latex')
 set(gca,'xtick',t)
 xlim([0,T-1])
 xtickangle(45)
@@ -84,7 +85,7 @@ patch([t(1:t_+1),fliplr(t(1:t_+1))],[E_X(3,1:t_+1)+s_X(3,1:t_+1),fliplr(E_X(3,1:
 % patch([t(1:t_+1),fliplr(t(1:t_+1))],[ExsmoothTrue(3,1:t_+1)+MVvTrue(3,1:t_+1),fliplr(ExsmoothTrue(3,1:t_+1)-MVvTrue(3,1:t_+1))],'g','FaceAlpha',0.2,'EdgeColor','none')
 plot(t(1:t_+1),XbbtrueTr(1,1:t_+1),'--k')
 xlabel('Time')
-ylabel('Acceleration')
+ylabel(sprintf('Deterioration Acceleration of $e_%d^%d$',ElementInd,StructureInd),'Interpreter','latex')
 set(gca,'xtick',t)
 xlim([0,T-1])
 xtickangle(45)
