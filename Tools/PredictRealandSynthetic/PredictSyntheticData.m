@@ -1,6 +1,6 @@
 function PredictSyntheticData(SynDatabaseShort,SynDatabaseState,M,...
     SynInspTrue,SynInsp,ObsWindow,NumOfElements,RegressionModel,TableOfParameters,...
-    GraphMatrix,NumOfFigures)
+    GraphMatrix,NumOfFigures,app)
 if isempty(GraphMatrix)
     GraphMatrix=zeros(5);
 end
@@ -19,6 +19,7 @@ if iscell(SynInsp)
     SynInsp=fliplr(SynInsp);
     %     SynInsp(:,2)=[];
 end
+
 for ll=1:NumOfElements
     % Element ID
     ElementInd=ll;
@@ -155,6 +156,10 @@ for ll=1:NumOfElements
         AccValBiasAllTime_Std(vi,1)=std(cellfun(@(c) c(1,vi), AccValBiasAll(1,:)));
     end
     clear y Re ReZero StructureInd yearly Insp RU InspBU R InpecBiase InpecBiaseTrue
+    pause(0.01)
+    if app.stoprun
+        break;
+    end
 end
 if GraphMatrix(5,2)
     figure(1)
