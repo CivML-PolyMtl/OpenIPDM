@@ -3,6 +3,10 @@ function [TrueState,ObservedData,GeneratedSyntheticData]=...
     InspMaxStd,PARAM,Sigma_w1,Sigma_w2,MaxStart,MaxTimeCut,StdInitSpeedV,EInitSpeedV,...
     StdInitAccV,EInitAccV,Ncurve,MaxCond,MinCond,InterventionsCheck,WeightedProb,...
     MaxBias,MinBias)
+% turn on the stop run button
+app.FinishNowCheckBox.Value = false;
+app.FinishNowCheckBox.Enable = 'On';
+pause(0.1);
 % Number of Observations per time series: weights
 if isempty(WeightedProb)
     WeightedProb=[0,0,0.5403,0.3412,0.0940,0.0244,1.1998e-04,0,0,1.9980e-05];
@@ -115,7 +119,8 @@ for i=1:DatasetSize
     RejectTimeSeries=1;
     InterventionDone=0;
     clc
-    fprintf('Number of Accepted Time-Sereis %d/%d',i,DatasetSize);
+    display(sprintf('Number of Accepted Time-Series %d/%d',i,DatasetSize));
+    app.timeseries_lbl.Text = sprintf('Time-Series: %d/%d',i,DatasetSize);
     while RejectTimeSeries
         RejectTimeSeries=0;
         WeightedProbInd=1-[repmat(Count90_100/Initial90_100,1,SplitWindow)...
@@ -164,7 +169,10 @@ for i=1:DatasetSize
                     Constraint2=0;
                     Constraint3=0;
                 end
-                
+                pause(0.01)
+                if app.FinishNowCheckBox.Value
+                    break;
+                end
             end
             if InterventionsCheck
                 InterventionTime=InterventionTime_0(i)+TimeCut;
@@ -333,9 +341,13 @@ for i=1:DatasetSize
     xObsTransformedAv(i)=MaxVCondition-SynDatabaseShort{i,1}(1,1);%SynDatabaseState{1,i}(1,SampledIDs(1));%
     xObsTransformedTrue(i)=MaxVCondition-SynDatabaseState{1,i}(1,SampledIDs(1)+1);%
     xSpeedTransformedTrue(i)=SynDatabaseState{1,i}(2,SampledIDs(1));%
+    pause(0.01)
+    if app.FinishNowCheckBox.Value
+        break;
+    end
 end
-
-
+app.FinishNowCheckBox.Value = false;
+app.FinishNowCheckBox.Enable = 'Off';
 
 
 if app.GenerateStructuralAttributesDefault2AttributesCheckBox.Value
@@ -350,7 +362,7 @@ if app.GenerateStructuralAttributesDefault2AttributesCheckBox.Value
     
 end
 
-SampleID=randi([1,DatasetSize],1,100);
+SampleID=randi([1,i],1,100);
 TrueState=SynDatabaseState(1,SampleID);
 ObservedData=SynDatabase(SampleID,1);
 
@@ -385,4 +397,4 @@ ObsLow=min(cellfun(@(x) min(x(1,1)),SynDatabaseShort));
 ObsHigh=max(cellfun(@(x) max(x(1,1)),SynDatabaseShort));
 ObsLowest=min(cellfun(@(x) min(x(:,1)),SynDatabaseShort));
 ObsHighest=max(cellfun(@(x) max(x(:,1)),SynDatabaseShort));
-msgbox(sprintf('Data Generated Successfully! \\ Init Range: [%f, %f]|| Range: [%f, %f]',ObsLow,ObsHigh,ObsLowest,ObsHighest),'Success!');
+uialert(app.SyntheticDataGeneratorFigure,sprintf('Data Generated Successfully! || Initial Condition Range: [%f, %f] || Observations Range: [%f, %f]',ObsLow,ObsHigh,ObsLowest,ObsHighest),'Success!','Icon','success');
