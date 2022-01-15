@@ -98,7 +98,7 @@ assert(floor(x(2,end)) == -1);
 assert(floor(x(3,end)) == -1);
 
 
-%% Test #4: Average-health-state-real
+%% Test #4: Average-health-state-Synthetic
 % Test 4 verifies the performance of the deterioration model using data for a
 % structural element in an average deterioration state
 [loglik,MAcc,AccVal,AccST,PWithinCI,PWithinCITrue,Ebar,Ebarbar,...
@@ -117,7 +117,7 @@ assert(floor(XestimateTr(3,end)) == -1);
 assert(floor(MAcc) == 17);
 assert(Erbias(1,1)<=0.025);
 assert(ceil(XbtrueTr(end))==-1);
-%% Test #5: Minimum-health-state-real
+%% Test #5: Minimum-health-state-Synthetic
 % Test 5 verifies the performance of the deterioration model using data for a
 % structural element in an minimum deterioration state
 [loglik,MAcc,AccVal,AccST,PWithinCI,PWithinCITrue,Ebar,Ebarbar,...
@@ -136,7 +136,7 @@ assert(floor(XestimateTr(3,end)) == -1);
 assert(floor(MAcc) == 54);
 assert(Erbias(1,1)<=-0.0997);
 assert(ceil(XbtrueTr(end))==-1);
-%% Test #6: Perfect-health-state-real
+%% Test #6: Perfect-health-state-Synthetic
 % Test 6 verifies the performance of the deterioration model using data for a
 % structural element in a perfect health state
 [loglik,MAcc,AccVal,AccST,PWithinCI,PWithinCITrue,Ebar,Ebarbar,...

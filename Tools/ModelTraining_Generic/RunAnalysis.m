@@ -66,7 +66,7 @@ cla(app.OutputPlot,'reset')
 %%   single assessment
 if OperationIndex==1 || OperationIndex==3
     % SSM
-    set(app.StatusBar,'Text','Status: Running Assessment SigmaW(L1), SigmaVI, Uncertinty, Speed & Acc. (Two Level)');
+    set(app.StatusBar,'Text','Status: Running Assessment SigmaW(L1), SigmaVI, Uncertinty, Speed & Acc.');
     pause(0.1)
     if ~isempty(app.TrueInspectorsData)
         plot(app.OutputPlot,OptBoundsData(2,1)*ones(length(app.TrueInspectorsData{1}),1),app.TrueInspectorsData{1},'o');
@@ -79,7 +79,7 @@ if OperationIndex==1 || OperationIndex==3
     set(app.StatusBar,'Text','Status: SSM model parameters estimation is complete');
 else
     % SSM-KR
-    set(app.StatusBar,'Text','Status: Running Assessment SigmaW(L1), SigmaVI, Uncertinty, Speed & Acc. (Two Level)');
+    set(app.StatusBar,'Text','Status: Running Assessment SigmaW(L1), SigmaVI, Uncertinty, Speed & Acc.');
     pause(0.1)
     if ~isempty(app.TrueInspectorsData)
         plot(app.OutputPlot,OptBoundsData(2,1)*ones(length(app.TrueInspectorsData{1}),1),app.TrueInspectorsData{1}(:,1),'o');

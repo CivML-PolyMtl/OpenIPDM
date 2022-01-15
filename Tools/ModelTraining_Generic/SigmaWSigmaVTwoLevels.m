@@ -267,7 +267,9 @@ while  (LLcr/LLprev)<= StopCr2 &&  (OI  || ( StallInit2<StallVal2))
     if get(app.LogParams,'Value')==1
         save(sprintf('%s/Tools/ModelTraining_Generic/ParametersLog/UpdatedInspectorsData%s%s.mat',pwd,Data_filename,date),'UpdatedInspectorsData');
         save(sprintf('%s/Tools/ModelTraining_Generic/ParametersLog/PARAM%s%s.mat',pwd,Data_filename,date),'Qparam');
-        save(sprintf('%s/Tools/ModelTraining_Generic/ParametersLog/KR_PARAM%s%s.mat',pwd,Data_filename,date),'RegressionModel');
+        if IncludeStructuralAtt
+            save(sprintf('%s/Tools/ModelTraining_Generic/ParametersLog/KR_PARAM%s%s.mat',pwd,Data_filename,date),'RegressionModel');
+        end
     end
     if LLcr/LLprev>0.95
         StallInit2=StallInit2+1;
@@ -284,6 +286,7 @@ if IncludeStructuralAtt
         KernelParameters{1},KernelParameters{2},InitialEx,InitialVar,[]);
     TestLogLik=sum(LogLikVal);
     fprintf('Test L.L. : %d\n',TestLogLik)
+    save(sprintf('%s/Tools/ModelTraining_Generic/ParametersLog/KR_PARAM%s%s.mat',pwd,Data_filename,date),'RegressionModel');
 else
     [~,~,~,~,~,LogLikVal]=AnalysisObjective(MdataEngy.ModelTest,...
         UpdatedInspectorsData{1}(:,1),InspStrucIndex,OptBoundsData,A,F,...
@@ -294,4 +297,6 @@ else
     TestLogLik=sum(LogLikVal);
     fprintf('Test L.L. : %d\n',TestLogLik)
 end
+save(sprintf('%s/Tools/ModelTraining_Generic/ParametersLog/UpdatedInspectorsData%s%s.mat',pwd,Data_filename,date),'UpdatedInspectorsData');
+save(sprintf('%s/Tools/ModelTraining_Generic/ParametersLog/PARAM%s%s.mat',pwd,Data_filename,date),'Qparam');
 LogLik=LLcr;  

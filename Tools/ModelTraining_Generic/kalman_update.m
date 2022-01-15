@@ -9,7 +9,7 @@ function [xnew, Vnew, loglik, VVnew,xinitc,Vinitc] = kalman_update(A, C, Q...
 u = [];
 B = [];
 initial = 0;
-dfct_n=@(xts,nts)(nts.*exp(-xts.^nts))./gamma(1./nts);
+
 if GPUCompute
     xinitc=zeros(3,length(x));
     Vinitc=zeros(3,3,length(x));
