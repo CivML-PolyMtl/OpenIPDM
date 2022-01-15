@@ -48,7 +48,12 @@ app.StructureListBox.ValueChangedFcn(app, event);
 app.CategoryListBox.Value=CurrentCat;
 NetData=table(Strucs',EstCat(:,1),EstCat(:,2),'VariableNames',{'Bridge ID','Expected Condition','Expected Speed'});
 [filename, pathname] = uiputfile({'*.csv';'*.*'}, 'Save as',sprintf('NetworkResults_%s_%d',CurrentCat,app.YearSpinner.Value));
-writetable(NetData,fullfile(pathname,filename));
+try
+    writetable(NetData,fullfile(pathname,filename));
+catch
+    message = 'File is not saved';
+    uialert(app.MainWindow,message,'Warning','Icon','warning');
+end
 clc
     
 function [ExEst]=RunStructurewiseEst(app,event,ElemAnalyses,CatAnalyses,...
