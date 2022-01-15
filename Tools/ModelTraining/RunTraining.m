@@ -4,7 +4,7 @@ PARAM=[OptBoundsData(2,1) OptBoundsData(3,1) OptBoundsData(4,1) ...
     OptBoundsData(5,1) OptBoundsData(6,1) OptBoundsData(7,1)];
 
 % Inspector uncertainty bounds
-bounds={OptBoundsData(3,2:3)};
+bounds={OptBoundsData(3,2:3) [-OptBoundsData(3,3) OptBoundsData(3,3)]};
 
 % Model parameter bounds
 boundsQ={OptBoundsData(2,2:3) OptBoundsData(3,2:3) OptBoundsData(4,2:3)...

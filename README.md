@@ -13,7 +13,7 @@ Furthermore, OpenIPDM has the capacity to handle missing data such as, missing i
 <p align="center">
 <img src="/Help/OpenIPDMMain.png" height="400">
     
-For tutorials, see: [YouTube channel](https://www.youtube.com/).
+For tutorials, see: [YouTube channel](https://youtube.com/playlist?list=PLSng2Crfnjmpu7RbEsfExY3gwI2FwxIjU).
 
 ## How to cite
 
