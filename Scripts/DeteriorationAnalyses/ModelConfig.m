@@ -11,6 +11,7 @@ for j=1:length(Inspectors(:))                                               % Ob
     InspID=find(Inspectors(j)==InspectorsParam(:,1));
     if ~isempty(InspID)
         Re(1,j)=InspectorsParam(InspID,3)^2;
+        Be(1,j)=InspectorsParam(InspID,2);
         if app.HideInspectorIDMenu.Checked
             InspectorIDLabel_y(j)=InspID;
         else
@@ -18,12 +19,16 @@ for j=1:length(Inspectors(:))                                               % Ob
         end
     else
         Re(1,j)=mean(InspectorsParam(:,3))^2;
+        Be(1,j)=0;
         InspectorIDLabel_y(j)=0;
     end
 end
 R_values=nan(TimeWindow,1);
+B_values=nan(TimeWindow,1);
 R_values(iaY)=Re;
+B_values(iaY)=Be;
 Re=R_values;
+Be=B_values;
 ConstrainedKF = 1;                                                          % Apply PDF Truncation
 
 %% Interventions
@@ -72,8 +77,8 @@ end
 if strcmp(app.AutocorrectElem.Value,'On')
     y_Data_before(:,1)=YearTotal;
     y_Data_before(:,2)=y_Data;
-    [YearTotal,y_Data,Re,IntVectorCorrect,InspectorIDLabel_y,InterventionYear]=...
-        da_AutoCorrect(app,YearTotal,y_Data,Re,InterventionVector,...
+    [YearTotal,y_Data,Re,Be,IntVectorCorrect,InspectorIDLabel_y,InterventionYear]=...
+        da_AutoCorrect(app,YearTotal,y_Data,Re,Be,InterventionVector,...
         InspectorIDLabel_y,InterventionDuration,BudgetDuration,InterventionYear);
     if sum(IntVectorCorrect)&& ~sum(InterventionVector)
         InterventionVector = zeros(length(YearTotal),1);

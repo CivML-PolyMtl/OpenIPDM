@@ -184,7 +184,7 @@ if ~isempty(PriorParam)
         else
             [Ex, VarKF, loglikelihood, Exsmooth, Vsmooth, InterventionMu_Network,...
                 InterventionVar_Network,~,~,~,~,LifeSpanInt]=KF_KS(y_Data,A,C,Q,Q_r,...
-                Re,PriorParam,init_x,init_V,Ncurve,ConstrainedKF,InterventionCheck,...
+                Re,Be,PriorParam,init_x,init_V,Ncurve,ConstrainedKF,InterventionCheck,...
                 InterventionVector,InterventionMu_Network,InterventionVar_Network);
         end
         if ElemAnalyses
@@ -216,8 +216,8 @@ if ~isempty(PriorParam)
                 if ~isempty(y_Data_before)
                     y_Data_before(:,2)=RevSpaceTransform(Ncurve,y_Data_before(:,2),100,25);
                 end
-                [xtb,Std,yOr,Rtop,Rlow,x_true]=BackTransformResults(y_Data,Re,Exsmooth,Std,Ncurve,[],100,25);
-                PlotTimeSeries(YearTotal,xtb,Std,yOr,Rtop,Rlow,y_Data_before,InspectorIDLabel_y,InterventionVector,app.ElmCondition,app.ElmSpeed,ColorCode);
+                [xtb,Std,yOr,Rtop,Rlow,yOr_unbiased]=BackTransformResults(y_Data,Re,Exsmooth,Std,Ncurve,y_Data-reshape(Be,1,[]),100,25);
+                PlotTimeSeries(YearTotal,xtb,Std,yOr,yOr_unbiased,Rtop,Rlow,y_Data_before,InspectorIDLabel_y,InterventionVector,app.ElmCondition,app.ElmSpeed,ColorCode);
             end
             if sum(InterventionVector)>0
                 app.IntServiceLifeButton.Enable=1;
@@ -226,14 +226,14 @@ if ~isempty(PriorParam)
             end
         end
     else
-        [Exsmooth,Vsmooth,YearTotal,y_Data,Re,Qte,MisStart]=NoAnalyses(app);
+        [Exsmooth,Vsmooth,YearTotal,y_Data,Re,Be,Qte,MisStart]=NoAnalyses(app);
         IntervType=0;
         if ElemAnalyses
             msgbox('The selected structural element has no inspection data, or it has no model associated with it.', 'Analyses can not be performed','warn');
         end
     end
     else
-        [Exsmooth,Vsmooth,YearTotal,y_Data,Re,Qte,MisStart]=NoAnalyses(app);
+        [Exsmooth,Vsmooth,YearTotal,y_Data,Re,Be,Qte,MisStart]=NoAnalyses(app);
         IntervType=0;
         if ElemAnalyses
             msgbox('The selected structural element has no inspection data, or it has no model associated with it.', 'Analyses can not be performed','warn');
@@ -241,7 +241,7 @@ if ~isempty(PriorParam)
     end
     
 else
-    [Exsmooth,Vsmooth,YearTotal,y_Data,Re,Qte,MisStart]=NoAnalyses(app);
+    [Exsmooth,Vsmooth,YearTotal,y_Data,Re,Be,Qte,MisStart]=NoAnalyses(app);
     IntervType=0;
     if ElemAnalyses
         msgbox('The selected structural element has no inspection data, or it has no model associated with it.', 'Analyses can not be performed','warn');
@@ -249,7 +249,7 @@ else
 end
 clc
 
-function [Exsmooth,Vsmooth,YearTotal,y_Data,Re,Qte,MisStart]=NoAnalyses(app)
+function [Exsmooth,Vsmooth,YearTotal,y_Data,Re,Be,Qte,MisStart]=NoAnalyses(app)
     YearsDuration=app.TotalYearsDuration;
     NumNanYears=length(YearsDuration);
     Exsmooth=nan(3,NumNanYears);
@@ -257,6 +257,7 @@ function [Exsmooth,Vsmooth,YearTotal,y_Data,Re,Qte,MisStart]=NoAnalyses(app)
     YearTotal=YearsDuration;
     y_Data=nan(1,NumNanYears);
     Re=nan(1,NumNanYears);
+    Be=nan(1,NumNanYears);
     Qte=0;
     MisStart=YearTotal(1);
 end

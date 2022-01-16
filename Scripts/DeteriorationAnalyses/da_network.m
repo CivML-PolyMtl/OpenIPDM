@@ -87,7 +87,7 @@ for j=1:length(Vsmooth)
 end
 YearTotal=MisStartStruc:MisStartStruc+MinIndex-1;
 close(d);
-[xtb,Std,yOr,Rtop,Rlow,x_true]=BackTransformResults(y_Data,Re,Exsmooth,Std,Ncurve,[],100,25);
+[xtb,Std,yOr,Rtop,Rlow,y_empty]=BackTransformResults(y_Data,Re,Exsmooth,Std,Ncurve,[],100,25);
 InspectorIDLabel_y=round(yOr(~isnan(yOr)));
 app.NetworkResults.Ex=xtb;
 app.NetworkResults.Std=Std;
@@ -103,7 +103,7 @@ app.NetworkResults.FilterStruc=app.FilterStructures.Value;
 app.NetworkResults.StrucVal=app.StructValue.Value;
 app.NetworkResults.Slider=app.ForecastYearsSliderNet.Value;
 ColorCode=4;
-PlotTimeSeries(YearTotal,xtb,Std,yOr,Rtop,Rlow,x_true,InspectorIDLabel_y,InterventionVector,app.NetCond,app.NetSpeed,ColorCode);
+PlotTimeSeries(YearTotal,xtb,Std,yOr,[],Rtop,Rlow,[],InspectorIDLabel_y,InterventionVector,app.NetCond,app.NetSpeed,ColorCode);
 clc    
 function [Exsmooth,Vsmooth,MisStartStruc,y_Data,Re]=RunStructurewise(app,event,ElemAnalyses,CatAnalyses,StrucAnalyses,NetAnalyses)
     StrucStatus=unique(app.BridgeAttributes(:,12));

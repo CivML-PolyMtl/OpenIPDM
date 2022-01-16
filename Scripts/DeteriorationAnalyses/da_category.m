@@ -31,7 +31,7 @@ for i=1:NumElms
         pause(0.001);
     end
     Elm = Elms(i);
-    [Exsmooth,Vsmooth,YearTotal,y_Data,Re,Qte]=RunElementwise(Elm,app,...
+    [Exsmooth,Vsmooth,YearTotal,y_Data,Re,Be,Qte]=RunElementwise(Elm,app,...
         ElemAnalyses,CatAnalyses,StrucAnalyses,NetAnalyses,CatReport);
     TimeID=find(YearsDuration==YearTotal(1));
     if sum(~isnan(y_Data))>0
@@ -43,7 +43,8 @@ for i=1:NumElms
     ExElm(:,TimeID:TimeEnd,i)=Exsmooth(1:3,:);
     VarElm(:,:,TimeID:TimeEnd,i)=Vsmooth(1:3,1:3,:);
     YearsElm(i,TimeID:TimeEnd)=YearTotal;
-    YObs(i,TimeID:TimeEnd)=y_Data;
+    YObs(i,TimeID:TimeEnd)=y_Data-reshape(Be,1,[]); 
+% !!! important note: observations data are corrected with the bias
     Rvals(i,TimeID:TimeEnd)=Re;
     QID=find(~isnan(YObs(i,:)));
     QuantityObs(i,QID)=Qte;
@@ -84,12 +85,12 @@ if CatAnalyses && sum(y_Data~=0)>0
     close(d);
     ColorCode=2;
     ylabel(app.CatSpeed,'Speed');
-    [xtb,Std,yOr,Rtop,Rlow,x_true]=BackTransformResults(y_Data,Re,Exsmooth,Std,Ncurve,[],100,25);
+    [xtb,Std,yOr,Rtop,Rlow,y_empty]=BackTransformResults(y_Data,Re,Exsmooth,Std,Ncurve,[],100,25);
     InspectorIDLabel_y=round(yOr(~isnan(yOr)));                         % assigned just to have a value 
-    PlotTimeSeries(YearTotal,xtb,Std,yOr,Rtop,Rlow,x_true,InspectorIDLabel_y,InterventionVector,app.CatCond,app.CatSpeed,ColorCode);
+    PlotTimeSeries(YearTotal,xtb,Std,yOr,[],Rtop,Rlow,[],InspectorIDLabel_y,InterventionVector,app.CatCond,app.CatSpeed,ColorCode);
 end
 clc
-function [Exsmooth,Vsmooth,YearTotal,y_Data,Re,Qte]=RunElementwise(Elm,app,ElemAnalyses,CatAnalyses,StrucAnalyses,NetAnalyses,CatReport)
+function [Exsmooth,Vsmooth,YearTotal,y_Data,Re,Be,Qte]=RunElementwise(Elm,app,ElemAnalyses,CatAnalyses,StrucAnalyses,NetAnalyses,CatReport)
     SlCatAnalyses=0; 
     da_element();
 end

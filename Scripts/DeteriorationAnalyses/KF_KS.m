@@ -1,9 +1,9 @@
 function [Ex, VarKF, loglikely, Exsmooth, Vsmooth, InterventionMu,...
-    InterventionVar,MUSpeed,VarSpeed,MUsSpeed,VarsSpeed,NCDF]=KF_KS(y,A,F,Q,Q_r,R,param,init_x,init_V,Ncurve,...
+    InterventionVar,MUSpeed,VarSpeed,MUsSpeed,VarsSpeed,NCDF]=KF_KS(y,A,F,Q,Q_r,R,B,param,init_x,init_V,Ncurve,...
     ConstrainedKF,InterventionCheck,InterventionVector,InterventionMu_Net,InterventionVar_Net)
 if init_x(2)==0
     % Filter
-    [Ex,VarKF] = KalmanFilterFun(y, A, F, Q, Q_r, R, init_x, init_V,ConstrainedKF,...
+    [Ex,VarKF] = KalmanFilterFun(y, A, F, Q, Q_r, R, B, init_x, init_V,ConstrainedKF,...
                     InterventionCheck,InterventionVector,...
                     InterventionMu_Net,InterventionVar_Net,param);
     % Smoother
@@ -24,7 +24,7 @@ if init_x(2)==0
     init_V(3,3)=param(5)^2.;
 end
 % Filter
-[Ex,VarKF,~,loglikely,MUSpeed,VarSpeed] = KalmanFilterFun(y, A, F, Q, Q_r, R, init_x, init_V,...
+[Ex,VarKF,~,loglikely,MUSpeed,VarSpeed] = KalmanFilterFun(y, A, F, Q, Q_r, R, B, init_x, init_V,...
     ConstrainedKF,InterventionCheck,InterventionVector,...
     InterventionMu_Net,InterventionVar_Net,param);
 % Smoother
@@ -48,12 +48,12 @@ end
 end
 
 function [ExpectedCond, Variance, SigmaForecast, loglik,SpeedTracking_mu,SpeedTracking_var]=KalmanFilterFun(y,...
-    A, F, Q, Q_r, R, init_x, init_V,ConstrainedKF,InterventionCheck,...
+    A, F, Q, Q_r, R, B, init_x, init_V,ConstrainedKF,InterventionCheck,...
     InterventionVector,InterventionMu_Net,InterventionVar_Net,param)
 T=length(y);
 InType=1;
 % Equations
-UpdateExpected=@(EX,EY,sigma_XY,sigma_obs,y) EX+sigma_XY*sigma_obs^-1*(y-EY);
+UpdateExpected=@(EX,EY,sigma_XY,sigma_obs,y,b) EX+sigma_XY*sigma_obs^-1*(y-EY-b);
 UpdateVariance=@(sigma_X2,sigma_obs,sigma_XY) sigma_X2-sigma_XY*sigma_obs^-1*sigma_XY';
 
 ExpectedCond(:,1)=init_x;
@@ -84,7 +84,7 @@ for t=0:T-1
     end
     if t~=0
         if ~isnan(y(t+1))
-            ExpectedCond(:,t+1)=UpdateExpected(A*ExpectedCond(:,t),F*(A*ExpectedCond(:,t)),sigmaXY,S,y(t+1)); 
+            ExpectedCond(:,t+1)=UpdateExpected(A*ExpectedCond(:,t),F*(A*ExpectedCond(:,t)),sigmaXY,S,y(t+1),B(t+1)); 
             Variance(:,:,t+1)=UpdateVariance(UPvariance,S,sigmaXY);
         else
             ExpectedCond(:,t+1)=A*ExpectedCond(:,t);

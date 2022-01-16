@@ -1,4 +1,4 @@
-function [xtb,Std,yOr,Rtop,Rlow,x_true]=BackTransformResults(y,Re,x,Std_Transformed,Pn,Xtrue,MaxCond,MinCond)
+function [xtb,Std,yOr,Rtop,Rlow,y_unbiased]=BackTransformResults(y,Re,x,Std_Transformed,Pn,Unbiased_y,MaxCond,MinCond)
 % Orgnize/Plot Data
 ReOr=zeros(1,length(y));
 invfct=@(yts,nts) (gammaincinv(abs(yts),1/nts))^(1/nts); % Horizonntal axis [0,~]
@@ -46,13 +46,10 @@ for i=1:length(x(1,:))
     % Remains without back transformation
     xtb(3,i)=x(3,i);%*(dfct_n(xTr(i),2^Pn))+x(2,i)^2*(d2fct_n(xTr(i),2^Pn));    % E[x(3)] (Transformed space)
     Std(3,i)=Std_Transformed(3,i);
-    if ~isempty(Xtrue)
-        x_true(1,i)=RevSpaceTransform(Pn,Xtrue(1,i),MaxCond,MinCond); 
-        xTrTrue(i)=interp1([MinCond-MaxExtendedAxes,MaxCond+MaxExtendedAxes],[-MapAxes,MapAxes],Xtrue(1,i));  
-        x_true(2,i)=Xtrue(2,i)*dfct_n(xTrTrue(i),n); 
-        x_true(3,i)=Xtrue(3,i);
+    if ~isempty(Unbiased_y)
+        y_unbiased(1,i)=RevSpaceTransform(Pn,Unbiased_y(1,i),MaxCond,MinCond); 
     else
-        x_true=[];
+        y_unbiased=[];
     end
 end
 end

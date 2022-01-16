@@ -1,12 +1,12 @@
-function [YearTotal,y_Data,Re,InterventionVector,...
+function [YearTotal,y_Data,Re,Be,InterventionVector,...
         InspectorsID,IntTime]=da_AutoCorrect(app,YearTotal,...
-        y_Data,Re,InterventionVector,InspectorsID,InterventionDuration,...
+        y_Data,Re,Be,InterventionVector,InspectorsID,InterventionDuration,...
         BudgetDuration,InterventionYear)
     DataInd=(~isnan(y_Data));
     y=y_Data(DataInd);
     Years=YearTotal(DataInd);
     R=Re(DataInd);
-    
+    B=Be(DataInd);
     % Initial check for interventions
     if  sum(InterventionVector)==0
         NoInt=1;
@@ -23,7 +23,7 @@ function [YearTotal,y_Data,Re,InterventionVector,...
             if sum(InterventionVector)==0
                 NoInt=1;
                 while max((diff(y)))>=15
-                    [y,R,InspectorsID,Years,YearTotal]=WeightedOutlier(y,R,InspectorsID,...
+                    [y,R,B,InspectorsID,Years,YearTotal]=WeightedOutlier(y,R,B,InspectorsID,...
                         Years,YearTotal);
                 end
             else
@@ -39,7 +39,7 @@ function [YearTotal,y_Data,Re,InterventionVector,...
             if sum(InterventionVector)==0
                 NoInt=1;
                 while min((diff(y)))<=-15
-                    [y,R,InspectorsID,Years,YearTotal]=WeightedOutlier(y,R,InspectorsID,...
+                    [y,R,B,InspectorsID,Years,YearTotal]=WeightedOutlier(y,R,B,InspectorsID,...
                         Years,YearTotal);
                 end
             else
@@ -55,7 +55,7 @@ function [YearTotal,y_Data,Re,InterventionVector,...
         if sum(InterventionVector)==0
             NoInt=1;
             while length(diff(y))>2 && 2*length(find(diff(y)>5))>=length(diff(y))
-                [y,R,InspectorsID,Years,YearTotal]=WeightedOutlier(y,R,InspectorsID,...
+                [y,R,B,InspectorsID,Years,YearTotal]=WeightedOutlier(y,R,B,InspectorsID,...
                     Years,YearTotal);
             end
         else
@@ -74,7 +74,7 @@ function [YearTotal,y_Data,Re,InterventionVector,...
         if sum(InterventionVector)==0
             NoInt=1;
             while max(y)-min(y)>15 && length(y)<8 && sum(diff(y))>-5
-                [y,R,InspectorsID,Years,YearTotal]=WeightedOutlier(y,R,InspectorsID,...
+                [y,R,B,InspectorsID,Years,YearTotal]=WeightedOutlier(y,R,B,InspectorsID,...
                     Years,YearTotal);
             end
         else
@@ -91,7 +91,7 @@ function [YearTotal,y_Data,Re,InterventionVector,...
         if sum(InterventionVector)==0
             NoInt=1;
             while max(y)-min(y)>10 && length(y)<3
-                [y,R,InspectorsID,Years,YearTotal]=WeightedOutlier(y,R,InspectorsID,...
+                [y,R,B,InspectorsID,Years,YearTotal]=WeightedOutlier(y,R,B,InspectorsID,...
                     Years,YearTotal);
             end
         else
@@ -116,6 +116,7 @@ function [YearTotal,y_Data,Re,InterventionVector,...
                  y_before=[];
                  year_before=[];
                  R_before=[];
+                 B_before=[];
                  Insp_before=[];
                  YearTotal_before=[];
              else
@@ -123,16 +124,17 @@ function [YearTotal,y_Data,Re,InterventionVector,...
                  y_before=y(IndBefore);
                  year_before=Years(IndBefore);
                  R_before=R(IndBefore);
+                 B_before=B(IndBefore);
                  Insp_before=InspectorsID(IndBefore);
                  YearTotal_before=YearTotal(1):YearTotal(IndIntV(i))-1;
                  while max(y_before)-min(y_before)>15
-                     [y_before,R_before,Insp_before,year_before,YearTotal_before]=...
-                         WeightedOutlier(y_before,R_before,Insp_before,year_before,...
+                     [y_before,R_before,B_before,Insp_before,year_before,YearTotal_before]=...
+                         WeightedOutlier(y_before,R_before,B_before,Insp_before,year_before,...
                          YearTotal_before);
                  end
                  while min((diff(y_before)))<=-15
-                     [y_before,R_before,Insp_before,year_before,YearTotal_before]=...
-                         WeightedOutlier(y_before,R_before,Insp_before,year_before,...
+                     [y_before,R_before,B_before,Insp_before,year_before,YearTotal_before]=...
+                         WeightedOutlier(y_before,R_before,B_before,Insp_before,year_before,...
                          YearTotal_before);
                  end
              end
@@ -146,24 +148,26 @@ function [YearTotal,y_Data,Re,InterventionVector,...
              y_after=y(IndAfter);
              year_after=Years(IndAfter);
              R_after=R(IndAfter);
+             B_after=B(IndAfter);
              Insp_after=InspectorsID(IndAfter);
              
              
              
              while max(y_after)-min(y_after)>15
-                 [y_after,R_after,Insp_after,year_after,YearTotal_after]=...
-                     WeightedOutlier(y_after,R_after,Insp_after,year_after,...
+                 [y_after,R_after,B_after,Insp_after,year_after,YearTotal_after]=...
+                     WeightedOutlier(y_after,R_after,B_after,Insp_after,year_after,...
                      YearTotal_after);
              end
              while min((diff(y_after)))<=-15
-                 [y_after,R_after,Insp_after,year_after,YearTotal_after]=...
-                     WeightedOutlier(y_after,R_after,Insp_after,year_after,...
+                 [y_after,R_after,B_after,Insp_after,year_after,YearTotal_after]=...
+                     WeightedOutlier(y_after,R_after,B_after,Insp_after,year_after,...
                      YearTotal_after);
              end
              if length(IndIntV)>1
                  y_parts=[y_parts;y_before;y_after];
                  year_parts=[year_parts year_before year_after];
                  R_parts=[R_parts;R_before;R_after];
+                 B_parts=[B_parts;B_before;B_after];
                  Insp_parts=[Insp_parts Insp_before Insp_after];
                  YearTotal_parts=[YearTotal_parts YearTotal_before YearTotal_after];
              end
@@ -175,12 +179,14 @@ function [YearTotal,y_Data,Re,InterventionVector,...
              y=y_parts;
              Years=year_parts;
              R=R_parts;
+             B=B_parts;
              InspectorsID=Insp_parts;
              YearTotal=YearTotal_parts;
          else
              y=[y_before;y_after];
              Years=[year_before year_after];
              R=[R_before;R_after];
+             B=[B_before;B_after];
              InspectorsID=[Insp_before Insp_after];
              if isempty(YearTotal_before) || isempty(YearTotal_after)
                  YearTotal=[YearTotal_before YearTotal_after];
@@ -196,9 +202,10 @@ function [YearTotal,y_Data,Re,InterventionVector,...
     [~,~,iy]=intersect(Years,YearTotal);
     y_Data=nan(1,length(YearTotal));
     Re=y_Data;
+    Be=Re;
     y_Data(iy)=y;
     Re(iy)=R;
-
+    Be(iy)=B;
 end
 
 function [InterventionVector,IntTime]=InterventionSearch(y,Years,YearTotal,...
@@ -243,11 +250,12 @@ function [InterventionVector,IntTime]=InterventionSearch(y,Years,YearTotal,...
     end
 end
 
-function [y,R,InspectorsID,Years,Duration]=WeightedOutlier(y,R,InspectorsID,Years,YearTotal)
+function [y,R,B,InspectorsID,Years,Duration]=WeightedOutlier(y,R,B,InspectorsID,Years,YearTotal)
 WAvg=sum(y.*(1./R)./sum(1./R));
 [~,Outlier]=max(abs(WAvg-y));
 y(Outlier)=[];
 R(Outlier)=[];
+B(Outlier)=[];
 InspectorsID(Outlier)=[];
 Years(Outlier)=[];
 Duration=Years(1)-1:YearTotal(end);

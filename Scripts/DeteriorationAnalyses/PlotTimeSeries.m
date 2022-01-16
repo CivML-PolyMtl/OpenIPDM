@@ -1,4 +1,4 @@
-function PlotTimeSeries(YearSteps,E_X,s_X,y,Rtop,Rlow,AllInspData,InspectorLabel,InterventionVector,CondFigure,SpeedFigure,ColorCode)
+function PlotTimeSeries(YearSteps,E_X,s_X,y,y_unbiased,Rtop,Rlow,AllInspData,InspectorLabel,InterventionVector,CondFigure,SpeedFigure,ColorCode)
 if ColorCode==1
     CD1='ro--';
     CD2='r';
@@ -53,8 +53,13 @@ plot(CondFigure,t,y,'o','MarkerFaceColor',[0,0,1],'MarkerEdgeColor','b')
 if ~isempty(AllInspData)
     plot(CondFigure,AllInspData(:,1),AllInspData(:,2),'*','MarkerFaceColor',[0,0,1],'MarkerEdgeColor','k')
 end
+if ~isempty(y_unbiased)
+    plot(CondFigure,t,y_unbiased,'o','MarkerFaceColor',[0,0,1],'MarkerEdgeColor','b')
+    errorbar(CondFigure,t,y_unbiased,Rlow',Rtop','LineStyle','none','CapSize',20,'Color','blue','Linewidth',1)
+else
+    errorbar(CondFigure,t,y,Rlow',Rtop','LineStyle','none','CapSize',20,'Color','blue','Linewidth',1)
+end
 text(CondFigure,t(find(~isnan(y))), y(find(~isnan(y)))-Rlow(find(~isnan(y)))-1, InspectorsID);
-errorbar(CondFigure,t,y,Rlow',Rtop','LineStyle','none','CapSize',20,'Color','blue','Linewidth',1)
 set(CondFigure,'xtick',YearSteps)
 xlim(CondFigure,[YearSteps(1),YearSteps(end)])
 ylim(CondFigure,[25,100])
