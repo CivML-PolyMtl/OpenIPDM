@@ -94,6 +94,6 @@ This project is licensed under the MIT license - see the [LICENSE](LICENSE.md) f
 
 - Some parts of the project have greatly benefited from existing work:
 
-* Kevin Murphy ([Kalman filter toolbox for Matlab](https://www.cs.ubc.ca/~murphyk/Software/Kalman/kalman.html#other))
-* Dan Simon ([Constrained Kalman filter](https://academic.csuohio.edu/simond/ConstrKF/))
+    - Kevin Murphy ([Kalman filter toolbox for Matlab](https://www.cs.ubc.ca/~murphyk/Software/Kalman/kalman.html#other))
+    - Dan Simon ([Constrained Kalman filter](https://academic.csuohio.edu/simond/ConstrKF/))
 
