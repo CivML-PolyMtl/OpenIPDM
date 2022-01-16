@@ -27,6 +27,8 @@ For tutorials, see: [YouTube channel](https://youtube.com/playlist?list=PLSng2Cr
 
 - Access to GPU computing (required only for Model Training toolbox)
 
+- Figures for LaTeX (Optional) [matlab2tikz](https://github.com/matlab2tikz/matlab2tikz) 
+
 ### Installation
 
 1. Download and extract the ZIP file or clone the git repository in your working directory. 
@@ -70,7 +72,6 @@ The OpenIPDM package is originally developed based on the inspection and interve
 ## Built With
 
 * [Matlab](https://www.mathworks.com/products/matlab.html) - Main Development
-* [matlab2tikz](https://github.com/matlab2tikz/matlab2tikz) - Figures for LaTeX
 
 ## Contributing
 
@@ -89,9 +90,9 @@ This project is licensed under the MIT license - see the [LICENSE](LICENSE.md) f
 
 ## Acknowledgments
 
-This project is funded by the Transportation Ministry of Quebec Province (MTQ), Canada.
+- This project is funded by the Transportation Ministry of Quebec Province (MTQ), Canada.
 
-Some parts of the project have greatly benefited from existing work:
+- Some parts of the project have greatly benefited from existing work:
 
 * Kevin Murphy ([Kalman filter toolbox for Matlab](https://www.cs.ubc.ca/~murphyk/Software/Kalman/kalman.html#other))
 * Dan Simon ([Constrained Kalman filter](https://academic.csuohio.edu/simond/ConstrKF/))
