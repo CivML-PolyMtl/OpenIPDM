@@ -14,7 +14,7 @@ if GPUCompute==2
     InpecBiaseS=zeros(1,TrainSize,AW,'gpuArray');
     CurrentInspectorS=zeros(1,TrainSize,AW,'gpuArray');
     RUS=zeros(1,TrainSize,AW,'gpuArray');
-    InspBUS=zeros(1,TrainSize,1,'gpuArray');
+    InspBUS=zeros(1,TrainSize,AW,'gpuArray');
     ObsYearsS=zeros(1,TrainSize,AW,'gpuArray');
     yearlyS=zeros(1,TrainSize,AW,'gpuArray');
     InspectorLabelS=NaN(1,TrainSize,AW,'gpuArray');
@@ -37,7 +37,7 @@ else
     InpecBiaseS=zeros(1,TrainSize,AW);
     CurrentInspectorS=zeros(1,TrainSize,AW);
     RUS=zeros(1,TrainSize,AW);
-    InspBUS=zeros(1,TrainSize,1);
+    InspBUS=zeros(1,TrainSize,AW);
     ObsYearsS=zeros(1,TrainSize,AW);
     yearlyS=zeros(1,TrainSize,AW);
     InspectorLabelS=NaN(1,TrainSize,AW);
@@ -269,7 +269,7 @@ if ~isempty(NaNTimeSeries)
     InpecBiaseS(:,NaNTimeSeries,:)=[];
     CurrentInspectorS(:,NaNTimeSeries,:)=[];
     RUS(:,NaNTimeSeries,:)=[];
-    InspBUS(:,NaNTimeSeries)=[];
+    InspBUS(:,NaNTimeSeries,:)=[];
     ObsYearsS(:,NaNTimeSeries,:)=[];
     yearlyS(:,NaNTimeSeries,:)=[];
     InspectorLabelS(:,NaNTimeSeries,:)=[];
@@ -305,158 +305,200 @@ for i=1:length(YS(1,:,2))
     init_x(1,i)=mean(gather(YS(1,i,IndexInit)));
 end
 
-if TestingData>0
-    MinInspCount=1;
-    while MinInspCount
-        DataAllInspectors=AllInspectors;
-        j=0;
-        AllTestInd=[];
-        while j<TestingData
-            AllInspc=zeros(size(DataAllInspectors{1,1}));
-            for i=1:length(DataAllInspectors)
-                InspectorsCount(i)=sum(sum(DataAllInspectors{1,i}));
-                AllInspc=AllInspc+DataAllInspectors{1,i}.*(1-1/InspectorsCount(i));
-            end
-            AllInspc((AllInspc==0))=nan;
-            TSscore=min(AllInspc,[],2);
-            TSscore(isnan(TSscore))=0;
-            if sum(TSscore)~=0
-                TestStrucIndex = randsample(1:length(AllInspc), 1, true, TSscore);
-                %%
-                TestIndStruc=find(StructureIndS==StructureIndS(TestStrucIndex));
-                AllTestInd=[AllTestInd;TestIndStruc'];
-                for i=1:length(DataAllInspectors)
-                    DataAllInspectors{1,i}(AllTestInd,:)=0;
-                end
-                j=length(AllTestInd);
-            else
-                j=0;
-                AllTestInd=[];
-                DataAllInspectors=AllInspectors;
-            end
-        end
+
+MinInspCount=1;
+while MinInspCount
+    DataAllInspectors=AllInspectors;
+    j=0;
+    AllTestInd=[];
+    while j<TestingData
+        AllInspc=zeros(size(DataAllInspectors{1,1}));
         for i=1:length(DataAllInspectors)
             InspectorsCount(i)=sum(sum(DataAllInspectors{1,i}));
+            AllInspc=AllInspc+DataAllInspectors{1,i}.*(1-1/InspectorsCount(i));
         end
-        MinCountVal=min(InspectorsCount);
-        if MinCountVal~=0
-            MinInspCount=0;
-            break;
+        AllInspc((AllInspc==0))=nan;
+        TSscore=min(AllInspc,[],2);
+        TSscore(isnan(TSscore))=0;
+        if sum(TSscore)~=0
+            TestStrucIndex = randsample(1:length(AllInspc), 1, true, TSscore);
+            %%
+            TestIndStruc=find(StructureIndS==StructureIndS(TestStrucIndex));
+            AllTestInd=[AllTestInd;TestIndStruc'];
+            for i=1:length(DataAllInspectors)
+                DataAllInspectors{1,i}(AllTestInd,:)=0;
+            end
+            j=length(AllTestInd);
+        else
+            j=0;
+            AllTestInd=[];
+            DataAllInspectors=AllInspectors;
         end
     end
-    
-    TestStrucIndex=AllTestInd;
-    SetSize=round(length(TestStrucIndex)/3);
-    IndValidModel=0*SetSize+1:2*SetSize;
-    IndTestModel=2*SetSize+1:length(TestStrucIndex);
-    TestInd=TestStrucIndex(IndTestModel);
-    ValidInd=TestStrucIndex(IndValidModel);
-    TrainInd=1:size(AllInspc,1);
-    TrainInd(TestStrucIndex)=[];
-    
-    MdataEngy=[];
-    
-    MdataEngy.ModelValid.YS=YS(1,ValidInd,:);
-    MdataEngy.ModelValid.RS=RS(1,ValidInd);
-    MdataEngy.ModelValid.ReS=ReS(1,ValidInd,:);
-    MdataEngy.ModelValid.InpecBiaseS=InpecBiaseS(1,ValidInd,:);
-    MdataEngy.ModelValid.CurrentInspectorS=CurrentInspectorS(1,ValidInd,:);
-    MdataEngy.ModelValid.RUS=RUS(1,ValidInd,:);
-    MdataEngy.ModelValid.InspBUS=InspBUS(1,ValidInd);
-    MdataEngy.ModelValid.ObsYearsS=ObsYearsS(1,ValidInd,:);
-    MdataEngy.ModelValid.yearlyS=yearlyS(1,ValidInd,:);
-    MdataEngy.ModelValid.InspectorLabelS=InspectorLabelS(1,ValidInd,:);
-    MdataEngy.ModelValid.StructureIndS=StructureIndS(1,ValidInd);
-    MdataEngy.ModelValid.ElementIndS=ElementIndS(1,ValidInd);
-    MdataEngy.ModelValid.AllInspectors=cellfun(@(x) x(ValidInd,:),...
-        AllInspectors,'UniformOutput',false);
-    MdataEngy.ModelValid.init_x=init_x(1,ValidInd);
-    if IncludeStructuralAtt
-        MdataEngy.ModelValid.StrucAtt=StrucAtt(1,ValidInd,:);
+    if TestingData==0
+        AllInspc=zeros(size(DataAllInspectors{1,1}));
+        for i=1:length(DataAllInspectors)
+            InspectorsCount(i)=sum(sum(DataAllInspectors{1,i}));
+            AllInspc=AllInspc+DataAllInspectors{1,i}.*(1-1/InspectorsCount(i));
+        end
+        AllInspc((AllInspc==0))=nan;
+        BinInspec=~isnan(AllInspc);
+        NumObsTS=sum(BinInspec,2);
+        NormNOT=NumObsTS./max(NumObsTS);
+        LRmat=fliplr(BinInspec);
+        [~,inmax]=max(LRmat,[],2);
+        LastIndex=size(BinInspec,2)-inmax+1;
+        CS=repmat(size(BinInspec,2),length(LastIndex)-1,1);
+        CS=[0;cumsum(CS)];
+        AllInspcTranspose=AllInspc';
+        TSscore=AllInspcTranspose(CS+LastIndex);
+        NormTS=TSscore./max(TSscore);
+        NormTS(isnan(NormTS))=0;
+        if sum(NormTS)~=0
+            [~,SortedScore]=sort(NormTS+NormNOT,'descend');
+            AllTestInd = SortedScore(1:round(2/3*size(BinInspec,1)));
+        end
+        break;
     end
-    if IncludeInterventions
-        MdataEngy.InterventionYear=InterventionYear(1,ValidInd);
-        MdataEngy.InterventionType=InterventionType(1,ValidInd);
-        MdataEngy.InterventionJump=InterventionJump(1,ValidInd);
-        MdataEngy.InterventionVector=InterventionVector(1,ValidInd,:);
+    for i=1:length(DataAllInspectors)
+        InspectorsCount(i)=sum(sum(DataAllInspectors{1,i}));
     end
-    
-    MdataEngy.ModelTest.YS=YS(1,TestInd,:);
-    MdataEngy.ModelTest.RS=RS(1,TestInd);
-    MdataEngy.ModelTest.ReS=ReS(1,TestInd,:);
-    MdataEngy.ModelTest.InpecBiaseS=InpecBiaseS(1,TestInd,:);
-    MdataEngy.ModelTest.CurrentInspectorS=CurrentInspectorS(1,TestInd,:);
-    MdataEngy.ModelTest.RUS=RUS(1,TestInd,:);
-    MdataEngy.ModelTest.InspBUS=InspBUS(1,TestInd);
-    MdataEngy.ModelTest.ObsYearsS=ObsYearsS(1,TestInd,:);
-    MdataEngy.ModelTest.yearlyS=yearlyS(1,TestInd,:);
-    MdataEngy.ModelTest.InspectorLabelS=InspectorLabelS(1,TestInd,:);
-    MdataEngy.ModelTest.StructureIndS=StructureIndS(1,TestInd);
-    MdataEngy.ModelTest.ElementIndS=ElementIndS(1,TestInd);
-    MdataEngy.ModelTest.AllInspectors=cellfun(@(x) x(TestInd,:),...
-        AllInspectors,'UniformOutput',false);
-    MdataEngy.ModelTest.init_x=init_x(1,TestInd);
-    if IncludeStructuralAtt
-        MdataEngy.ModelTest.StrucAtt=StrucAtt(1,TestInd,:);
-    end
-    if IncludeInterventions
-        MdataEngy.InterventionYear=InterventionYear(1,TestInd);
-        MdataEngy.InterventionType=InterventionType(1,TestInd);
-        MdataEngy.InterventionJump=InterventionJump(1,TestInd);
-        MdataEngy.InterventionVector=InterventionVector(1,TestInd,:);
-    end
-    
-    MdataEngy.RemovedData=IndexIt;
-    MdataEngy.YS=YS(1,TrainInd,:);
-    MdataEngy.RS=RS(1,TrainInd);
-    MdataEngy.ReS=ReS(1,TrainInd,:);
-    MdataEngy.InpecBiaseS=InpecBiaseS(1,TrainInd,:);
-    MdataEngy.CurrentInspectorS=CurrentInspectorS(1,TrainInd,:);
-    MdataEngy.RUS=RUS(1,TrainInd,:);
-    MdataEngy.InspBUS=InspBUS(1,TrainInd);
-    MdataEngy.ObsYearsS=ObsYearsS(1,TrainInd,:);
-    MdataEngy.yearlyS=yearlyS(1,TrainInd,:);
-    MdataEngy.InspectorLabelS=InspectorLabelS(1,TrainInd,:);
-    MdataEngy.StructureIndS=StructureIndS(1,TrainInd);
-    MdataEngy.ElementIndS=ElementIndS(1,TrainInd);
-    MdataEngy.AllInspectors=cellfun(@(x) x(TrainInd,:),...
-        AllInspectors,'UniformOutput',false);
-    MdataEngy.init_x=init_x(1,TrainInd);
-    if IncludeStructuralAtt
-        MdataEngy.StrucAtt=StrucAtt(1,TrainInd,:);
-    end
-    if IncludeInterventions
-        MdataEngy.InterventionYear=InterventionYear(1,TrainInd);
-        MdataEngy.InterventionType=InterventionType(1,TrainInd);
-        MdataEngy.InterventionJump=InterventionJump(1,TrainInd);
-        MdataEngy.InterventionVector=InterventionVector(1,TrainInd,:);
-    end
-else
-    MdataEngy=[];
-    MdataEngy.RemovedData=NaNTimeSeries;
-    MdataEngy.YS=YS;
-    MdataEngy.RS=RS;
-    MdataEngy.ReS=ReS;
-    MdataEngy.InpecBiaseS=InpecBiaseS;
-    MdataEngy.CurrentInspectorS=CurrentInspectorS;
-    MdataEngy.RUS=RUS;
-    MdataEngy.InspBUS=InspBUS;
-    MdataEngy.ObsYearsS=ObsYearsS;
-    MdataEngy.yearlyS=yearlyS;
-    MdataEngy.InspectorLabelS=InspectorLabelS;
-    MdataEngy.StructureIndS=StructureIndS;
-    MdataEngy.ElementIndS=ElementIndS;
-    MdataEngy.AllInspectors=cellfun(@(x) x(:,:),...
-        AllInspectors,'UniformOutput',false);
-    MdataEngy.init_x=init_x;
-    if IncludeStructuralAtt
-        MdataEngy.StrucAtt=StrucAtt;
-    end
-    if IncludeInterventions
-        MdataEngy.InterventionYear=InterventionYear;
-        MdataEngy.InterventionType=InterventionType;
-        MdataEngy.InterventionJump=InterventionJump;
-        MdataEngy.InterventionVector=InterventionVector;
+    MinCountVal=min(InspectorsCount);
+    if MinCountVal~=0
+        MinInspCount=0;
+        break;
     end
 end
+
+TestStrucIndex=AllTestInd;
+SetSize=round(length(TestStrucIndex)/3);
+IndValidModel=0*SetSize+1:2*SetSize;
+IndTestModel=2*SetSize+1:length(TestStrucIndex);
+TestInd=TestStrucIndex(IndTestModel);
+ValidInd=TestStrucIndex(IndValidModel);
+TrainInd=1:size(AllInspectors{1,1},1);
+if TestingData~=0
+    TrainInd(TestStrucIndex)=[];
+end
+
+MdataEngy=[];
+
+MdataEngy.ModelValid.YS=YS(1,ValidInd,:);
+MdataEngy.ModelValid.RS=RS(1,ValidInd);
+MdataEngy.ModelValid.ReS=ReS(1,ValidInd,:);
+MdataEngy.ModelValid.InpecBiaseS=InpecBiaseS(1,ValidInd,:);
+MdataEngy.ModelValid.CurrentInspectorS=CurrentInspectorS(1,ValidInd,:);
+MdataEngy.ModelValid.RUS=RUS(1,ValidInd,:);
+MdataEngy.ModelValid.InspBUS=InspBUS(1,ValidInd,:);
+MdataEngy.ModelValid.ObsYearsS=ObsYearsS(1,ValidInd,:);
+MdataEngy.ModelValid.yearlyS=yearlyS(1,ValidInd,:);
+MdataEngy.ModelValid.InspectorLabelS=InspectorLabelS(1,ValidInd,:);
+MdataEngy.ModelValid.StructureIndS=StructureIndS(1,ValidInd);
+MdataEngy.ModelValid.ElementIndS=ElementIndS(1,ValidInd);
+MdataEngy.ModelValid.AllInspectors=cellfun(@(x) x(ValidInd,:),...
+    AllInspectors,'UniformOutput',false);
+MdataEngy.ModelValid.init_x=init_x(1,ValidInd);
+if IncludeStructuralAtt
+    MdataEngy.ModelValid.StrucAtt=StrucAtt(1,ValidInd,:);
+end
+if IncludeInterventions
+    MdataEngy.InterventionYear=InterventionYear(1,ValidInd);
+    MdataEngy.InterventionType=InterventionType(1,ValidInd);
+    MdataEngy.InterventionJump=InterventionJump(1,ValidInd);
+    MdataEngy.InterventionVector=InterventionVector(1,ValidInd,:);
+end
+
+MdataEngy.ModelTest.YS=YS(1,TestInd,:);
+MdataEngy.ModelTest.RS=RS(1,TestInd);
+MdataEngy.ModelTest.ReS=ReS(1,TestInd,:);
+MdataEngy.ModelTest.InpecBiaseS=InpecBiaseS(1,TestInd,:);
+MdataEngy.ModelTest.CurrentInspectorS=CurrentInspectorS(1,TestInd,:);
+MdataEngy.ModelTest.RUS=RUS(1,TestInd,:);
+MdataEngy.ModelTest.InspBUS=InspBUS(1,TestInd,:);
+MdataEngy.ModelTest.ObsYearsS=ObsYearsS(1,TestInd,:);
+MdataEngy.ModelTest.yearlyS=yearlyS(1,TestInd,:);
+MdataEngy.ModelTest.InspectorLabelS=InspectorLabelS(1,TestInd,:);
+MdataEngy.ModelTest.StructureIndS=StructureIndS(1,TestInd);
+MdataEngy.ModelTest.ElementIndS=ElementIndS(1,TestInd);
+MdataEngy.ModelTest.AllInspectors=cellfun(@(x) x(TestInd,:),...
+    AllInspectors,'UniformOutput',false);
+MdataEngy.ModelTest.init_x=init_x(1,TestInd);
+if IncludeStructuralAtt
+    MdataEngy.ModelTest.StrucAtt=StrucAtt(1,TestInd,:);
+end
+if IncludeInterventions
+    MdataEngy.InterventionYear=InterventionYear(1,TestInd);
+    MdataEngy.InterventionType=InterventionType(1,TestInd);
+    MdataEngy.InterventionJump=InterventionJump(1,TestInd);
+    MdataEngy.InterventionVector=InterventionVector(1,TestInd,:);
+end
+
+if TestingData==0
+    LLI=LastIndex(TestStrucIndex);
+    for i=1:length(TestStrucIndex)
+        YS(1,TestStrucIndex(i),LLI(i))=nan;
+        RS(1,TestStrucIndex(i),LLI(i))=nan;
+        ReS(1,TestStrucIndex(i),LLI(i))=nan;
+        InspBUS(1,TestStrucIndex(i),LLI(i))=nan;
+        InpecBiaseS(1,TestStrucIndex(i),LLI(i))=nan;
+        ObsYearsS(1,TestStrucIndex(i),LLI(i))=0;
+        StoreInspLabel=InspectorLabelS(1,TestStrucIndex(i),LLI(i));
+        InspectorIndexTest=find(EngBiasData(:,1)==StoreInspLabel);
+        AllInspectors{InspectorIndexTest}(TestStrucIndex(i),LLI(i))=0;
+    end
+end
+
+MdataEngy.RemovedData=IndexIt;
+MdataEngy.YS=YS(1,TrainInd,:);
+MdataEngy.RS=RS(1,TrainInd);
+MdataEngy.ReS=ReS(1,TrainInd,:);
+MdataEngy.InpecBiaseS=InpecBiaseS(1,TrainInd,:);
+MdataEngy.CurrentInspectorS=CurrentInspectorS(1,TrainInd,:);
+MdataEngy.RUS=RUS(1,TrainInd,:);
+MdataEngy.InspBUS=InspBUS(1,TrainInd,:);
+MdataEngy.ObsYearsS=ObsYearsS(1,TrainInd,:);
+MdataEngy.yearlyS=yearlyS(1,TrainInd,:);
+MdataEngy.InspectorLabelS=InspectorLabelS(1,TrainInd,:);
+MdataEngy.StructureIndS=StructureIndS(1,TrainInd);
+MdataEngy.ElementIndS=ElementIndS(1,TrainInd);
+MdataEngy.AllInspectors=cellfun(@(x) x(TrainInd,:),...
+    AllInspectors,'UniformOutput',false);
+MdataEngy.init_x=init_x(1,TrainInd);
+if IncludeStructuralAtt
+    MdataEngy.StrucAtt=StrucAtt(1,TrainInd,:);
+end
+if IncludeInterventions
+    MdataEngy.InterventionYear=InterventionYear(1,TrainInd);
+    MdataEngy.InterventionType=InterventionType(1,TrainInd);
+    MdataEngy.InterventionJump=InterventionJump(1,TrainInd);
+    MdataEngy.InterventionVector=InterventionVector(1,TrainInd,:);
+end
+
+%     MdataEngy=[];
+%     MdataEngy.RemovedData=NaNTimeSeries;
+%     MdataEngy.YS=YS;
+%     MdataEngy.RS=RS;
+%     MdataEngy.ReS=ReS;
+%     MdataEngy.InpecBiaseS=InpecBiaseS;
+%     MdataEngy.CurrentInspectorS=CurrentInspectorS;
+%     MdataEngy.RUS=RUS;
+%     MdataEngy.InspBUS=InspBUS;
+%     MdataEngy.ObsYearsS=ObsYearsS;
+%     MdataEngy.yearlyS=yearlyS;
+%     MdataEngy.InspectorLabelS=InspectorLabelS;
+%     MdataEngy.StructureIndS=StructureIndS;
+%     MdataEngy.ElementIndS=ElementIndS;
+%     MdataEngy.AllInspectors=cellfun(@(x) x(:,:),...
+%         AllInspectors,'UniformOutput',false);
+%     MdataEngy.init_x=init_x;
+%     if IncludeStructuralAtt
+%         MdataEngy.StrucAtt=StrucAtt;
+%     end
+%     if IncludeInterventions
+%         MdataEngy.InterventionYear=InterventionYear;
+%         MdataEngy.InterventionType=InterventionType;
+%         MdataEngy.InterventionJump=InterventionJump;
+%         MdataEngy.InterventionVector=InterventionVector;
+%     end
+
 end

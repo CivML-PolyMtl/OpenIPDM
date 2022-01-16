@@ -61,9 +61,11 @@ while  (LLcr/LLprev)<= StopCr2 &&  (OI  || ( StallInit2<StallVal2))
                         'output','original','laplace','no','convergence_tol',1E-4,...
                         'bounds',bounds,'nb_failed_iteration_limit',1);
                 end
-                UpdatedInspectorsData{1}(i,3)=Engparam(1);%InspectorID26True(i);%Engparam(1);
+                UpdatedInspectorsData{1}(i,3)=Engparam(1); % inspector std
                 if OperationIndex>=3
-                    UpdatedInspectorsData{1}(i,2) = Engparam(2);
+                    UpdatedInspectorsData{1}(i,2) = Engparam(2); % inspector bias
+                else
+                    UpdatedInspectorsData{1}(i,2) = 0;           % inspector bias
                 end
             end
             

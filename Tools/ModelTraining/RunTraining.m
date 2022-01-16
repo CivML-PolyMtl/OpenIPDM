@@ -52,6 +52,7 @@ for Ncurve=InitN:FinN
             ,PARAM,'log_transform','no','output','original','laplace','no',...
             'convergence_tol',1E-3,'bounds',boundsQ);
         InspectorsData{1}(:,3)=PARAM(2);
+        InspectorsData{1}(:,2)=0;
         LogLik=fx_NR(end);% LogLik=0;%
     end
     

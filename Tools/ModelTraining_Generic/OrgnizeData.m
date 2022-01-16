@@ -163,9 +163,6 @@ for i=1:length(CID)
                 StrucAtt(1,jj,:)=StructuralAttributeValue;
             end
         end
-        if length(YS(1,1,:))==2019
-            1
-        end
         jj=jj+1;
     end
 end
