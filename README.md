@@ -90,7 +90,7 @@ This project is licensed under the MIT license - see the [LICENSE](LICENSE.md) f
 
 ## Acknowledgments
 
-- This project is funded by the Transportation Ministry of Quebec Province (MTQ), Canada.
+- The funding for this project is provided by the Transportation Ministry of Quebec Province (MTQ), Canada.
 
 - Some parts of the project have greatly benefited from existing work:
 
