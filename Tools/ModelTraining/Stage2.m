@@ -35,7 +35,8 @@ while (LLcr-LLprev)>StopCr && StallInit2<StallVal2
                     'output','original','laplace','no','convergence_tol',1E-4,...
                     'bounds',bounds,'nb_failed_iteration_limit',1);
             end
-            InspectorsData{1}(i,3)=Engparam(1);%InspectorID26True(i);%Engparam(1);
+            InspectorsData{1}(i,3) = Engparam(1);
+            InspectorsData{1}(i,2) = Engparam(2);
         end
         
         if IncludeStructuralAtt
