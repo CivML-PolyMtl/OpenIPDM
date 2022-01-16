@@ -15,7 +15,7 @@ while (LLcr-LLprev)>StopCr && StallInit2<StallVal2
         LLprev=LLcr;
         for i=1:1%length(InspectorsData{1}(:,1))
             sprintf('Inspector Num: %d /%d',i,length(InspectorsData{1}(:,1)))
-            InspectParam=[UpdatedInspectorsData{1}(i,end) UpdatedInspectorsData{1}(i,2)];
+            InspectParam=[InspectorsData{1}(i,end) InspectorsData{1}(i,2)];
             InspectID=InspectorsData{1}(i,1);
             if IncludeStructuralAtt
                 [Engparam,~,~,fx_NR]=Newton_Raphson_par_one(@(InspectParam) AnalysisObjective(ElementData,...
