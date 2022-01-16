@@ -17,7 +17,7 @@ For tutorials, see: [YouTube channel](https://youtube.com/playlist?list=PLSng2Cr
 
 ## How to cite
 
-*OpenIPDM: A Probabilistic Framework for Estimating the Deterioration and Effect of Interventions on Bridges*<br/>[Hamida, Z.](https://zachamida.github.io), [Laurent, B.](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_BLAURENT.html) and [Goulet, J.-A.](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_MAIN.html)<br/>SoftwareX (Submitted, January 2022) [comment]: # <br/>[[PDF]()] [[EndNote]()] [[BibTex]()]
+*OpenIPDM: A Probabilistic Framework for Estimating the Deterioration and Effect of Interventions on Bridges*<br/>[Hamida, Z.](https://zachamida.github.io), [Laurent, B.](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_BLAURENT.html) and [Goulet, J.-A.](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_MAIN.html)<br/>SoftwareX (Submitted, January 2022) [//]: # <br/>[[PDF]()] [[EndNote]()] [[BibTex]()]
 
 ### Prerequisites
 
@@ -27,7 +27,7 @@ For tutorials, see: [YouTube channel](https://youtube.com/playlist?list=PLSng2Cr
 
 - Access to GPU computing (required only for Model Training toolbox)
 
-- Figures for LaTeX (Optional) [matlab2tikz](https://github.com/matlab2tikz/matlab2tikz) 
+- Figures for LaTeX [matlab2tikz](https://github.com/matlab2tikz/matlab2tikz) (Optional)
 
 ### Installation
 
