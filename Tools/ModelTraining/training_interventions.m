@@ -13,10 +13,10 @@ end
 if ~exist([FullPath 'InspectionData_Intervention_' ElementName '.mat'],'file')
     AppLink.TrainingApp=app;
     AppLink.StatusDropDown.Value=app.AllElementsParameters{Index,2}{7};
-    InterventionCond=2;% All: 1, without Interventions: 2, Interventions only: 3
-    [FullPathEx,FullPathInspector]=HandleReadData(AppLink,InterventionCond);
+%     InterventionCond=2;% All: 1, without Interventions: 2, Interventions only: 3
+%     [FullPathEx,FullPathInspector]=HandleReadData(AppLink,InterventionCond);
     InterventionCond=3;% All: 1, without Interventions: 2, Interventions only: 3
-    HandleReadData(AppLink,InterventionCond);
+    [FullPathEx,FullPathInspector]=HandleReadData(AppLink,InterventionCond);
     clear('AppLink');
 %     InspectorsData=load(FullPathInspector);
 %     InspectorsData=struct2cell(InspectorsData);
@@ -49,9 +49,14 @@ InspectorIDLabel=ElementData.InspectorLabelS;
 
 
 %% KR
-AttStruc=reshape((ElementData.StrucAtt),size(ElementData.StrucAtt,2),size(ElementData.StrucAtt,3));
-AvgObs=reshape((ElementData.init_x),size(ElementData.init_x,2),1);
-AllAtt=[AttStruc AvgObs];
+if model_i==2
+    AttStruc=reshape((ElementData.StrucAtt),size(ElementData.StrucAtt,2),size(ElementData.StrucAtt,3));
+    AvgObs=reshape((ElementData.init_x),size(ElementData.init_x,2),1);
+    AllAtt=[AttStruc AvgObs];
+else
+    RegressionModel = [];
+    AllAtt = [];
+end
 
 param = Qparam;
 
@@ -72,7 +77,9 @@ y = (ElementData.YS);
 F =[1 zeros(1,5)];
 
 % Noise
-Re = (ElementData.ReS);
+Re = ElementData.ReS;
+Be = ElementData.InpecBiaseS;
+
 Q_ki = param(1).^2*[(dt^5)/20 (dt^4)/8 (dt^3)/6;
     (dt^4)/8 (dt^3)/3 (dt^2)/2;
     (dt^3)/6 (dt^2)/2 dt];
@@ -101,13 +108,13 @@ for IndexTypeVal=1:3
     if ~isempty(Cindex)
         InspectorsID=(ElementData.InspectorLabelS);
         [ModelParamLocal,~,~,fx_NR]=Newton_Raphson(@(ModelParamLocal)...
-            opt_intervention(Cindex,InspectorsID,InspectorsData,Re,y,...
+            opt_intervention(Cindex,InspectorsID,InspectorsData,Re,Be,y,...
             param,ModelParamLocal,A,F,Q,Ncurve,ConstrainedKF,InterventionCheck,...
             InterventionVector,model_i,RegressionModel,AllAtt)...
             ,ModelParamLocal,'log_transform','no','output','original','laplace','no',...
             'convergence_tol',1E-3,'bounds',OptBounds_int);
         [~,InterventionMu_Network,InterventionVar_Network]= ...
-            opt_intervention(Cindex,InspectorsID,InspectorsData,Re,y,...
+            opt_intervention(Cindex,InspectorsID,InspectorsData,Re,Be,y,...
             param,ModelParamLocal,A,F,Q,Ncurve,ConstrainedKF,InterventionCheck,...
             InterventionVector,model_i,RegressionModel,AllAtt);
         int_Ex{1,IndexTypeVal} = InterventionMu_Network;

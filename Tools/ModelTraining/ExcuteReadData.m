@@ -18,8 +18,8 @@ ColsInd=4; % Element
 Rows=find(strcmp(ColsVal,table2array(SEData(:,ColsInd))));
 SEData=SEData(Rows,SV);
 INData=readall(IN);
-InterventionsRows=find(strcmp(ColsVal,table2array(INData(:,ColsInd))));
-INData=INData(InterventionsRows,[1 2 3 5]);
+InterventionsRows=find(strcmp(ColsVal,table2array(INData(:,ColsInd+1))));
+INData=INData(InterventionsRows,[1 2 4 6]);
 
 
 
@@ -51,7 +51,29 @@ if InterventionCond~=1
         end
     end
 end
-
+if ~isempty(SEData)
+    MaterialData=7;
+    if MaterialData~=0
+        MaterialCategories=unique(SEData(:,MaterialData));
+        MaterialCategories=table2array(MaterialCategories);
+        if ~isnumeric(MaterialCategories(1,1))
+            for i=1:length(MaterialCategories)
+                SEData(find(strcmp(MaterialCategories{i},table2array(SEData(:,MaterialData)))),MaterialData)={sprintf('%d',i)};
+            end
+        end
+    end
+    TypeElementData=8;
+    %% Specify Type of Element Index
+    if TypeElementData~=0
+        TypeElementCategories=unique(SEData(:,TypeElementData));
+        TypeElementCategories=table2array(TypeElementCategories);
+        if ~isnumeric(TypeElementCategories(1))
+            for i=1:length(TypeElementCategories)
+                SEData(find(strcmp(TypeElementCategories(i),SEData(:,TypeElementData))),TypeElementData)={sprintf('%d',i)};
+            end
+        end
+    end
+end
 if InterventionCond==2
     NoInterRows=setdiff(1:size(SEData,1),AllRows)';
     SEData=SEData(NoInterRows,:);
@@ -105,8 +127,8 @@ if ~isempty(SEData)
     InspectionYearCol=2;
     StructuralElemID=5;
     StructuralElemNumSpans=3;
-    MaterialData=7;
-    TypeElementData=8;
+    
+    
     
     STAtt1=1+EndIndex;% Lat
     STAtt2=2+EndIndex;% Long
@@ -119,25 +141,7 @@ if ~isempty(SEData)
     STAtt8=10+EndIndex;% DJMA
     STAtt9=11+EndIndex;% x_camions
     
-    %% Specify Material Index
-    if MaterialData~=0
-        MaterialCategories=unique(SEData(:,MaterialData));
-        if ~isnumeric(MaterialCategories(1))
-            for i=1:length(MaterialCategories)
-                SEData(find(strcmp(MaterialCategories(i),SEData(:,MaterialData))),MaterialData)={sprintf('%d',i)};
-            end
-        end
-    end
-    
-    %% Specify Type of Element Index
-    if TypeElementData~=0
-        TypeElementCategories=unique(SEData(:,TypeElementData));
-        if ~isnumeric(TypeElementCategories(1))
-            for i=1:length(TypeElementCategories)
-                SEData(find(strcmp(TypeElementCategories(i),SEData(:,TypeElementData))),TypeElementData)={sprintf('%d',i)};
-            end
-        end
-    end
+
     
     MetaData.AttributesLabels={'Material';'Age'; 'Lat'; 'Long';'Longtotale'; 'LongTablier';
         'LargHorstout'; 'LargCarrossable';'SuperfTablier'; 'DJMA'; 'x_camions'};

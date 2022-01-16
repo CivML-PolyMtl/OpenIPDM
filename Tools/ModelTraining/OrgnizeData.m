@@ -124,7 +124,7 @@ for i=1:length(CID)
                     for k=1:length(Insp)
                         [~,ia,~] = intersect(EngBiasData(:,1),Insp(k));
                         if isempty(ia)
-                            EngBiasData=[EngBiasData;[Insp(k) EngBiasData(end,2)]];
+                            EngBiasData=[EngBiasData;[Insp(k) EngBiasData(end,2:3)]];
                             AllInspectors=[AllInspectors cell(1,1)];
                             [~,ia,~] = intersect(EngBiasData(:,1),Insp(k));
                         end
@@ -335,7 +335,7 @@ while MinInspCount
             DataAllInspectors=AllInspectors;
         end
     end
-    if TestingData==0
+    if TestingData==0 && ~IncludeInterventions
         AllInspc=zeros(size(DataAllInspectors{1,1}));
         for i=1:length(DataAllInspectors)
             InspectorsCount(i)=sum(sum(DataAllInspectors{1,i}));
@@ -364,7 +364,7 @@ while MinInspCount
         InspectorsCount(i)=sum(sum(DataAllInspectors{1,i}));
     end
     MinCountVal=min(InspectorsCount);
-    if MinCountVal~=0
+    if MinCountVal~=0 || IncludeInterventions
         MinInspCount=0;
         break;
     end
@@ -381,6 +381,9 @@ if TestingData~=0
     TrainInd(TestStrucIndex)=[];
 end
 
+if TestingData==0 && IncludeInterventions
+    TrainInd = 1:length(YS(1,:,1));
+end
 MdataEngy=[];
 
 MdataEngy.ModelValid.YS=YS(1,ValidInd,:);
@@ -401,7 +404,7 @@ MdataEngy.ModelValid.init_x=init_x(1,ValidInd);
 if IncludeStructuralAtt
     MdataEngy.ModelValid.StrucAtt=StrucAtt(1,ValidInd,:);
 end
-if IncludeInterventions
+if IncludeInterventions && ~isempty(ValidInd)
     MdataEngy.InterventionYear=InterventionYear(1,ValidInd);
     MdataEngy.InterventionType=InterventionType(1,ValidInd);
     MdataEngy.InterventionJump=InterventionJump(1,ValidInd);
@@ -426,14 +429,14 @@ MdataEngy.ModelTest.init_x=init_x(1,TestInd);
 if IncludeStructuralAtt
     MdataEngy.ModelTest.StrucAtt=StrucAtt(1,TestInd,:);
 end
-if IncludeInterventions
+if IncludeInterventions && ~isempty(TestInd)
     MdataEngy.InterventionYear=InterventionYear(1,TestInd);
     MdataEngy.InterventionType=InterventionType(1,TestInd);
     MdataEngy.InterventionJump=InterventionJump(1,TestInd);
     MdataEngy.InterventionVector=InterventionVector(1,TestInd,:);
 end
 
-if TestingData==0
+if TestingData==0 && ~IncludeInterventions
     LLI=LastIndex(TestStrucIndex);
     for i=1:length(TestStrucIndex)
         YS(1,TestStrucIndex(i),LLI(i))=nan;
@@ -461,8 +464,15 @@ MdataEngy.yearlyS=yearlyS(1,TrainInd,:);
 MdataEngy.InspectorLabelS=InspectorLabelS(1,TrainInd,:);
 MdataEngy.StructureIndS=StructureIndS(1,TrainInd);
 MdataEngy.ElementIndS=ElementIndS(1,TrainInd);
-MdataEngy.AllInspectors=cellfun(@(x) x(TrainInd,:),...
-    AllInspectors,'UniformOutput',false);
+if TestingData==0 && ~IncludeInterventions
+    MdataEngy.AllInspectors=cellfun(@(x) x(TrainInd,:),...
+        AllInspectors,'UniformOutput',false);
+elseif TestingData==0 && IncludeInterventions
+    MdataEngy.AllInspectors = AllInspectors;
+else
+    MdataEngy.AllInspectors=cellfun(@(x) x(TrainInd,:),...
+        AllInspectors,'UniformOutput',false);
+end
 MdataEngy.init_x=init_x(1,TrainInd);
 if IncludeStructuralAtt
     MdataEngy.StrucAtt=StrucAtt(1,TrainInd,:);

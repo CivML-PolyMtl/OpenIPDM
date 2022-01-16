@@ -1,15 +1,16 @@
 function [tot_ll,InterventionMu_Network,InterventionVar_Network]= ...
-    opt_intervention(Cindex,InspectorsID,InspectorsData,Re,y,...
+    opt_intervention(Cindex,InspectorsID,InspectorsData,Re,Be,y,...
     param,ModelParamLocal,A,F,Q,Ncurve,ConstrainedKF,InterventionCheck,...
     InterventionVector,model_i,RegressionModel,AllAtt)
 tot_ll=0;
-Kernel_l=RegressionModel.Kernel_l;
-X_ControlPoints=RegressionModel.X_ControlPoints;
-KernelType=RegressionModel.KernelType;
-InirilizedEx=RegressionModel.InirilizedEx;
-InirilizedVar=RegressionModel.InirilizedVar;
-Var_w0=RegressionModel.Sigma_W0^2;
-
+if model_i==2
+    Kernel_l=RegressionModel.Kernel_l;
+    X_ControlPoints=RegressionModel.X_ControlPoints;
+    KernelType=RegressionModel.KernelType;
+    InirilizedEx=RegressionModel.InirilizedEx;
+    InirilizedVar=RegressionModel.InirilizedVar;
+    Var_w0=RegressionModel.Sigma_W0^2;
+end
 % Prior Knowledge
 InterventionMu_Network=[0 0.8 0];
 InterventionVar_Network=diag([ModelParamLocal(4)^2 ModelParamLocal(5)^2 ModelParamLocal(6)^2]);%[5^2 0.3^2 0.05^2]);%
@@ -22,6 +23,7 @@ for i=1:length(Cindex)
         InspID=find(InspectorsID(1,Cindex(i),j)==InspectorsData{1}(:,1));
         if ~isempty(InspID)
             Re(1,Cindex(i),j)=InspectorsData{1}(InspID,3)^2;
+            Be(1,Cindex(i),j)=InspectorsData{1}(InspID,2);
         end
     end
     % Initial values
@@ -49,7 +51,7 @@ for i=1:length(Cindex)
     
     [~, ~, loglikelihood, ~, ~, InterventionMu_Network,...
         InterventionVar_Network]=HandCoded_KF_Network(y(1,Cindex(i),:),A,F,Q,Q_r,...
-        Re(1,Cindex(i),:),param,init_x,init_V,Ncurve,ConstrainedKF,...
+        Re(1,Cindex(i),:),Be(1,Cindex(i),:),param,init_x,init_V,Ncurve,ConstrainedKF,...
         InterventionCheck,InterventionVector(1,Cindex(i),:),...
         InterventionMu_Network,InterventionVar_Network);
     tot_ll= tot_ll + loglikelihood;

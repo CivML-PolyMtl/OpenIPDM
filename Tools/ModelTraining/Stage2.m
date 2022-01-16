@@ -13,7 +13,7 @@ StallInit2=0;
 while (LLcr-LLprev)>StopCr && StallInit2<StallVal2
     while (LLcr-LLprev)>StopCr && StallInit1<StallVal1
         LLprev=LLcr;
-        for i=1:1%length(InspectorsData{1}(:,1))
+        for i=1:length(InspectorsData{1}(:,1))
             sprintf('Inspector Num: %d /%d',i,length(InspectorsData{1}(:,1)))
             InspectParam=[InspectorsData{1}(i,end) InspectorsData{1}(i,2)];
             InspectID=InspectorsData{1}(i,1);
@@ -181,7 +181,7 @@ while (LLcr-LLprev)>StopCr && StallInit2<StallVal2
     ElementMetaData=load([FullPath 'MetaData_' ElementName  '.mat']);
     ElementMetaData=struct2cell(ElementMetaData);
     ElementMetaData=ElementMetaData{1};
-    if i==1
+    if model_i~=1
         AttOrder=load([FullPath 'RegressAtt_' ElementName  '.mat']);
         AttOrder=struct2cell(AttOrder);
         AttOrder=AttOrder{1};

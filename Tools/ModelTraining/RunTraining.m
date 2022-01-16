@@ -32,6 +32,10 @@ if ResumeTraining
     InitN = AllElementsParameters{Index,10};
 end
 for Ncurve=InitN:FinN
+    % Read data
+    ElementData=load([FullPath 'TrainingData_' ElementName '.mat']);
+    ElementData=struct2cell(ElementData);
+    ElementData=ElementData{1};
     % Initial optimization step
     OptLevel=1;
     OptimizationProceedure=1;
@@ -90,6 +94,7 @@ for Ncurve=InitN:FinN
         KernelParameters{2}=0;
         InitialEx=[];
         InitialVar=[];
+        RegressionModel = [];
     end
     
     % Full optimization

@@ -16,8 +16,8 @@ if ~exist([FullPath 'InspectionData_' ElementName '.mat'],'file')
     AppLink.StatusDropDown.Value=app.AllElementsParameters{Index,2}{7};
     InterventionCond=2;% All: 1, without Interventions: 2, Interventions only: 3
     [FullPathEx,FullPathInspector]=HandleReadData(AppLink,InterventionCond);
-    InterventionCond=3;% All: 1, without Interventions: 2, Interventions only: 3
-    HandleReadData(AppLink,InterventionCond);
+%     InterventionCond=3;% All: 1, without Interventions: 2, Interventions only: 3
+%     HandleReadData(AppLink,InterventionCond);
     clear('AppLink');
     InspectorsData=load(FullPathInspector);
     InspectorsData=struct2cell(InspectorsData);
@@ -37,11 +37,10 @@ if ~exist([FullPath 'TrainingData_' ElementName '.mat'],'file')
     [ElementData]=OrgnizeData(InspectionData,90E10,[0 0],InspectorsData{1},...
         TrainingWindow,ParComp,IncludeStructuralAtt,NumAttributes,TestSet,0);
     save([FullPath 'TrainingData_' ElementName '.mat'],'ElementData');
-else
-    ElementData=load([FullPath 'TrainingData_' ElementName '.mat']);
-    ElementData=struct2cell(ElementData);
-    ElementData=ElementData{1};
 end
+ElementData=load([FullPath 'TrainingData_' ElementName '.mat']);
+ElementData=struct2cell(ElementData);
+ElementData=ElementData{1};
 config_opt.elements = app.AllElementsParameters;
 config_opt.indexes = [model_i;elem_j];
 save([SavePath '/AutoSave_Config_' ElementName '.mat'],'config_opt');
