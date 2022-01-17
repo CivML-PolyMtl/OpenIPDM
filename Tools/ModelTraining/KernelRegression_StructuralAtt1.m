@@ -1,11 +1,11 @@
 %% Initialize the state 
 init_x(1,:)=gather(y(1,:,2));
 if OptProcedure==1
-    init_x(2,:)=0;%param(6)*(DifferenceObs);%+param(8);
-    init_x(3,:)=0;%param(7)*init_x(2,:);
+    init_x(2,:)=0;
+    init_x(3,:)=0;
 else
-    init_x(2,:)=-0.01;
-    init_x(3,:)=-0.001;
+    init_x(2,:)=0;
+    init_x(3,:)=0;
 end
 if OptProcedure==1
     if GPUCompute
@@ -18,7 +18,7 @@ if OptProcedure==1
         param(3)=param(2);
     end
     init_V(1,1,:)=max(param(3).^2,Re(1,:,2));
-    init_V(3,3,:)=param(5).^2;%(param(5).^2).*init_V(2,2,:)+init_V(2,2,:).*param(7)^2+ 
+    init_V(3,3,:)=param(5).^2;
 end
 tic
 % Prepare Akr / Control Points

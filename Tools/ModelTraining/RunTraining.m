@@ -108,6 +108,13 @@ for Ncurve=InitN:FinN
             RegressionModelstore=[];
         end
         PARAMstore=PARAM;
+        InspectorsDatastore = InspectorsData{1};
     end
+    % save parameters
+    AllElementsParameters{Index,2}=PARAMstore;
+    AllElementsParameters{Index,3}=InspectorsDatastore;
+    AllElementsParameters{Index,4}=RegressionModelstore;
+    AllElementsParameters{Index,10}=Nstore;
+    save([SavePath '/AutoSave_' ElementName '.mat'],'AllElementsParameters');
 end
 

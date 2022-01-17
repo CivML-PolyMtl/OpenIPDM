@@ -305,7 +305,7 @@ for i=1:length(YS(1,:,2))
     init_x(1,i)=mean(gather(YS(1,i,IndexInit)));
 end
 
-
+TimedOut = 0;
 MinInspCount=1;
 while MinInspCount
     DataAllInspectors=AllInspectors;
@@ -333,6 +333,11 @@ while MinInspCount
             j=0;
             AllTestInd=[];
             DataAllInspectors=AllInspectors;
+            if TimedOut > 50000
+                TestingData = 0;
+                break;
+            end
+            TimedOut = TimedOut + 1;
         end
     end
     if TestingData==0 && ~IncludeInterventions

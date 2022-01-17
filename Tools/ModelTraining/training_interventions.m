@@ -119,10 +119,14 @@ for IndexTypeVal=1:3
             InterventionVector,model_i,RegressionModel,AllAtt);
         int_Ex{1,IndexTypeVal} = InterventionMu_Network;
         int_Ex{2,IndexTypeVal} = InterventionVar_Network;
-        int_param {1,IndexTypeVal} = ModelParamLocal;
+        int_param{1,IndexTypeVal} = ModelParamLocal;
     else
         int_Ex{1,IndexTypeVal} = nan(3,1);
         int_Ex{2,IndexTypeVal} = nan(3);
-        int_param {1,IndexTypeVal} = nan(1,6);
+        int_param{1,IndexTypeVal} = nan(1,6);
     end
+    AllElementsParameters{Index,6}{1,IndexTypeVal}=int_Ex{1,IndexTypeVal};
+    AllElementsParameters{Index,7}{1,IndexTypeVal}=int_Ex{2,IndexTypeVal};
+    AllElementsParameters{Index,8}{1,IndexTypeVal}=int_param{1,IndexTypeVal};
 end
+save([SavePath '/AutoSave_' ElementName '.mat'],'AllElementsParameters');
