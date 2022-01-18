@@ -1,7 +1,7 @@
 function [tot_ll,InterventionMu_Network,InterventionVar_Network]= ...
     opt_intervention(Cindex,InspectorsID,InspectorsData,Re,Be,y,...
     param,ModelParamLocal,A,F,Q,Ncurve,ConstrainedKF,InterventionCheck,...
-    InterventionVector,model_i,RegressionModel,AllAtt)
+    InterventionVector,model_i,RegressionModel,AllAtt,int_type)
 tot_ll=0;
 if model_i==2
     Kernel_l=RegressionModel.Kernel_l;
@@ -12,7 +12,13 @@ if model_i==2
     Var_w0=RegressionModel.Sigma_W0^2;
 end
 % Prior Knowledge
-InterventionMu_Network=[0 0.8 0];
+if int_type == 3
+    InterventionMu_Network=[10 0.4 0];
+elseif int_type == 2
+    InterventionMu_Network=[5 0.4 0];
+else
+    InterventionMu_Network=[0 0.8 0];
+end
 InterventionVar_Network=diag([ModelParamLocal(4)^2 ModelParamLocal(5)^2 ModelParamLocal(6)^2]);%[5^2 0.3^2 0.05^2]);%
 
 Q_r=diag([ModelParamLocal(1)^2 ModelParamLocal(2)^2 ModelParamLocal(3)^2]);%diag([2^2 0.1^2 0.01^2]);
