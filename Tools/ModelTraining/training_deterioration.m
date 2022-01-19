@@ -64,3 +64,4 @@ end
 AllElementsParameters{Index,5}=AttOrder;
 AllElementsParameters{Index,9}=ElementMetaData;
 AllElementsParameters{Index,10}=Nstore;
+save([SavePath '/AutoSave_' ElementName '.mat'],'AllElementsParameters');

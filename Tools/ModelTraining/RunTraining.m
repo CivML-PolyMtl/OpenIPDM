@@ -1,7 +1,4 @@
 
-% initial parameter values
-PARAM=[OptBoundsData(2,1) OptBoundsData(3,1) OptBoundsData(4,1) ...
-    OptBoundsData(5,1) OptBoundsData(6,1) OptBoundsData(7,1)];
 
 % Inspector uncertainty bounds
 bounds={OptBoundsData(3,2:3) [-OptBoundsData(3,3) OptBoundsData(3,3)]};
@@ -48,16 +45,23 @@ for Ncurve=InitN:FinN
     if ResumeTraining
         PARAM = AllElementsParameters{Index,2};
         InspectorsData{1} = AllElementsParameters{Index,3};
+        Stored_InspectorData = InspectorsData;
+        Stored_QParam = PARAM;
     else
+        % initial parameter values
+        PARAM=[OptBoundsData(2,1) OptBoundsData(3,1) OptBoundsData(4,1) ...
+            OptBoundsData(5,1) OptBoundsData(6,1) OptBoundsData(7,1)];
         [PARAM,~,~,fx_NR]=Newton_Raphson(@(PARAM) AnalysisObjective(ElementData,...
             InspectorsData{1}(:,1),InspStrucIndex,OptBoundsData,A,F, Q,...
             x0, s2_X0,PARAM,[0 0],InspectorsData{1},[],Ncurve,...
             OptimizationProceedure,OptLevel,SpeedConstraints,1)...
             ,PARAM,'log_transform','no','output','original','laplace','no',...
-            'convergence_tol',1E-3,'bounds',boundsQ);
+            'convergence_tol',1E-3,'bounds',boundsQ); 
         InspectorsData{1}(:,3)=PARAM(2);
         InspectorsData{1}(:,2)=0;
-        LogLik=fx_NR(end);% LogLik=0;%
+        LogLik=fx_NR(end);
+        Stored_QParam = PARAM;
+        Stored_InspectorData = [];
     end
     
     
@@ -70,12 +74,14 @@ for Ncurve=InitN:FinN
                         AllElementsParameters{Index,4}.Kernel_l];
             StructuralAttributes=ElementData.StrucAtt;
             KRparam = Kr_Param';
+            Stored_RegressionModel = AllElementsParameters{Index,4};
         else
             InitialEx=[];
             InitialVar=[];
             Kr_Param=KernelParameters{3}(:,1)';
             StructuralAttributes=0;
             KRparam=zeros(2,1);
+            Stored_RegressionModel = [];
         end
         OptLevel=3;
         boundKr=[];

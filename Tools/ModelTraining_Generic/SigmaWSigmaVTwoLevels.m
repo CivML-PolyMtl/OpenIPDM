@@ -258,12 +258,16 @@ while  (LLcr/LLprev)<= StopCr2 &&  (OI  || ( StallInit2<StallVal2))
     end
     LLcr=sum(LogLikVal);
     if LLcr<LLprev
-        RegressionModel = Stored_RegressionModel;
+        if ~isempty(Stored_RegressionModel) && IncludeStructuralAtt
+            RegressionModel = Stored_RegressionModel;
+        end
         Qparam = Stored_QParam;
         PARAM = Qparam;
         break
     else 
-        Stored_RegressionModel = RegressionModel;
+        if IncludeStructuralAtt
+            Stored_RegressionModel = RegressionModel;
+        end
         Stored_QParam = Qparam;
     end
     if get(app.LogParams,'Value')==1

@@ -54,7 +54,7 @@ if ~isempty(AllInspData)
     plot(CondFigure,AllInspData(:,1),AllInspData(:,2),'*','MarkerFaceColor',[0,0,1],'MarkerEdgeColor','k')
 end
 if ~isempty(y_unbiased)
-    plot(CondFigure,t,y_unbiased,'o','MarkerFaceColor',[0,0,1],'MarkerEdgeColor','b')
+    plot(CondFigure,t,y_unbiased,'*','MarkerFaceColor',[0,0,1],'MarkerEdgeColor','r')
     errorbar(CondFigure,t,y_unbiased,Rlow',Rtop','LineStyle','none','CapSize',20,'Color','blue','Linewidth',1)
 else
     errorbar(CondFigure,t,y,Rlow',Rtop','LineStyle','none','CapSize',20,'Color','blue','Linewidth',1)

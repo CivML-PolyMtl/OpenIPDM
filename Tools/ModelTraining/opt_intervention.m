@@ -48,6 +48,10 @@ for i=1:length(Cindex)
         AKr=Kr./sum(Kr,2);
         init_x(2,:)=AKr*InirilizedEx;
         init_V(2,2)=(AKr*InirilizedVar(:,:,1)*AKr'+Var_w0);
+        if isnan(init_x(2)) || isnan(init_V(2,2))
+            message = 'Model training has failed due to KR model providing a NaN deterioration speed estimate. Consider adjusting the KR framework input and/or parameters.';
+            msgbox(message, 'Model training is incomplete')
+        end
     else
         init_x(2,:)=0;
         [MAxCondition]=RevSpaceTransform(Ncurve,100,100.001,25);

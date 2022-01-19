@@ -1,7 +1,7 @@
 OptLevel=2;
-StopCr=10^-3;
+StopCr=0.999;
 LLcr=-10^12;
-LLprev=-10^16;
+LLprev=-10^18;
 j=1;
 
 StallVal1=10;
@@ -9,12 +9,13 @@ StallVal2=10;
 StallInit1=0;
 StallInit2=0;
 
+Stored_RegressionModel = [];
 
-while (LLcr-LLprev)>StopCr && StallInit2<StallVal2
-    while (LLcr-LLprev)>StopCr && StallInit1<StallVal1
+while (LLcr/LLprev)<= StopCr && StallInit2<StallVal2
+    while (LLcr/LLprev)<= StopCr && StallInit1<StallVal1
         LLprev=LLcr;
         for i=1:length(InspectorsData{1}(:,1))
-            sprintf('Inspector Num: %d /%d',i,length(InspectorsData{1}(:,1)))
+            fprintf('Inspector Num: %d /%d',i,length(InspectorsData{1}(:,1)))
             InspectParam=[InspectorsData{1}(i,end) InspectorsData{1}(i,2)];
             InspectID=InspectorsData{1}(i,1);
             if IncludeStructuralAtt
@@ -61,7 +62,8 @@ while (LLcr-LLprev)>StopCr && StallInit2<StallVal2
                 OptimizationProceedure,OptLevel,SpeedConstraints,1,...
                 StrucAttributes_Test,KRparam(2:end),KRparam(1),...
                 KernelParameters{1},KernelParameters{2},InitialEx,InitialVar,[]);
-            TestLogLik=sum(LogLikVal_Test)
+            TestLogLik=sum(LogLikVal_Test);
+            fprintf('Test L.L. : %d \n',TestLogLik)
         else
             % validation with validation set
             [~,~,~,~,~,LogLikVal]=AnalysisObjective(ElementData.ModelValid,...
@@ -73,7 +75,8 @@ while (LLcr-LLprev)>StopCr && StallInit2<StallVal2
                 Q, x0, s2_X0,PARAM,[0 0],InspectorsData{1},[],Ncurve,...
                 OptimizationProceedure,OptLevel,...
                 SpeedConstraints,1);
-            TestLogLik=sum(LogLikVal_Test)
+            TestLogLik=sum(LogLikVal_Test);
+            fprintf('Test L.L. : %d \n',TestLogLik)
         end
         plot(app.UIAxes,datetime('now'),gather(sum(TestLogLik)),'o');
         hold(app.UIAxes,'on');
@@ -81,10 +84,13 @@ while (LLcr-LLprev)>StopCr && StallInit2<StallVal2
         box(app.UIAxes,'on');
         ylabel(app.UIAxes,'Test set Logliklihood')
         xlabel(app.UIAxes,'Time')
-        pause(0.01)
+        drawnow;
         LLcr=sum(LogLikVal);
         if LLcr<LLprev
+            InspectorsData = Stored_InspectorData;
             break
+        else 
+            Stored_InspectorData = InspectorsData;
         end
         if LLcr/LLprev>0.95
             StallInit1=StallInit1+1;
@@ -142,8 +148,8 @@ while (LLcr-LLprev)>StopCr && StallInit2<StallVal2
             OptimizationProceedure,OptLevel,SpeedConstraints,1,...
             ElementData.ModelTest.StrucAtt,KRparam(2:end),KRparam(1),...
             KernelParameters{1},KernelParameters{2},InitialEx,InitialVar,[]);
-        TestLogLik=sum(LogLikVal_Test)
-        
+        TestLogLik=sum(LogLikVal_Test);
+        fprintf('Test L.L. : %d \n',TestLogLik)
     else
         [Qparam,~,~,fx_NR]=Newton_Raphson_par(@(PARAM) AnalysisObjective(ElementData,...
             InspectorsData{1}(:,1),InspStrucIndex,OptBoundsData,A,F,...
@@ -161,7 +167,8 @@ while (LLcr-LLprev)>StopCr && StallInit2<StallVal2
             InspectorsData{1}(:,1),InspStrucIndex,OptBoundsData,A,F,...
             Q, x0, s2_X0,PARAM,[0 0],InspectorsData{1},[],Ncurve,...
             OptimizationProceedure,OptLevel,SpeedConstraints,1);
-        TestLogLik=sum(LogLikVal_Test)
+        TestLogLik=sum(LogLikVal_Test);
+        fprintf('Test L.L. : %d \n',TestLogLik)
     end
     
     hold(app.UIAxes,'on');
@@ -170,8 +177,22 @@ while (LLcr-LLprev)>StopCr && StallInit2<StallVal2
     box(app.UIAxes,'on');
     ylabel(app.UIAxes,'Test Set Logliklihood')
     xlabel(app.UIAxes,'Time')
-    pause(0.1);
+    drawnow;
     
+    LLcr=sum(LogLikVal);
+    if LLcr<LLprev
+        if ~isempty(Stored_RegressionModel) && IncludeStructuralAtt
+            RegressionModel = Stored_RegressionModel;
+        end
+        Qparam = Stored_QParam;
+        PARAM = Qparam;
+        break
+    else 
+        if IncludeStructuralAtt
+            Stored_RegressionModel = RegressionModel;
+        end
+        Stored_QParam = Qparam;
+    end
     % save parameters
     
     AllElementsParameters=app.AllElementsParameters(:,1);
@@ -195,11 +216,6 @@ while (LLcr-LLprev)>StopCr && StallInit2<StallVal2
     AllElementsParameters{Index,10}=Ncurve;
     save([SavePath '/AutoSave_' ElementName '.mat'],'AllElementsParameters');
     
-    
-    LLcr=sum(LogLikVal);
-    if LLcr<LLprev
-        break
-    end
     if LLcr/LLprev>0.95
         StallInit2=StallInit2+1;
     end
@@ -213,16 +229,16 @@ if IncludeStructuralAtt
         OptimizationProceedure,OptLevel,...
         SpeedConstraints,1,ElementData.ModelTest.StrucAtt,KRparam(2:end),KRparam(1),...
         KernelParameters{1},KernelParameters{2},InitialEx,InitialVar,[]);
-    TestLogLik=sum(LogLikVal)
+    TestLogLik=sum(LogLikVal);
 else
     [~,~,~,~,~,LogLikVal]=AnalysisObjective(ElementData.ModelTest,...
         InspectorsData{1}(:,1),InspStrucIndex,OptBoundsData,A,F,...
         Q, x0, s2_X0,PARAM,[0 0],InspectorsData{1},[],Ncurve,...
         OptimizationProceedure,OptLevel,...
         SpeedConstraints,1);
-    TestLogLik=sum(LogLikVal)
+    TestLogLik=sum(LogLikVal);
 end
-
+fprintf('End of the parameter estimation (deterioration model) for %s, Test L.L. : %d \n',ElementName, TestLogLik)
 
 
 
