@@ -82,6 +82,7 @@ if CatAnalyses && sum(y_Data~=0)>0
     for j=1:length(Vsmooth)
         Std(:,j)=sqrt(diag(Vsmooth(:,:,j)));
     end
+    YearTotal=MisStart:MisStart+NotZero-1;
     close(d);
     ColorCode=2;
     ylabel(app.CatSpeed,'Speed');
