@@ -33,8 +33,12 @@ ConstrainedKF = 1;                                                          % Ap
 
 %% Interventions
 IntervType=round(InterventionType/1000);                                    % Intervention Type
+    
 if InterventionType~=0
     for InType=1:length(IntervType)
+        if IntervType>9
+            IntervType = fix(InterventionType./10.^fix(log10(InterventionType)));%
+        end
         R_param=IntParam{1,IntervType}; % col: InterventionType
         Q_r1=diag([R_param(1)^2 R_param(2)^2 R_param(3)^2]);                         % Local error (covariance)
         Q_r{InType}=blkdiag(Q_r1,Q_r1);  
@@ -97,7 +101,7 @@ end
 %% Initial state
 init_x=zeros(6,1);
 init_V=eye(6);
-init_x(1)=y_Data(2);
+init_x(1)=y_Data(min(find(~isnan(y_Data))));
 init_V(1,1)=max(PriorParam(3).^2,Re(2));
 init_V(3,3)=PriorParam(5).^2;
 init_V(4:6,4:6)=InterventionVar_Network{1};

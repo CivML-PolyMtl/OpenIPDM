@@ -187,6 +187,10 @@ if ~isempty(PriorParam)
                 Re,Be,PriorParam,init_x,init_V,Ncurve,ConstrainedKF,InterventionCheck,...
                 InterventionVector,InterventionMu_Network,InterventionVar_Network);
         end
+        for j=1:size(Vsmooth,3)
+            Std(:,j)=sqrt(diag(Vsmooth(:,:,j)));
+        end
+        [xtb_v,Std_v,~,~,~,~]=BackTransformResults(y_Data,Re,Exsmooth,Std,Ncurve,y_Data-reshape(Be,1,[]),100,25);
         if ElemAnalyses
             if app.IntServiceLifeButton.Enable==1
                 cla(app.ElmSpeed);
@@ -210,9 +214,9 @@ if ~isempty(PriorParam)
                 end
             else
                 ylabel(app.ElmSpeed,'Speed');
-                for j=1:size(Vsmooth,3)
-                    Std(:,j)=sqrt(diag(Vsmooth(:,:,j)));
-                end
+%                 for j=1:size(Vsmooth,3)
+%                     Std(:,j)=sqrt(diag(Vsmooth(:,:,j)));
+%                 end
                 if ~isempty(y_Data_before)
                     y_Data_before(:,2)=RevSpaceTransform(Ncurve,y_Data_before(:,2),100,25);
                 end
@@ -245,6 +249,8 @@ else
     IntervType=0;
     if ElemAnalyses
         msgbox('The selected structural element has no inspection data, or it has no model associated with it.', 'Analyses can not be performed','warn');
+        cla(app.ElmSpeed);
+        cla(app.ElmCondition);
     end
 end
 clc

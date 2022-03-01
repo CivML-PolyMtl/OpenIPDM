@@ -108,7 +108,7 @@ function [YearTotal,y_Data,Re,Be,InterventionVector,...
     end
      %% Outliers within Interventions check
      if ~NoInt && ~isempty(diff(y))
-         y_parts=[];year_parts=[];R_parts=[];Insp_parts=[];YearTotal_parts=[];
+         y_parts=[];year_parts=[];R_parts=[];Insp_parts=[];YearTotal_parts=[];B_parts=[];
          IndIntV=find(InterventionVector);
          [~,~,iyearv]=intersect(Years,YearTotal);
          for i=1:length(IndIntV)

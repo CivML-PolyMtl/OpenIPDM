@@ -19,8 +19,7 @@ for i=1:NumElms
     Elm = Elms(i);
     SlCatAnalyses=0;
     [~,IntervType]=RunElementwiseSL(Elm,app,ElemAnalyses,CatAnalyses,StrucAnalyses,NetAnalyses,SlCatAnalyses);
-    value=find(strcmp(app.IntCodeDropDown.Value,app.IntCodeDropDown.Items))+1;
-    if value==IntervType
+    if IntervType ~= 0
         SlCatAnalyses=1;
         [IntCondServiceLife,~]=RunElementwiseSL(Elm,app,ElemAnalyses,CatAnalyses,StrucAnalyses,NetAnalyses,SlCatAnalyses);
     else
