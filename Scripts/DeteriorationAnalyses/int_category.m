@@ -4,6 +4,7 @@ d.Value = 0;
 YearsDuration=120;
 YD=length(YearsDuration);
 NumElms=length(Elms);
+Att=nan;
 if NumElms~=0
     CondData=nan(NumElms,YD);
     SpeedData=nan(NumElms,YD);
@@ -31,7 +32,7 @@ for i=1:NumElms
     [~,~,~,~,~,IntervType]=RunElementwiseSL(Elm,app,ElemAnalyses,CatAnalyses,StrucAnalyses,NetAnalyses,SlCatAnalyses);
     if IntervType ~= 0
         SlCatAnalyses=1;
-        [cond, speed, cec, InterventionYear, Qte, IntervType]=RunElementwiseSL(Elm,app,ElemAnalyses,CatAnalyses,StrucAnalyses,NetAnalyses,SlCatAnalyses);
+        [cond, speed, cec, InterventionYear, Qte, IntervType, Att]=RunElementwiseSL(Elm,app,ElemAnalyses,CatAnalyses,StrucAnalyses,NetAnalyses,SlCatAnalyses);
     else
         cond=nan;
         speed=nan;
@@ -59,7 +60,7 @@ IntData = [CondData, SpeedData, cecData, YearData, QteData, TypeData];
 ind_0 = (cecData==0);
 IntData(ind_0,:)=[];
 
-function [cond, speed, cec, InterventionYear, Qte, IntervType]=RunElementwiseSL(Elm,app,ElemAnalyses,CatAnalyses,StrucAnalyses,NetAnalyses,SlCatAnalyses)
+function [cond, speed, cec, InterventionYear, Qte, IntervType, StrucAtt]=RunElementwiseSL(Elm,app,ElemAnalyses,CatAnalyses,StrucAnalyses,NetAnalyses,SlCatAnalyses)
     if SlCatAnalyses
         if app.InterventionCDFButton.Enable
             da_element();

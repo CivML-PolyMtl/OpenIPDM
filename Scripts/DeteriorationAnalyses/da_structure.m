@@ -1,7 +1,6 @@
 ElemAnalyses=0;
 CatAnalyses=0;
 Ncurve=4;
-d.Value = 0; 
 YearsDuration=app.TotalYearsDuration;
 YD=length(YearsDuration);
 NumCats=length(Cats);
@@ -30,6 +29,9 @@ if StrucAnalyses
         'Message',sprintf('Processing Category %d/%d',i,NumCats),'Cancelable','on'...
         ,'CancelText','Stop');
 end
+
+d.Value = 0; 
+
 for i=1:length(Cats)
     if StrucAnalyses
         d.Value = (i/NumCats)/1.2;
@@ -43,7 +45,7 @@ for i=1:length(Cats)
     app.CategoryListBox.ValueChangedFcn(app,event);
     [Exsmooth,Vsmooth,MisStart,y_Data,Re]=RunCategorywise(app,ElemAnalyses,CatAnalyses,StrucAnalyses,NetAnalyses);
     TimeID=find(YearsDuration==MisStart);
-    if sum(y_Data)>0
+    if nansum(y_Data)>0
         StartYear(i)=MisStart;
     end
     ExElm(:,:,i)=Exsmooth(1:3,:);
