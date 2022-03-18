@@ -10,7 +10,7 @@ parfor ki=1:size(PTrunc,3)
     [xTruncOut(:,ki),PTruncOut(:,:,ki)]=KFConstraintsHandlingSeq(xTrunc(:,ki),PTrunc(:,:,ki),D,d,1);
 end
 catch
-    sprintf('Something is wrong');
+    sprintf('There is a problem with the deterioration speed estimate, enforcing the constraints has failed');
 end
 xTrunc=xTruncOut;
 PTrunc=PTruncOut;

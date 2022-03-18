@@ -53,6 +53,6 @@ end
 xTrunc = Ttrunc * sqrt(Wtrunc) * S' * zTrunc + xTrunc;
 PTrunc = Ttrunc * sqrt(Wtrunc) * S' * CovZ * S * sqrt(Wtrunc) * Ttrunc';
 catch
-    sprintf('something is wrong!')
+    sprintf('There is a problem with the deterioration speed estimate, enforcing the constraints has failed')
 end
 end
