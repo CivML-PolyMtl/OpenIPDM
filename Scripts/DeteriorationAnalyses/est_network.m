@@ -1,7 +1,7 @@
 ElemAnalyses=0;
 CatAnalyses=0;
 StrucAnalyses=0;
-Ncurve=4;
+Ncurve=app.curve_param;
 d.Value = 0; 
 YearsDuration=app.TotalYearsDuration;
 SelectedYear=find(app.YearSpinner.Value==YearsDuration);

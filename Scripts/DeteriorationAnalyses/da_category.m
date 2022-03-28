@@ -1,5 +1,5 @@
 ElemAnalyses=0;
-Ncurve=4;
+Ncurve=app.curve_param;
 d.Value = 0; 
 YearsDuration=app.TotalYearsDuration;
 YD=length(YearsDuration);

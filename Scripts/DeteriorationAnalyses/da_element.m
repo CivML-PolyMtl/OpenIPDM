@@ -31,6 +31,7 @@ if ~isempty(PriorParam)
     ElementTypeIndex=ModelParam{ETInd,9}.TypeElement;
     
     Ncurve = ModelParam{ETInd,10};
+    app.curve_param = Ncurve;
     % Intervention Parameters
     IntParam=ModelParam{ETInd,8};
     ExIntParam=ModelParam{ETInd,6};

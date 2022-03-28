@@ -1,6 +1,6 @@
 ElemAnalyses=0;
 CatAnalyses=0;
-Ncurve=4;
+Ncurve=app.curve_param;
 YearsDuration=app.TotalYearsDuration;
 YD=length(YearsDuration);
 NumCats=length(Cats);
