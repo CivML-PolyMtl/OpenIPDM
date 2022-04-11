@@ -17,8 +17,8 @@ For tutorials, see: [YouTube channel](https://youtube.com/playlist?list=PLSng2Cr
 
 ## How to cite
 
-*OpenIPDM: A Probabilistic Framework for Estimating the Deterioration and Effect of Interventions on Bridges*<br/>[Hamida, Z.](https://zachamida.github.io), [Laurent, B.](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_BLAURENT.html) and [Goulet, J.-A.](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_MAIN.html)<br/>SoftwareX (Submitted, January 2022) 
-<!--- <br/>[[PDF]()] [[EndNote]()] [[BibTex]()] -->
+*OpenIPDM: A Probabilistic Framework for Estimating the Deterioration and Effect of Interventions on Bridges* (2022) <br/>[Hamida, Z.](https://zachamida.github.io), [Laurent, B.](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_BLAURENT.html) and [Goulet, J.-A.](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_MAIN.html)<br/>SoftwareX 
+ <br/>[[PDF](https://doi.org/10.1016/j.softx.2022.101077)] <!---[[EndNote]()] [[BibTex]()] -->
 
 ### Prerequisites
 
