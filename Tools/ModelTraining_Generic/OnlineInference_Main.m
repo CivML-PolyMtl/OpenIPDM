@@ -83,7 +83,7 @@ else
     else
         %without biases
         init_estim = [ PARAM(3), 12]; %  [sd_v0, sd_sd_v0];
-        [sd] = OnlineInference_sigma(Y_real, Inspectorlabel, init_x, init_V, A, Q, UpdatedInspectorsData,PARAM,init_estim,MdataEngy);
+        [sd] = OnlineInference_sigma(Y_real, Inspectorlabel, init_x, init_V, A, Q, UpdatedInspectorsData,PARAM,init_estim);
         UpdatedInspectorsData{1}(:,3) = sd';
     end
 end
