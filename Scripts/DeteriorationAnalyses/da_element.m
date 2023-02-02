@@ -1,4 +1,7 @@
-if app.IntServiceLifeButton.Enable || SlCatAnalyses 
+if app.condition_threshold
+    NumYearsSlider=30;
+    ColorCode=1;
+elseif app.IntServiceLifeButton.Enable || SlCatAnalyses
     NumYearsSlider=120;
     ColorCode=1;
 elseif ElemAnalyses
@@ -192,8 +195,60 @@ if ~isempty(PriorParam)
             Std(:,j)=sqrt(diag(Vsmooth(:,:,j)));
         end
         [xtb_v,Std_v,~,~,~,~]=BackTransformResults(y_Data,Re,Exsmooth,Std,Ncurve,y_Data-reshape(Be,1,[]),100,25);
+        if app.condition_threshold
+            last_obs_ind = iaY(end);
+            if ElemAnalyses
+                threshold_value = app.MaintennaceSpinner.Value;
+            else
+                threshold_value = app.MaintennaceSpinner_cat.Value;
+            end
+            [~,threshold_trans]=SpaceTransformation(Ncurve, threshold_value, 100, 25);
+            for j=1:length(Exsmooth(1,last_obs_ind:end))-1
+                ThresholdCDF(j)=normcdf(threshold_trans,Exsmooth(1,last_obs_ind+j),sqrt(Vsmooth(1,1,last_obs_ind+j)));
+            end
+        end
         if ElemAnalyses
-            if app.IntServiceLifeButton.Enable==1
+            if app.condition_threshold
+                cla(app.ElmSpeed);
+                hold(app.ElmSpeed, 'off')
+                xticks(app.ElmSpeed,'auto');
+                ThresholdPDF = diff(ThresholdCDF);
+                IndvYear = find(ThresholdCDF >= 0.5);
+                if isempty(IndvYear)
+                    IndvYear = length(ThresholdCDF);
+                    true_year = 0;
+                else
+                    true_year = 1;
+                end
+                ylim(app.ElmSpeed,[0,1])
+                First_year = YearTotal(last_obs_ind);
+                Ind_duration = (ThresholdPDF>=10^-4);
+                Ind_duration = [Ind_duration(1) Ind_duration];
+                plotting_range = find(Ind_duration);
+                if ~isempty(plotting_range)
+                    IndThresholdYear = max([IndvYear(1) - plotting_range(1) + 1,1]);
+                    x_threshold=First_year:First_year+length(ThresholdCDF)-1;
+                    x_threshold=x_threshold(Ind_duration);
+                    if ~isempty(x_threshold) && length(x_threshold)>1
+                        xlim(app.ElmSpeed,[x_threshold(1) x_threshold(end)]);
+                        plot(app.ElmSpeed,x_threshold,ThresholdCDF(Ind_duration));
+                        % the index should be shifted becasue diff removes the
+                        % first year
+                        IndMaxCond = IndThresholdYear ;
+                        if true_year && IndThresholdYear ~= 1
+                            hold(app.ElmSpeed)
+                            plot(app.ElmSpeed,[x_threshold(IndMaxCond) x_threshold(IndMaxCond)],[min(ylim(app.ElmSpeed)) max(ylim(app.ElmSpeed))],'-.');
+                            text(app.ElmSpeed,x_threshold(IndMaxCond)-2, max(ylim(app.ElmSpeed))-0.9*max(ylim(app.ElmSpeed)), sprintf('$\\tilde{\\mu}_{t|T}= %d \\rightarrow %d$',threshold_value,x_threshold(IndMaxCond)),'Rotation',90,'interpreter','latex','FontSize', 14);
+                        end
+                        ylabel(app.ElmSpeed,sprintf('Pr[Condition $\\le$ %d]', threshold_value),'interpreter','latex'); 
+                        hold(app.ElmSpeed)
+                    else
+                        msgbox('Analysis is not feasible for this condition threshold.', 'Analyses can not be performed','warn');
+                    end
+                else
+                    msgbox('Analysis is not feasible for this condition threshold.', 'Analyses can not be performed','warn');
+                end
+            elseif app.IntServiceLifeButton.Enable==1
                 cla(app.ElmSpeed);
                 xticks(app.ElmSpeed,'auto');
                 LifeSpanInt=diff(LifeSpanInt);
