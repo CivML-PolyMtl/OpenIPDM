@@ -1,0 +1,19 @@
+function [init_x, init_V] = define_init_KF_state(y, ave_init, Re, param)
+%     init_x(1,1:size(y,2)) = max(gather(y(1,:,:)),[],'all');
+    % init_x(1,:)=(1-abs(mean(EngBiasData(:,2)))/(trans_max_cond-trans_min_cond)) .* max(gather(y(1,:,:)),[],3);
+    % init_x(1,1:size(y,2)) = 100;
+    % init_x(1,:) = (0.25*max(gather(y(1,:,:)),[],'all') + 0.75*gather(y(1,:,2)));
+    % init_x(1,1:size(y,2)) = (max(gather(y(1,:,:)),[],'all') + nanmean(gather(y(1,:,:)),3))/2;
+    % init_x(1,:)=(observations(1,1,2));
+%     init_x(1,:)=gather(y(1,:,2));
+%     init_x(1,:) = max(y(1,:,2:3),[],3);
+%     init_x(1,:) = y(1,:,2) - EngBiasData(1,:,2);
+    init_x(1,:)=ave_init;
+    init_x(2,:)=0;
+    init_x(3,:)=0;
+    init_V=zeros(3,3,size(y,2),'gpuArray');
+    init_V(3,3,:)=param(5).^2;
+    init_V(1,1,:)=max(param(3).^2,Re(1,:,2));
+%     init_V(1,1,:)=max(5^2,Re(1,:,2));
+    % init_x(1,1:size(y,2))=(1-abs(mean(EngBiasData(:,2)))/75) .* max(gather(y(1,:,:)),[],3);
+end

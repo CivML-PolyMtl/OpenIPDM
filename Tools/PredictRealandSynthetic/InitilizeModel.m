@@ -1,5 +1,10 @@
 %% Initilize Model
 args=varargin;
+if args{4} == 0
+    is_synthetic = true;
+else
+    is_synthetic = false;
+end
 if ~isempty(args)
     GraphMatrix=args{1};                                                    % check if the graphs matrix is provided (Synthetic Analyses)
     FigureID=0;
@@ -35,21 +40,21 @@ ColorLastObs=[];                                                            % Fo
 Nsigma=0;                                                                   % The shift in the updated expected value after applying the constraints
 y=[NaN y];                                                                  % Add a NaN to the observation so KF start at t=1
 ObsYears=[0; ObsYears];                                                     % Make the length of the years vector the same length as the observation vector
-if ~isempty(args) && length(args)==3
+if ~isempty(args) && is_synthetic
     FigureID=args{3};
     FullRun=0;
-elseif ~isempty(args) && length(args)==2
+elseif ~isempty(args) && ~is_synthetic
     IndLastObs=find(~isnan(y));                                             % identify the index of the last observation (Real data)
     ObsYears(IndLastObs(end))=0;                                            % Exclude the last observation from the update step in the model
     GraphMatrix=zeros(5);                                                   % Reset the graph matrix to zeros
     ColorLastObs=1;                                                         % trigger the color for the last observation
     FigureID=0;
     FullRun=0;
-elseif ~isempty(args) && length(args)==4
-    if args{4}
-        FullRun=1;
-        GraphMatrix=zeros(5);
-    end
+% elseif ~isempty(args) && length(args)==4
+%     if args{4}
+%         FullRun=1;
+%         GraphMatrix=zeros(5);
+%     end
 end
 
 InpecBiase=[0 InpecBiase];                                                  % Make the length of the Biase vector the same length as the observation vector
@@ -76,13 +81,13 @@ else
     ObsIndexes=ObsIndexes(1);
 end
 
-init_x(1)=mean(y(ObsIndexes));                                              % initial condition for the initial state
-
+% init_x(1)=mean(y(ObsIndexes));                                              % initial condition for the initial state
+init_x(1)=y(2);
 ConditionVal=mean(y(ObsIndexes));                                                     % initial condition (transformed space)
 MaxCondition=100;                                                           % max possible condition (original space)
 [Mtrv]=RevSpaceTransform(Pn,ConditionVal,100,25);                                  % initial condition (original space)
 DifferenceObs=MaxCondition-Mtrv;                                            % difference between max. condition and initial condition
-if isempty(app)
+if is_synthetic
     init_x(2)=TableOfParameters{2,5}*DifferenceObs;                         % expected speed (t=0)
     init_x(3)=TableOfParameters{2,6}*init_x(2);                             % expected acceleration (t=0)
     init_V(1,1,:)=max(TableOfParameters{2,2}.^2,Re(2));                     % condition variance (t=0)
@@ -100,24 +105,53 @@ end
 
 %% Regression Model
 if ~isempty(RegressionModel)
-    Kr=1;    
-    InirilizedEx=RegressionModel.InirilizedEx;
-    InirilizedVar=RegressionModel.InirilizedVar;
-    Sigma_W0=RegressionModel.Sigma_W0;
-    KernelType=string(RegressionModel.KernelType);
-    X_ControlPoints=RegressionModel.X_ControlPoints;
-    Kernel_l=RegressionModel.Kernel_l;
-    for i=1:length(KernelType)
-        Krv=KernelFun(AllAtt(:,i),X_ControlPoints,Kernel_l(i),KernelType(i));
-        Kr=Kr.*Krv;
-    end
-    % Kernel Function
-    AKr=Kr./sum(Kr,2);
-    init_x(1)=y(2);
-    init_x(2,1)=AKr*InirilizedEx;
-    init_V(2,2,:)=(AKr*InirilizedVar*AKr' + Sigma_W0^2);
-    if init_x(2,1)>0
-        init_x(2,1)=0;
+    if kernel_regression
+        Kr=1;    
+        InirilizedEx=RegressionModel.InirilizedEx;
+        InirilizedVar=RegressionModel.InirilizedVar;
+        Sigma_W0=RegressionModel.Sigma_W0;
+        KernelType=string(RegressionModel.KernelType);
+        X_ControlPoints=RegressionModel.X_ControlPoints;
+        Kernel_l=RegressionModel.Kernel_l;
+        for i=1:length(KernelType)
+            Krv=KernelFun(AllAtt(:,i),X_ControlPoints,Kernel_l(i),KernelType(i));
+            Kr=Kr.*Krv;
+        end
+        % Kernel Function
+        AKr=Kr./sum(Kr,2);
+        init_x(1)=y(2);
+        init_x(2,1)=AKr*InirilizedEx;
+        init_V(2,2,:)=(AKr*InirilizedVar*AKr' + Sigma_W0^2);
+        if init_x(2,1)>0
+            init_x(2,1)=0;
+        end
+    else
+        if is_synthetic
+            if AnnModel.x_min_maxed
+                str_atts = TAGI_scaler.transform_min_max(AllAtt, AnnModel.x_min, AnnModel.x_max, AnnModel.x_min_range , AnnModel.x_max_range);
+            elseif AnnModel.x_standardized
+                str_atts = TAGI_scaler.transform_norm(AllAtt, AnnModel.x_mean, AnnModel.x_std);
+            end
+        else
+            [x_cat, x_tr] = TAGI_util.split_cat_and_cont_inp(AllAtt, AnnModel.categ_st_att_ind);
+            x_cat = TAGI_util.one_hot_encode_inp(x_cat, AnnModel.input_categories);
+            % Pre-process inputs
+            if AnnModel.x_min_maxed
+                x_tr = TAGI_scaler.transform_min_max(x_tr, AnnModel.x_min, AnnModel.x_max, AnnModel.x_min_range , AnnModel.x_max_range);
+            elseif AnnModel.x_standardized
+                x_tr = TAGI_scaler.transform_norm(x_tr, AnnModel.x_mean, AnnModel.x_std);
+            end
+            % concatenate the categorical and scaled continuous struct. atrributes
+            str_atts = [x_cat, x_tr];
+        end
+
+        [pred_vel, pred_vel_var] = TAGI_predict(AnnModel, str_atts);
+
+        if any(isnan(pred_vel)) || any(isnan(pred_vel_var))
+            disp('warn! nan values in pred_vel or pred_vel_var')
+        end
+        init_x(2,1) = pred_vel;
+        init_V(2,2,:) = pred_vel_var;
     end
 end
 

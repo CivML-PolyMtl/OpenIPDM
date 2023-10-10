@@ -69,7 +69,7 @@ if ~isempty(SEData)
         TypeElementCategories=table2array(TypeElementCategories);
         if ~isnumeric(TypeElementCategories(1))
             for i=1:length(TypeElementCategories)
-                SEData(find(strcmp(TypeElementCategories(i),SEData(:,TypeElementData))),TypeElementData)={sprintf('%d',i)};
+                SEData(find(strcmp(TypeElementCategories{i},table2array(SEData(:,TypeElementData)))),TypeElementData)={sprintf('%d',i)};
             end
         end
     end
@@ -140,11 +140,11 @@ if ~isempty(SEData)
     ConstructionDateCol=8+EndIndex; % AnConst
     STAtt8=10+EndIndex;% DJMA
     STAtt9=11+EndIndex;% x_camions
-    
+    STAtt10=12+EndIndex;% NBREVOIES
 
     
     MetaData.AttributesLabels={'Material';'Age'; 'Lat'; 'Long';'Longtotale'; 'LongTablier';
-        'LargHorstout'; 'LargCarrossable';'SuperfTablier'; 'DJMA'; 'x_camions'};
+        'LargHorstout'; 'LargCarrossable';'SuperfTablier'; 'DJMA'; 'x_camions'; 'NBREVOIES'};
     MetaData.Material=MaterialCategories;
     MetaData.TypeElement=TypeElementCategories;
     
@@ -198,6 +198,28 @@ if ~isempty(SEData)
                     ESEDsorted{i,jcount}=SEDsorted{i,1}(EID,:);
                 end
             end
+            %% added on 4/6/2023
+        elseif ~isempty(SEDsorted{i,1}(:,[StructuralElemNumSpans,StructuralElemID]))
+            [~,ElemID]=uniqueRowsCA(SEDsorted{i,1}(:,[StructuralElemNumSpans,StructuralElemID]));
+            jcount=0;
+            for j=1:length(ElemID)
+                V1=cell2mat(SEDsorted{i,1}(ElemID(j),[StructuralElemNumSpans StructuralElemID]));
+                V2=cellstr([char(SEDsorted{i,1}(:,StructuralElemNumSpans)) char(SEDsorted{i,1}(:,StructuralElemID))]);
+                V2=strrep(V2,' ','');
+                try
+                    V2=cellfun(@str2num,V2);
+                    EID=find(str2double(V1)==V2);
+                catch
+                    V1=strrep(V1,' ','');
+                    EID=find(strcmp(V1,V2));
+                end
+                %                 V2=cellfun(@str2num,V2);
+                %                 EID=find(str2double(V1)==V2);
+                if ~isempty(EID)
+                    jcount=jcount+1;
+                    ESEDsorted{i,jcount}=SEDsorted{i,1}(EID,:);
+                end
+            end
         end
     end
     
@@ -213,6 +235,7 @@ if ~isempty(SEData)
     if STAtt7==EndIndex-1; STAtt7=[]; end
     if STAtt8==EndIndex-1; STAtt8=[]; end
     if STAtt9==EndIndex-1; STAtt9=[]; end
+    if STAtt10==EndIndex-1; STAtt10=[]; end
     
     CID=sum(~cellfun(@isempty,ESEDsorted),2);
     
@@ -226,16 +249,48 @@ if ~isempty(SEData)
                 D1=str2double(ESEDsorted{i,j}(:,EndIndex-3));
                 M=A1+0.75*B1+0.5*C1+0.25*D1;
                 Insp=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,EndIndex-1)));
-                MaterialInd=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,MaterialData)));
+                if ~isempty(categorical_data_ind)
+                    MaterialInd = str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,categorical_data_ind)));
+                end
                 SAtt1=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,STAtt1)));
                 SAtt2=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,STAtt2)));
                 SAtt3=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,STAtt3)));
-                SAtt4=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,STAtt4)));
-                SAtt5=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,STAtt5)));
-                SAtt6=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,STAtt6)));
+                if ~sum(strcmp(SelectedElementCat,{'Chasse-roue / trottoir',...
+                        'Dessous de la dalle/voûte','Mur','Mur de tête',...
+                        'Mur en aile','Murs/naiss.voûte/coins infér.',...
+                        'Plafond suspendu - Tuiles','Revêtement de mur',...
+                        'Voûte / Dalle'}))
+                    SAtt4=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,STAtt4)));
+                else
+                    SAtt4 = [];
+                end
+                if ~sum(strcmp(SelectedElementCat,{'Dessous de la dalle/voûte','Mur','Mur de tête','Mur en aile','Murs/naiss.voûte/coins infér.'}))
+                    SAtt5=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,STAtt5)));
+                else
+                    SAtt5 = [];
+                end
+                if ~sum(strcmp(SelectedElementCat,{'Mur'}))
+                    SAtt6=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,STAtt6)));
+                else
+                    SAtt6 = [];
+                end
                 SAtt7=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,STAtt7)));
-                SAtt8=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,STAtt8)));
-                SAtt9=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,STAtt9)));
+                if ~sum(strcmp(SelectedElementCat,{'Mur'}))
+                    SAtt8=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,STAtt8)));
+                else
+                    SAtt8 = [];
+                end
+                if ~sum(strcmp(SelectedElementCat,{'Mur'}))
+                    SAtt9=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,STAtt9)));
+                else
+                    SAtt9 = [];
+                end
+                if ~sum(strcmp(SelectedElementCat,{'Tirants','Toiture'}))
+                    SAtt10=str2double(cellfun(@cellstr,ESEDsorted{i,j}(:,STAtt10)));
+                else
+                    SAtt10 = [];
+                end
+
                 Yr=str2num(cell2mat(ESEDsorted{i,j}(:,2)));
                 AGE=Yr-str2num(cell2mat(ESEDsorted{i,j}(:,ConstructionDateCol)));
                 [~,iv]=sort(Yr);
@@ -270,6 +325,8 @@ if ~isempty(SEData)
                 end
                 
                 StrucIndexTrans=find(strcmp(string(ESEDsorted{i,j}(1,1)),string(NewID(:,2))))*ones(length(iv),1);
+                All_SAtt = [SAtt1 SAtt2 SAtt3 SAtt4 SAtt5 SAtt7 SAtt8 SAtt9 SAtt10]; %SAtt6
+                
                 if ~isempty(StrucIndexTrans) && InterventionCond>2
                     if sum(strcmp(NoIDIntRows,string(ESEDsorted{i,j}(1,1))))>0
                         if length(InterventionIndex)>1
@@ -278,24 +335,50 @@ if ~isempty(SEData)
                             end
                         end
                     end
-                    FM=[M(iv) Insp(iv) Yr(iv) StrucIndexTrans MaterialInd AGE(iv) SAtt1 SAtt2 SAtt3 SAtt4 SAtt5 SAtt6 SAtt7 SAtt8 SAtt9 IntYr IntCat];
+                    FM=[M(iv) Insp(iv) Yr(iv) StrucIndexTrans MaterialInd AGE(iv) All_SAtt IntYr IntCat];
                 else
-                    FM=[M(iv) Insp(iv) Yr(iv) StrucIndexTrans MaterialInd AGE(iv) SAtt1 SAtt2 SAtt3 SAtt4 SAtt5 SAtt6 SAtt7 SAtt8 SAtt9];
+                    FM=[M(iv) Insp(iv) Yr(iv) StrucIndexTrans MaterialInd AGE(iv) All_SAtt];
                 end
                 %             StrucIndexTrans=find(strcmp(string(ESEDsorted{i,j}(1,1)),string(NewID(:,2))))*ones(length(iv),1);
                 %             if ~isempty(StrucIndexTrans)
                 %                 FM=[M(iv) Insp(iv) Yr(iv) StrucIndexTrans MaterialInd AGE(iv) SAtt1 SAtt2 SAtt3 SAtt4 SAtt5 SAtt6 SAtt7 SAtt8 SAtt9 IntCatYr];
                 %             end
-                SSPDsorted{i,j}=FM;
+                if IncludeStructuralAtt
+                    if sum(any(isnan(All_SAtt)))==0 && sum(any(AGE<0))==0
+                        SSPDsorted{i,j}=FM;
+                    end
+                else
+                    SSPDsorted{i,j}=FM;
+                end
+            end
+        end
+        if exist('SSPDsorted','var') == 1
+            if i<=size(SSPDsorted,1)
+                ind_full = find(~cellfun(@isempty,SSPDsorted(i,:)));
+            end
+            if min(ind_full) ~= 1
+                 place_holder = SSPDsorted(i,ind_full);
+                 SSPDsorted(i,ind_full) = {[]};
+                 SSPDsorted(i,1:length(ind_full)) = place_holder;
             end
         end
     end
+    if exist('SSPDsorted','var') == 0
+        SSPDsorted = {[]};
+    end
     CID=sum(~cellfun(@isempty,SSPDsorted),2);
+    empty_ind = find(sum(~cellfun(@isempty,SSPDsorted),2)==0);
+    if ~isempty(empty_ind)
+        CID(empty_ind)=[];
+        SSPDsorted(empty_ind,:)=[];
+    end
     Inspectors=[];
     for i=1:length(CID)
         for j=1:CID(i)
-            UniqueInspectors=unique(SSPDsorted{i,j}(:,2));
-            Inspectors = union(UniqueInspectors,Inspectors);
+            if ~isempty(SSPDsorted{i,j})
+                UniqueInspectors = unique(SSPDsorted{i,j}(:,2));
+                Inspectors = union(UniqueInspectors,Inspectors); 
+            end
         end
     end
     TrainingWindow=50;
@@ -303,11 +386,11 @@ if ~isempty(SEData)
     
     if InterventionCond==3
         FullPathEx=sprintf('%s/ExtractedData/InspectionData_Intervention_%s.mat',OriginPWD,erase(ColsVal,"/"));
-        FullPath_Inspectors_int=sprintf('%s/ExtractedData/Inspectors_int_%s.mat',OriginPWD,erase(ColsVal,"/"));
+        FullPath_Inspectors=sprintf('%s/ExtractedData/Inspectors_int_%s.mat',OriginPWD,erase(ColsVal,"/"));
         save(sprintf('%s/ExtractedData/NumAfterIntervention_%s.mat',OriginPWD,erase(ColsVal,"/")),'NumObsAfterIntervention');
         save(FullPathEx,'SSPDsorted');
         save(sprintf('%s/ExtractedData/MetaData_Intervention_%s.mat',OriginPWD,erase(ColsVal,"/")),'MetaData');
-        save(FullPath_Inspectors_int,'Inspectors');
+        save(FullPath_Inspectors,'Inspectors');
     else
         FullPathEx=sprintf('%s/ExtractedData/InspectionData_%s.mat',OriginPWD,erase(ColsVal,"/"));
         FullPath_Inspectors=sprintf('%s/ExtractedData/Inspectors_%s.mat',OriginPWD,erase(ColsVal,"/"));

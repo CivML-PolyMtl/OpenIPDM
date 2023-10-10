@@ -4,7 +4,12 @@ function [loglik,MAcc,AccVal,AccSTD,PWithinCI,PWithinCITrue,Erbar,Erbarbar,...
     A, C, Q, R, Re, init_x, init_V,InpecBiase,InpecBiaseTrue,OptmInsp,RU,InspBU,ObsYears,...
     yearly,InspectorLabel,StructureInd,ElementInd,Pn,ReTrue,QTrue,...
     SynDatabaseState,RegressionModel,AllAtt,TableOfParameters,varargin)
-
+if strcmp(app.RegmodelDropDown.Value,'KR')
+    kernel_regression = true; % used in InitilizeModel()
+elseif strcmp(app.RegmodelDropDown.Value,'TAGI')
+    kernel_regression = false; % used in InitilizeModel()
+    AnnModel = RegressionModel;
+end
 %% Initilize Framework
 InitilizeModel();
 
@@ -15,16 +20,12 @@ InitilizeModel();
 
 %% Run Kalman Smoother
 [Exsmooth,Vsmooth,s_Xsmooth,Status]=kalman_smoother(x,V,A,Q,Tdb,RunSmoother);
-
 if isempty(RegressionModel)
-ConditionVal=Exsmooth(1,2);
-if isnan(Exsmooth(1,2))
-    Exsmooth(1,2)
-end
-%% Refining initial state estimate (condition)
-MaxCondition=100;
-[Mtrv]=RevSpaceTransform(Pn,ConditionVal);
-DifferenceObs=MaxCondition-Mtrv;
+    ConditionVal=Exsmooth(1,2);
+    %% Refining initial state estimate (condition)
+    MaxCondition=100;
+    [Mtrv]=RevSpaceTransform(Pn,ConditionVal);
+    DifferenceObs=MaxCondition-Mtrv;
     if isempty(app)
         init_x(2)=TableOfParameters{2,5}*DifferenceObs;
         init_x(3)=TableOfParameters{2,6}*init_x(2);

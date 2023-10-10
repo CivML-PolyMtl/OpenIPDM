@@ -3,16 +3,29 @@ if isempty(AllParameters)
     message = 'Please load the model parameters before running the analyses.';
     uialert(app.figure1,message,'Error','Icon','error');
 else
+%     elements_of_interest = readmatrix('element_ids.xlsx');
+%     nan_str_att_indices = [];
     ActiveParametersSet=AllParameters.ActiveParametersSet;
     TableEstimatedParameters=AllParameters.TableEstimatedParameters;
     RealInspectorsEstimatedSigma=AllParameters.RealInspectorsEstimatedSigma;
     RealInspectorsID=AllParameters.RealInspectorsID;
     if ~isempty(AllParameters.RegressionModel)
         RegressionModel=AllParameters.RegressionModel;
+        % Find the number of attributes in TAGI -- NOTE: assumes first input covariate is always categorical
+        if isfield(RegressionModel, 'x_standardized') || isfield(RegressionModel, 'x_min_maxed')
+            if RegressionModel.x_standardized
+                num_atts = size(RegressionModel.x_mean,2) + 1;
+            elseif RegressionModel.x_min_maxed
+                num_atts = size(RegressionModel.x_min,2) + 1;
+            end
+        else
+            num_atts = 4;
+        end
     else
         RegressionModel=[];
+        num_atts = 4;
     end
-    
+
     MdataEngyUpdate=RealDataValidation(app.MdataEngy,app.OldIds,app.SSPDsorted,app.NewIds);
     %app.MdataEngy=[];app.SSPDsorted=[];
     if ~isempty(MdataEngyUpdate)
@@ -33,6 +46,10 @@ else
         CountVals=1;
         for i=1:length(CID)
             for ElementInd=1:CID(i)
+                if any(isnan(MdataEngyUpdate{i,ElementInd}(1,5:end))) % skip elements with NaN values in their structural attributes
+%                     nan_str_att_indices = [nan_str_att_indices, ElementInd];
+                    continue
+                end
                 y=MdataEngyUpdate{i,ElementInd}(:,1);
                 MaxDiff=max(abs(diff(y(1:end))));
                 Insp=MdataEngyUpdate{i,ElementInd}(:,2)';
@@ -78,7 +95,7 @@ else
                     else
                         ObsIndexes=ObsIndexes(1);
                     end
-                    AllAtt=[MdataEngyUpdate{i,ElementInd}(1,5:7) mean(y(ObsIndexes))];
+                    AllAtt=[MdataEngyUpdate{i,ElementInd}(1,5:5+(num_atts-2)) mean(y(ObsIndexes))]; % index 5 is where the atts start
                     if length(Insp)>length(find(~isnan(y)))
                         Insp(DuplicatedIndex)=[];
                     end
@@ -110,7 +127,7 @@ else
                     [loglik,~,~,~,~,~,~,~,~,~,~,~,~,x,s_Xsmooth,Vvalues]=KFsKF(app,y, A, C, Q, R, Re,...
                         init_x, init_V,InpecBiase,[],OptmInsp,RU,InspBU,ObsYears,yearly,...
                         InspectorLabel,StructureInd,ElementInd,TableEstimatedParameters(1,end),...
-                        [],[],[],RegressionModel,AllAtt,TableEstimatedParameters,1,1);
+                        [],[],[],RegressionModel,AllAtt,TableEstimatedParameters,1,[],1,1);
                     XInitialValuesStore(1:3,CountVals)=x(:,1);
                     XassociatedSE(1:2,CountVals)=[ElementInd;StructureInd];
                     IndFinalObs=find(~isnan(y))+1;
@@ -140,7 +157,7 @@ else
             EstimateCondTr(i,1)=CondEstimate(IncludedIndex(i),1);
         end
         Markers={'o','*','s','x','p','h','+','d','.','<','>','^','v'};
-        
+       
         figure(1)
         HiddenObservation=Yommited(IncludedIndex,1);
         [~,HiddenObservationTr]=SpaceTransformation(TableEstimatedParameters(1,end),...
@@ -164,13 +181,13 @@ else
         set(h,'Position',[0.25 0.25 0.1 0.1])
         %colorbar
         hold off
-        
+
         figure(2)
         Mu=EstimateCondTr-HiddenObservationTr';
         VarianceCond=CondUncertainty(IncludedIndex,1).^2+Remmited(IncludedIndex,1).^2;
         scatter(EstimateCond,HiddenObservation,(VarianceCond));%,[],sqrt(VarianceCond));
         for i=1:length(Mu)
-            loglik(i)= gaussian_prob(Mu(i), zeros(1,length(Mu(i))), VarianceCond(i), 1);
+                loglik(i)= gaussian_prob(Mu(i), zeros(1,length(Mu(i))), VarianceCond(i), 1);
         end
         app.LLEditField.Value=sum(loglik);
         xlabel('Model Estimate $\tilde{\mu}_{t|\mathtt{T}-1}$','Interpreter','latex')
@@ -181,7 +198,7 @@ else
         plot([40,100],[40,100]);
         colorbar
         hold off
-        
+
         figure(3)
         histogram(Mu./sqrt(VarianceCond),'normalization','pdf')
         hold on

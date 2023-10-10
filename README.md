@@ -1,4 +1,3 @@
-[![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=CivML-PolyMtl/OpenIPDM)
 <p align="center">
 <img src="/Help/OpenIPDM.png" height="110">
 
@@ -18,8 +17,8 @@ For tutorials, see: [YouTube channel](https://youtube.com/playlist?list=PLSng2Cr
 
 ## How to cite
 
-*OpenIPDM: A Probabilistic Framework for Estimating the Deterioration and Effect of Interventions on Bridges* <br/>[Hamida, Z.](https://zachamida.github.io), [Laurent, B.](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_BLAURENT.html) and [Goulet, J.-A.](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_MAIN.html)<br/>SoftwareX 
- [[PDF](https://doi.org/10.1016/j.softx.2022.101077)] <!---[[EndNote]()] [[BibTex]()] -->
+*OpenIPDM: A Probabilistic Framework for Estimating the Deterioration and Effect of Interventions on Bridges*<br/>[Hamida, Z.](https://zachamida.github.io), [Laurent, B.](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_BLAURENT.html) and [Goulet, J.-A.](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_MAIN.html)<br/>SoftwareX (Submitted, January 2022) 
+<!--- <br/>[[PDF]()] [[EndNote]()] [[BibTex]()] -->
 
 ### Prerequisites
 
@@ -82,7 +81,8 @@ Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c6
 
 ## Authors
 
-* **Zachary Hamida** - *Methodology, initial code and development* - [webpage](https://zachamida.github.io)
+* **Zachary Hamida** - *Methodology, initial code and UI development* - [webpage](https://zachamida.github.io)
+* **Ali Fakhri** - *Baysian Neural Networks for Integrating Structural Attributes* - [webpage](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_AFAKHRI.html)
 * **Blanche Laurent** - *Analytical inference for inspectors uncertainty* - [webpage](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_BLAURENT.html)
 * **James-A. Goulet** - *Methodology* - [webpage](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_MAIN.html) 
 

@@ -28,6 +28,7 @@ for i=1:length(x(1,:))
         -(x(2,i).*dfct_n(xTr(i),2^Pn)));
     MVv(9,i)=((x(2,i).*dfct_n(xTr(i),2^Pn))-(x(2,i)...                      % E[x(2)] - (E[x(2)]-1*sigma)
         -1*s_Xsmooth(2,i)).*dfct_n(xTr(i),2^Pn));
+    Bias_org(i) = RevSpaceTransform(Pn,y(i)-InpecBiase(i));                 % (E[y]-bias)
     xtb(3,i)=x(3,i);%*(dfct_n(xTr(i),2^Pn))+x(2,i)^2*(d2fct_n(xTr(i),2^Pn));    % E[x(3)] (Transformed space)
     if ~isempty(ReTrue)
         Xtrue(i)=RevSpaceTransform(Pn,...                                   % The condition (Database) (Original Space)

@@ -22,14 +22,18 @@ Rv=zeros(length(Re),1);
 Rv(find(OptmInsp==1))=RU(1);
 Rv(find(OptmInsp==0))=Re(find(OptmInsp==0));
 Rv(find(isnan(OptmInsp)))=NaN;
-Rv=[NaN;Rv];
-InspB=zeros(length(Re),1);
-InspB(find(OptmInsp==1))=y(find(OptmInsp==1))-InspBU;
-InspB(find(OptmInsp==0))=y(find(OptmInsp==0))-InpecBiase(find(OptmInsp==0));
-InspB(find(isnan(OptmInsp)))=NaN;
-% InspB=[NaN;InspB];
+Rv=[Rv;NaN];
+% InspB=zeros(length(Re),1);
+% InspB(find(OptmInsp==1))=y(find(OptmInsp==1))-InspBU;
+% InspB(find(OptmInsp==0))=y(find(OptmInsp==0))-InpecBiase(find(OptmInsp==0));
+% InspB(find(isnan(OptmInsp)))=NaN;
+InspB = InpecBiase;
+
+InspB=[InspB NaN];
+plot(t(1:t_+1),InspB(1:t_+1),'b*')
+
 InspectorLabel=[NaN;InspectorLabel'];
-text(t(1:t_+1), InspB(1:t_+1)-Rv(1:t_+1)-2, num2str(InspectorLabel(1:t_+1)),'FontSize',15);
+text(t(1:t_+1), InspB(1:t_+1)-Rv(1:t_+1)'-2, num2str(InspectorLabel(1:t_+1)),'FontSize',15);
 
 if t_+1==T & ColorLastObs
     errorbar(t(LastObsInd(end)),InspB(LastObsInd(end)),LowV(LastObsInd(end))',TopV(LastObsInd(end))','LineStyle',...
@@ -52,8 +56,9 @@ ylabel(sprintf('Deterioration Condition of e_%d^%d',ElementInd,StructureInd),'In
 xlim([0,T-1])
 ylim([25,100])
 xtickangle(45)
+xticks(t(1:t_+1))
 if t_+1==T & ColorLastObs
-    h=legend('Hidden Inspection','Inspection','$\pm2 \sigma_{Inspector}$',...
+    h=legend('Hidden Inspection','Inspection','Inspection $- \mu_{Inspector}$','$\pm2 \sigma_{Inspector}$',...
         '$\pm2 \sigma_{Inspector}$','Median','$\pm2 \sigma_{Model}$','$\pm \sigma_{Model}$');
 else
     h=legend('Inspection','$\pm2 \sigma_{Inspector}$','Median',...
@@ -76,6 +81,7 @@ xlim([0,T-1])
 xlabel('Time[Year]')
 ylabel(sprintf('Deterioration Speed of e_%d^%d',ElementInd,StructureInd),'Interpreter','latex')
 xtickangle(45)
+xticks(t(1:t_+1))
 set(gca,'XTickLabel',num2str([StartDate:Step:EndDate]'))
 hold('off')
 grid('on')
@@ -92,6 +98,7 @@ xlim([0,T-1])
 xlabel('Time[Year]')
 ylabel(sprintf('Deterioration Acceleration of e_%d^%d',ElementInd,StructureInd),'Interpreter','latex')
 xtickangle(45)
+xticks(t(1:t_+1))
 set(gca,'XTickLabel',num2str([StartDate:Step:EndDate]'))
 hold('off')
 grid('on')

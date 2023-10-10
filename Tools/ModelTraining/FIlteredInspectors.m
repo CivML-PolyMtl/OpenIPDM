@@ -25,6 +25,10 @@ for i=1:length(CID)
             else
                 if max(abs(diff(y)))>15
                     y=nan(5,1);
+                elseif length(diff(y))>2 && 3*length(find(diff(y)>10))>=length(diff(y))
+                    y=nan(5,1);
+                elseif length(diff(y))>2 && 2*length(find(diff(y)>5))>=length(diff(y))
+                    y=nan(5,1);
                 elseif length(diff(y))>2 && length(find(diff(y)>0))>=length(diff(y))-length(find(diff(y)>0)) && length(find(diff(y)>5))>=length(diff(y))-length(find(diff(y)>5))
                     y=nan(5,1);
                 elseif length(diff(y))==2 && length(find(diff(y)>0))>=length(diff(y)) && length(find(diff(y)>5))>=length(diff(y))

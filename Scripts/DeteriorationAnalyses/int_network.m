@@ -71,8 +71,10 @@ pause(0.001);
 close(d);
 app.StructureListBox.Value=CurrentStruc;
 app.StructureListBox.ValueChangedFcn(app, event);
-app.CategoryListBox.Value=CurrentCat;
 
+if isempty(IntDataStruc)
+    IntDataStruc = {nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan,nan};
+end
 NetIntData=cell2table(IntDataStruc,'VariableNames',{'Bridge ID',...
     'Structural Category','E. Condition','E. Speed','CEC','Int Year','Quantity',...
     'Int Type', 'Municipality', 'Length','Const. Year','DJMA','P. Camion','NumLane',...

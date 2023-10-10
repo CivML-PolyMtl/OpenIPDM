@@ -12,8 +12,7 @@ if init_x(2)==0
     [Exsmooth, ~,~,~]=KalmanSmootherFun(Ex,VarKF,ExF,VarF,Q,Q_r,A,TotalTimeSteps,...
         ConstrainedKF,InterventionCheck,InterventionVector,param);
     InitialCond=Exsmooth(1,2);
-    OriginalValues=100;
-    MAxCondition=OriginalValues;
+    MAxCondition=100;
     [Mtrv]=RevSpaceTransform(Ncurve,InitialCond,100.0001,25);
     DfferenceObs=MAxCondition(end)-Mtrv;
     % Update Initial State Values
@@ -26,29 +25,39 @@ if init_x(2)==0
     init_V(3,3)=param(5)^2.;%init_V(2,2)*param(6)^2;
 end
 % Filter
-[Ex,VarKF,~,loglikely,MUSpeed,VarSpeed] = KalmanFilterFun(y, A, F, Q, Q_r, R, B, init_x, init_V,...
+[Ex,VarKF,~,loglikely,MUSpeed,VarSpeed, success] = KalmanFilterFun(y, A, F, Q, Q_r, R, B, init_x, init_V,...
     ConstrainedKF,InterventionCheck,InterventionVector,...
     InterventionMu_Net,InterventionVar_Net,param);
 % Smoother
 TotalTimeSteps=length(Ex(1,:));
 ExF(:,TotalTimeSteps)=Ex(:,TotalTimeSteps);
 VarF(:,:,TotalTimeSteps)=VarKF(:,:,TotalTimeSteps);
+
 [Exsmooth, Vsmooth, InterventionMu, InterventionVar, MUsSpeed, VarsSpeed] = KalmanSmootherFun(Ex,...
     VarKF,ExF,VarF,Q,Q_r,A,TotalTimeSteps,ConstrainedKF,InterventionCheck,...
     InterventionVector,param);
-IntTime=find(InterventionVector);
-for j=0:length(Exsmooth(1,IntTime:end))-1
-    NCDF(j+1)=normcdf(Exsmooth(1,IntTime-1),Exsmooth(1,IntTime+j),sqrt(Vsmooth(1,1,IntTime+j)));
+
+
+    
+if success == 0
+    NCDF = [];
+    InterventionMu = InterventionMu_Net;  
+    InterventionVar = InterventionVar_Net;
+else
+    IntTime=find(InterventionVector);
+    for j=0:length(Exsmooth(1,IntTime:end))-1
+        NCDF(j+1)=normcdf(Exsmooth(1,IntTime-1),Exsmooth(1,IntTime+j),sqrt(Vsmooth(1,1,IntTime+j)));
+    end
+    NPMF=diff(NCDF);
+    [~,IndvYear]=max(NPMF);
 end
-NPMF=diff(NCDF);
-[~,IndvYear]=max(NPMF);
 end
 
-function [ExpectedCond, Variance, SigmaForecast, loglik,SpeedTracking_mu,SpeedTracking_var]=KalmanFilterFun(y,...
+function [ExpectedCond, Variance, SigmaForecast, loglik,SpeedTracking_mu,SpeedTracking_var, success]=KalmanFilterFun(y,...
     A, F, Q, Q_r, R, B, init_x, init_V,ConstrainedKF,InterventionCheck,...
     InterventionVector,InterventionMu_Net,InterventionVar_Net,param)
 T=length(y);
-
+success = 1;
 % Equations
 UpdateExpected=@(EX,EY,sigma_XY,sigma_obs,y,b) EX+sigma_XY*sigma_obs^-1*(y-EY-b);
 UpdateVariance=@(sigma_X2,sigma_obs,sigma_XY) sigma_X2-sigma_XY*sigma_obs^-1*sigma_XY';
@@ -101,6 +110,9 @@ for t=0:T-1
         end
         %%
         KFConstraints();
+        if ~success
+            break
+        end
         if InterventionVector(t+1)
             SpeedTracking_mu(3,1)=ExpectedCond(2,t+1);
             SpeedTracking_mu(4,1)=ExpectedCond(5,t+1);
@@ -108,6 +120,7 @@ for t=0:T-1
             SpeedTracking_var(4,1)=Variance(5,5,t+1);
         end
         SigmaForecast(:,t+1)=sqrt(diag(Variance(:,:,t+1)));
+        
         if ~isnan(y(t+1))
             Err=y(t+1)-F*(A*ExpectedCond(:,t));
             loglik(t+1)=log(normpdf(Err,0,sqrt(S)));
@@ -181,5 +194,11 @@ for i=TotalTimeSteps-1:-1:Ending
         InterventionSigma=VarSmooth(4:6,4:6,i);
     end
 
+end
+if sum(InterventionVector(:,:,i+1:TotalTimeSteps))==0
+    InterventionMu = [];
+    InterventionSigma = [];
+    SpeedTracking_mu = [];
+    SpeedTracking_var = [];
 end
 end

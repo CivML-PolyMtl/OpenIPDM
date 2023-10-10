@@ -1,6 +1,6 @@
 init_x(1,:)=gather(y(1,:,2));
 OriginalValues=[25:1:100];
-[~,MAxCondition]=SpaceTransformation(Ncurve,OriginalValues,100,25);
+[~,MAxCondition]=SpaceTransformationVec(Ncurve,OriginalValues,100,25);
 NormObsValues=init_x(1,:);
 NormObsValues(find(NormObsValues>MAxCondition(end)))=MAxCondition(end);
 DifferenceObs=MAxCondition(end)-NormObsValues;
@@ -19,7 +19,7 @@ if OptProcedure==1
         init_V=zeros(3,3,1);
     end
     if OptLevel~=1
-        param(3)=param(2);
+        param(2)= mean(EngBiasData(:,end));
     end
     init_V(1,1,:)=max(param(3).^2,Re(1,:,2));
     init_V(2,2,:)=(param(4).^2).*(DifferenceObs)+(param(6).^2);%Re(1,:,2).*param(6).^2+param(4)^2;%

@@ -1,16 +1,8 @@
 function [tot_ll,InterventionMu_Network,InterventionVar_Network]= ...
     opt_intervention(Cindex,InspectorsID,InspectorsData,Re,Be,y,...
     param,ModelParamLocal,A,F,Q,Ncurve,ConstrainedKF,InterventionCheck,...
-    InterventionVector,model_i,RegressionModel,AllAtt,int_type)
+    InterventionVector,model_i,AnnModel,AllAtt,int_type)
 tot_ll=0;
-if model_i==2
-    Kernel_l=RegressionModel.Kernel_l;
-    X_ControlPoints=RegressionModel.X_ControlPoints;
-    KernelType=RegressionModel.KernelType;
-    InirilizedEx=RegressionModel.InirilizedEx;
-    InirilizedVar=RegressionModel.InirilizedVar;
-    Var_w0=RegressionModel.Sigma_W0^2;
-end
 % Prior Knowledge
 if int_type == 3
     InterventionMu_Network=[10 0.4 0];
@@ -38,16 +30,34 @@ for i=1:length(Cindex)
     init_V(1,1)=max(param(3).^2,Re(1,Cindex(i),2));
     init_V(3,3)=param(5).^2;
     init_V(4:6,4:6)=InterventionVar_Network;
-    % Kernel Regression
+    % BNN Regression
+    
     if model_i==2
-        Kr=1;
-        for im=1:length(KernelType)
-            Krv=KernelFun(AllAtt(i,im),X_ControlPoints(:,im),Kernel_l(im),string(KernelType(im)));
-            Kr=Kr.*Krv;
+            if AnnModel.categ_st_att_ind > 0
+                [x_cat, x_tr] = TAGI_util.split_cat_and_cont_inp(AllAtt(i,:), AnnModel.categ_st_att_ind);
+                % one-hot encode
+                x_cat = TAGI_util.one_hot_encode_inp(x_cat,AnnModel.input_categories);
+            else
+                x_tr = AllAtt(i,:);
+            end
+        
+        % x_tr = StrucAtt_cpu;
+        
+        % Pre-process inputs
+        if AnnModel.x_min_maxed
+            x_tr = TAGI_scaler.transform_min_max(x_tr, AnnModel.x_min, AnnModel.x_max, AnnModel.x_min_range , AnnModel.x_max_range);
+        elseif AnnModel.x_standardized
+            x_tr = TAGI_scaler.transform_norm(x_tr, AnnModel.x_mean, AnnModel.x_std);
         end
-        AKr=Kr./sum(Kr,2);
-        init_x(2,:)=AKr*InirilizedEx;
-        init_V(2,2)=(AKr*InirilizedVar(:,:,1)*AKr'+Var_w0);
+        % concatenate the categorical and scaled continuous struct. atrributes
+        if AnnModel.categ_st_att_ind > 0
+            x_tr = [x_cat, x_tr];
+        end
+
+        % Use TAGI to get initial speed prediction
+        [pred_vel, pred_vel_var] = TAGI_predict(AnnModel, x_tr);
+        init_x(2,:) = pred_vel;
+        init_V(2,2) = pred_vel_var;
         if isnan(init_x(2)) || isnan(init_V(2,2))
             message = 'Model training has failed due to KR model providing a NaN deterioration speed estimate. Consider adjusting the KR framework input and/or parameters.';
             msgbox(message, 'Model training is incomplete')
@@ -58,12 +68,15 @@ for i=1:length(Cindex)
         DifferenceObs=MAxCondition-init_x(1);
         init_V(2,2)=(param(4).^2).*(DifferenceObs)+(param(6).^2);
     end
-    
+    try 
     [~, ~, loglikelihood, ~, ~, InterventionMu_Network,...
         InterventionVar_Network]=HandCoded_KF_Network(y(1,Cindex(i),:),A,F,Q,Q_r,...
         Re(1,Cindex(i),:),Be(1,Cindex(i),:),param,init_x,init_V,Ncurve,ConstrainedKF,...
         InterventionCheck,InterventionVector(1,Cindex(i),:),...
         InterventionMu_Network,InterventionVar_Network);
+    catch
+        init_x
+    end
     tot_ll= tot_ll + loglikelihood;
 end
 end

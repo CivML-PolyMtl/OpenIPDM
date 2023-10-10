@@ -102,47 +102,93 @@ end
 init_x=zeros(6,1);
 init_V=eye(6);
 init_x(1)=y_Data(min(find(~isnan(y_Data))));
+% init_x(1) = (1-abs(mean(InspectorsParam(:,2)))/75) * max(y_Data);
 init_V(1,1)=max(PriorParam(3).^2,Re(2));
 init_V(3,3)=PriorParam(5).^2;
 init_V(4:6,4:6)=InterventionVar_Network{1};
 
-
-%% KR
+%% KR/BNN
 if ~isempty(RegressionModel)
-    Kernel_l=RegressionModel.Kernel_l;
-    X_ControlPoints=RegressionModel.X_ControlPoints;
-    KernelType=RegressionModel.KernelType;
-    InirilizedEx=RegressionModel.InirilizedEx;
-    InirilizedVar=RegressionModel.InirilizedVar;
-    Var_w0=RegressionModel.Sigma_W0^2;
-    AttStruc=StructuralAttributes(:,SA_Index-4);
-    IndNaNCheck=find(isnan(AttStruc));
-    if ~isempty(IndNaNCheck)
-        AttStruc(IndNaNCheck)=mean(X_ControlPoints(:,IndNaNCheck));
-    end
-    if sum(find(SA_Index==14))>0
-        Lind=find(SA_Index==14);
-        ZLind=find(AttStruc(:,Lind)==0);
-        AttStruc(ZLind,Lind)=1;
-        AttStruc(:,Lind)=log(AttStruc(:,Lind));
-    end
     y_Data_ind=find(~isnan(y_Data));
     if length(y_Data_ind)>2
         AvgObs=mean(y_Data(y_Data_ind(1:3)));
     else
         AvgObs=mean(y_Data(y_Data_ind));
     end
-    AllAtt=[AttStruc AvgObs];
-    
-    Kr=1;
-    for im=1:length(KernelType)
-        Krv=KernelFun(AllAtt(im),X_ControlPoints(:,im),Kernel_l(im),...
-            string(KernelType(im)));
-        Kr=Kr.*Krv;
+%     if length(y_Data_ind)>1
+%         init_x(1) = max(y_Data(y_Data_ind(1:2)));
+%     else
+%         init_x(1) = (y_Data(y_Data_ind(1)));
+%     end
+    %AttStruc=StructuralAttributes(:,SA_Index-4);
+    if sum(strcmp(ElmType,{'Bande médiane', 'Tirants', 'Élément en élastomère','Toiture'})) == 1
+        AttStruc=StructuralAttributes(:,SA_Index-5);
+        % remove the material because it is the same for the elements above
+        AttStruc(:,1) = []; 
+    else
+        AttStruc=StructuralAttributes(:,SA_Index-4);
     end
-    AKr=Kr./sum(Kr,2);
-    init_x(2,:)=AKr*InirilizedEx;
-    init_V(2,2)=(AKr*InirilizedVar(:,:,1)*AKr'+Var_w0);
+    AllAtt=[AttStruc AvgObs];
+    IndNaNCheck=find(isnan(AllAtt));
+    if ~isempty(IndNaNCheck)
+        AllAtt(IndNaNCheck)=RegressionModel.x_mean(IndNaNCheck);
+    end
+    if RegressionModel.categ_st_att_ind > 0
+        [x_cat, x_tr] = TAGI_util.split_cat_and_cont_inp(AllAtt, RegressionModel.categ_st_att_ind);
+        x_cat = TAGI_util.one_hot_encode_inp(x_cat,gather(RegressionModel.input_categories));
+    else
+        x_tr = AllAtt;
+    end
+    
+    % Pre-process inputs
+    if RegressionModel.x_min_maxed
+        x_tr = TAGI_scaler.transform_min_max(x_tr, RegressionModel.x_min, RegressionModel.x_max, RegressionModel.x_min_range , RegressionModel.x_max_range);
+    elseif RegressionModel.x_standardized
+        x_tr = TAGI_scaler.transform_norm(x_tr, RegressionModel.x_mean, RegressionModel.x_std);
+    end
+    % concatenate the categorical and scaled continuous struct. atrributes
+    if RegressionModel.categ_st_att_ind > 0
+        x_tr = [x_cat, x_tr];
+    end
+    [pred_vel, pred_vel_var] = TAGI_predict(RegressionModel, x_tr);
+    
+    init_x(2,:) = max(pred_vel,-3);
+    init_V(2,2,:) = min(max(pred_vel_var,0.05^2),0.5^2);
+    %% KR section
+%     Kernel_l=RegressionModel.Kernel_l;
+%     X_ControlPoints=RegressionModel.X_ControlPoints;
+%     KernelType=RegressionModel.KernelType;
+%     InirilizedEx=RegressionModel.InirilizedEx;
+%     InirilizedVar=RegressionModel.InirilizedVar;
+%     Var_w0=RegressionModel.Sigma_W0^2;
+%     AttStruc=StructuralAttributes(:,SA_Index-4);
+%     IndNaNCheck=find(isnan(AttStruc));
+%     if ~isempty(IndNaNCheck)
+%         AttStruc(IndNaNCheck)=mean(X_ControlPoints(:,IndNaNCheck));
+%     end
+%     if sum(find(SA_Index==14))>0
+%         Lind=find(SA_Index==14);
+%         ZLind=find(AttStruc(:,Lind)==0);
+%         AttStruc(ZLind,Lind)=1;
+%         AttStruc(:,Lind)=log(AttStruc(:,Lind));
+%     end
+%     y_Data_ind=find(~isnan(y_Data));
+%     if length(y_Data_ind)>2
+%         AvgObs=mean(y_Data(y_Data_ind(1:3)));
+%     else
+%         AvgObs=mean(y_Data(y_Data_ind));
+%     end
+%     AllAtt=[AttStruc AvgObs];
+%     
+%     Kr=1;
+%     for im=1:length(KernelType)
+%         Krv=KernelFun(AllAtt(im),X_ControlPoints(:,im),Kernel_l(im),...
+%             string(KernelType(im)));
+%         Kr=Kr.*Krv;
+%     end
+%     AKr=Kr./sum(Kr,2);
+%     init_x(2,:)=AKr*InirilizedEx;
+%     init_V(2,2)=(AKr*InirilizedVar(:,:,1)*AKr'+Var_w0);
     if init_x(2,:)>0 
         D=[1;1];
         d=[-5;0];

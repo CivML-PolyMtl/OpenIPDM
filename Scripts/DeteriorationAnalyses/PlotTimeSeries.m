@@ -1,4 +1,8 @@
-function PlotTimeSeries(YearSteps,E_X,s_X,y,y_unbiased,Rtop,Rlow,AllInspData,InspectorLabel,InterventionVector,CondFigure,SpeedFigure,ColorCode)
+function PlotTimeSeries(YearSteps,E_X,s_X,y,y_unbiased,Rtop,Rlow,AllInspData,InspectorLabel,InterventionVector,CondFigure,SpeedFigure,ColorCode, varargin)
+args = varargin;
+if ~isempty(args)
+    InterventionCode = args{1};
+end
 if ColorCode==1
     CD1='ro--';
     CD2='r';
@@ -47,6 +51,11 @@ if ~isempty(IntTime)
         x_patch=[(IntTime(ip)-2)+YearSteps(1) (IntTime(ip)-2)+YearSteps(1) (IntTime(ip)-1)+YearSteps(1) (IntTime(ip)-1)+YearSteps(1)];
         y_patch=[min(y_ver) max(y_ver) max(y_ver) min(y_ver)];
         patch(CondFigure,x_patch,y_patch,'k','FaceAlpha',0.2,'EdgeColor','none')
+        if InterventionCode == 1000 | InterventionCode == 2000 | InterventionCode == 3000
+            text(CondFigure,(IntTime(ip)-1)+YearSteps(1), min(y_ver)+11, sprintf('Intervention \n Code: %d \n  (Inferred)',InterventionCode),'Rotation',00,'interpreter','latex','FontSize', 14);
+        else
+            text(CondFigure,(IntTime(ip)-1)+YearSteps(1), min(y_ver)+11, sprintf('Intervention \n Code: %d \n ',InterventionCode),'Rotation',00,'interpreter','latex','FontSize', 14);
+        end
     end
 end
 plot(CondFigure,t,y,'o','MarkerFaceColor',[0,0,1],'MarkerEdgeColor','b')

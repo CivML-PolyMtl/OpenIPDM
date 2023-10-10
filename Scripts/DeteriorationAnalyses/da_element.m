@@ -63,17 +63,18 @@ if ~isempty(PriorParam)
     end
     TimeData=datestr(datenum(TimeData),'mm/dd/yyyy');
     [YearData,UY]=unique(str2num(TimeData(:,end-3:end)));
-    TimeWindow=length(min(YearData):max(YearData))+1+NumYearsSlider;
+    this_year = year(datetime('now','TimeZone','local','Format','yyyy'));
+    TimeWindow=length(min(YearData):this_year)+1+NumYearsSlider;
     YearSteps=min(YearData)-1:max(YearData);
-    YearTotal=min(YearData)-1:max(YearData)+NumYearsSlider;
-    if ~ElemAnalyses
-        AllBridgeDates=(datestr(datenum(app.BridgeData(:,2))));
-        AllBridgeYears=unique(str2num(AllBridgeDates(:,end-3:end)));
-        if max(YearData)<max(AllBridgeYears)
-            YearTotal=min(YearData)-1:max(AllBridgeYears)+NumYearsSlider;
-            TimeWindow=length(YearTotal);
-        end
-    end
+    YearTotal=min(YearData)-1:this_year+NumYearsSlider;
+%     if ~ElemAnalyses
+%         AllBridgeDates=(datestr(datenum(app.BridgeData(:,2))));
+%         AllBridgeYears=unique(str2num(AllBridgeDates(:,end-3:end)));
+%         if max(YearData)<max(AllBridgeYears)
+%             YearTotal=min(YearData)-1:max(AllBridgeYears)+NumYearsSlider;
+%             TimeWindow=length(YearTotal);
+%         end
+%     end
     [~,iaY]=intersect(YearSteps,YearData,'stable');
     y_Data=nan(TimeWindow,1);
     y_Data(iaY)=y_values_trans(UY);
@@ -88,6 +89,11 @@ if ~isempty(PriorParam)
         if ~isempty(find(AllInspections(:,1)==InspData(i)))
             ID_Insp(i_ind)=find(AllInspections(:,1)==InspData(i));
             i_ind=i_ind+1;
+        elseif i == length(InspData) && ~exist('ID_Insp','var')
+                DataInd = strcmp(string(str2double(Elm)-1),app.BridgeData(:,15));
+                InspData=str2double(app.BridgeData(DataInd,InspID));
+                ID_Insp(i_ind) = find(AllInspections(:,1)==InspData(1));
+                i_ind=i_ind+1;
         else
             y_Data(iaY(i))=nan;
             iaY(i)=[];
@@ -276,8 +282,13 @@ if ~isempty(PriorParam)
                 if ~isempty(y_Data_before)
                     y_Data_before(:,2)=RevSpaceTransform(Ncurve,y_Data_before(:,2),100,25);
                 end
-                [xtb,Std,yOr,Rtop,Rlow,yOr_unbiased]=BackTransformResults(y_Data,Re,Exsmooth,Std,Ncurve,y_Data-reshape(Be,1,[]),100,25);
-                PlotTimeSeries(YearTotal,xtb,Std,yOr,yOr_unbiased,Rtop,Rlow,y_Data_before,InspectorIDLabel_y,InterventionVector,app.ElmCondition,app.ElmSpeed,ColorCode);
+                if size(y_Data,2)==1
+                    y_unbiasedtransformed = y_Data'-reshape(Be,1,[]);
+                else
+                    y_unbiasedtransformed = y_Data-reshape(Be,1,[]);
+                end
+                [xtb,Std,yOr,Rtop,Rlow,yOr_unbiased]=BackTransformResults(y_Data,Re,Exsmooth,Std,Ncurve,y_unbiasedtransformed,100,25); % 
+                PlotTimeSeries(YearTotal,xtb,Std,yOr,yOr_unbiased,Rtop,Rlow,y_Data_before,InspectorIDLabel_y,InterventionVector,app.ElmCondition,app.ElmSpeed,ColorCode,InterventionType);
             end
             if sum(InterventionVector)>0
                 app.IntServiceLifeButton.Enable=1;

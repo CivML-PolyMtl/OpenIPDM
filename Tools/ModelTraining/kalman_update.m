@@ -176,7 +176,7 @@ end
             Vnew=VnewIN;
         end
     end
-        ViIndex=find((-2*sqrt(Vnew(2,2,:))+reshape(xnew(2,:),1,1,length(xnew(2,:))))<SpeedConstraints(1,2));
+    ViIndex=find((-2*sqrt(Vnew(2,2,:))+reshape(xnew(2,:),1,1,length(xnew(2,:))))<SpeedConstraints(1,2));
     if ~isempty(ViIndex)
         xnewIN=xnew(:,ViIndex);
         VnewIN=Vnew(:,:,ViIndex);

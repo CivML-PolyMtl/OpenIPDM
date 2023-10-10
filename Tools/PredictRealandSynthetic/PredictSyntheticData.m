@@ -88,16 +88,16 @@ for ll=1:NumOfElements
         else
             ObsIndexes=ObsIndexes(1);
         end
-        AllAtt=[SynDatabaseShort{ElementInd}(1,end) mean(y(ObsIndexes))];
+        AllAtt=[SynDatabaseShort{ElementInd}(1,end)];
     else
         AllAtt=[];
     end
     [loglik,MAcc,AccVal,AccST,PWithinCI,PWithinCITrue,Ebar,Ebarbar,...
         BoundViolation,XtrueValue,XValue,XbtrueTr,XbbtrueTr,XestimateTr,~,~,...
-        Erbias, Erbarbias, AccValBias]=KFsKF([],y, A, C, Q, R, Re,init_x, init_V,InpecBiase,InpecBiaseTrue,OptmInsp,RU,...
+        Erbias, Erbarbias, AccValBias]=KFsKF(app,y, A, C, Q, R, Re,init_x, init_V,InpecBiase,InpecBiaseTrue,OptmInsp,RU,...
         InspBU,ObsYears,yearly,InspectorLabel,StructureInd,ElementInd,...
         TableOfParameters{2,8},ReTrue,QTrue,SynDatabaseState,RegressionModel,AllAtt,...
-        TableOfParameters,GraphMatrix,[],FigureID);
+        TableOfParameters,GraphMatrix,[],FigureID, 0);
     LogLik=LogLik+loglik;
     LogLikVec(ll)=loglik;
     XtrueValueAll{1,ll}=XtrueValue;

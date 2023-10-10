@@ -53,7 +53,8 @@ for i=1:NumStruc
     NormModel(i,:)=(~isnan(Exsmooth(1,:))&Exsmooth(1,:)>0);
 end
 MisStartStruc=min(StartYear);
-MinIndex=min(MinTimeSeries(MinTimeSeries>1));
+this_year = year(datetime('now','TimeZone','local','Format','yyyy'));
+MinIndex=length(MisStartStruc:this_year)+round(app.ForecastYearsSliderNet.Value);%min(MinTimeSeries(MinTimeSeries>1));
 if NumStruc>1
     LambdaObs=NormObs./sum(~isnan(YObs)&(YObs~=0));
     LambdaModel=NormModel./sum(NormModel);

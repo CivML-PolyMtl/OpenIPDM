@@ -15,14 +15,15 @@ Rv(find(OptmInsp==0))=Re(find(OptmInsp==0));
 Rv(find(isnan(OptmInsp)))=NaN;
 Rv=[NaN;Rv];
 
-InspB=zeros(length(Re),1);
-InspB(find(OptmInsp==1))=y(find(OptmInsp==1))-InspBU;
-InspB(find(OptmInsp==0))=y(find(OptmInsp==0))-InpecBiase(find(OptmInsp==0));
-InspB(find(isnan(OptmInsp)))=NaN;
+%InspB=zeros(length(Re),1);
+%InspB(find(OptmInsp==1))=y(find(OptmInsp==1))-InspBU;
+%InspB(find(OptmInsp==0))=y(find(OptmInsp==0))-InpecBiase(find(OptmInsp==0));
+%InspB(find(isnan(OptmInsp)))=NaN;
+InspB = [InpecBiase';nan];
 
 plot(t(1:t_+1),InspB(1:t_+1),'b*')
 
-InspectorLabel=[NaN;InspectorLabel'];
+InspectorLabel=[NaN;InspectorLabel';nan];
 text(t(1:t_+1), InspB(1:t_+1)-Rv(1:t_+1)-2, num2str(InspectorLabel(1:t_+1)));
 errorbar(t(1:t_+1),InspB(1:t_+1),LowV(1:t_+1)',TopV(1:t_+1)','LineStyle','none','CapSize',20,'Color','blue','Linewidth',1)
 errorbar(t(1:t_+1),InspB(1:t_+1),RlowTrue(1:t_+1)',RtopTrue(1:t_+1)','LineStyle','none','CapSize',10,'Color','black','Linewidth',1)

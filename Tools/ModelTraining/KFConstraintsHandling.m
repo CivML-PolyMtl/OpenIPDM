@@ -10,7 +10,7 @@ parfor ki=1:size(PTrunc,3)
     [xTruncOut(:,ki),PTruncOut(:,:,ki)]=KFConstraintsHandlingSeq(xTrunc(:,ki),PTrunc(:,:,ki),D,d,1);
 end
 catch
-    sprintf('Something is wrong');
+    sprintf('Imposing constraints have failed');
 end
 xTrunc=xTruncOut;
 PTrunc=PTruncOut;

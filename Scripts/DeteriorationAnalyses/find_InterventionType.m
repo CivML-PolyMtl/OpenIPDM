@@ -29,6 +29,7 @@ for IntervType=1:3
             Vsmooth=VsmoothTry;
             LifeSpanInt=LifeSpanIntTry;
             loglikelihood_Current=loglikelihood;
+            InterventionType=IntervType*1000; % testing
          end
     catch
         
