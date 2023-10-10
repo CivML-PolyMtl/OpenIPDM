@@ -82,7 +82,7 @@ Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c6
 ## Authors
 
 * **Zachary Hamida** - *Methodology, initial code and UI development* - [webpage](https://zachamida.github.io)
-* **Ali Fakhri** - *Baysian Neural Networks for Integrating Structural Attributes* - [webpage](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_AFAKHRI.html)
+* **Ali Fakhri** - *Baysian Neural Networks for Integrating Structural Attributes* - [webpage](https://a-fakhri.github.io)
 * **Blanche Laurent** - *Analytical inference for inspectors uncertainty* - [webpage](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_BLAURENT.html)
 * **James-A. Goulet** - *Methodology* - [webpage](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_MAIN.html) 
 
