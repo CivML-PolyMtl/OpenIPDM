@@ -17,7 +17,7 @@ For tutorials, see: [YouTube channel](https://youtube.com/playlist?list=PLSng2Cr
 
 ## How to cite
 
-*OpenIPDM: A Probabilistic Framework for Estimating the Deterioration and Effect of Interventions on Bridges*<br/>[Hamida, Z.](https://zachamida.github.io), [Laurent, B.](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_BLAURENT.html) and [Goulet, J.-A.](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_MAIN.html)<br/>SoftwareX (Submitted, January 2022) 
+*OpenIPDM: A Probabilistic Framework for Estimating the Deterioration and Effect of Interventions on Bridges*<br/>[Hamida, Z.](https://zachamida.github.io), [Laurent, B.](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_BLAURENT.html) and [Goulet, J.-A.](http://profs.polymtl.ca/jagoulet/Site/Goulet_web_page_MAIN.html)<br/>SoftwareX (January 2022)
 <!--- <br/>[[PDF]()] [[EndNote]()] [[BibTex]()] -->
 
 ### Prerequisites
@@ -34,6 +34,7 @@ For tutorials, see: [YouTube channel](https://youtube.com/playlist?list=PLSng2Cr
 
 1. Download and extract the ZIP file or clone the git repository in your working directory. 
 2. The working directory should include the following folders:
+    - csv Data
     - Scripts
     - Tools
     - Parameters
