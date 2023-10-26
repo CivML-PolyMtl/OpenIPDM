@@ -8,9 +8,9 @@ if ~isempty(ReTrue) && GraphMatrix(1,1)
     if FigureID>0
         MaxDiff=max(abs(diff(y(~isnan(y)))));
         if MaxDiff>15
-            PathFile=sprintf('%s/Tools/PredictRealandSynthetic/AbnormalGraphs',pwd);
+            PathFile=sprintf('%s/Figures/AbnormalGraphs',pwd);
         else
-            PathFile=sprintf('%s/Tools/PredictRealandSynthetic/Graphs',pwd);
+            PathFile=sprintf('%s/Figures/Graphs',pwd);
         end
         figure(10)
         set(gcf,'Units','inches','Position',[0.5 0.5 10 8],...
@@ -54,9 +54,9 @@ elseif ~is_synthetic %&& GraphMatrix(1,1)
         ElementInd,Rtop,Rlow,app.BatchMode,ColorLastObs);
     MaxDiff=max(abs(diff(y(~isnan(y)))));
     if MaxDiff>15
-        PathFile=sprintf('%s/Tools/PredictRealandSynthetic/AbnormalGraphs',pwd);
+        PathFile=sprintf('%s/Figures/AbnormalGraphs',pwd);
     else
-        PathFile=sprintf('%s/Tools/PredictRealandSynthetic/Graphs',pwd);
+        PathFile=sprintf('%s/Figures/Graphs',pwd);
     end
     figure(10)
     set(gcf,'Units','inches','Position',[0.5 0.5 10 8],...

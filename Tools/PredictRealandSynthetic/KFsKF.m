@@ -14,12 +14,12 @@ end
 InitilizeModel();
 
 %% Run Kalman Filter
-[x, V, ~, loglik,~,~,~,~,~,~] = kalman_filter(y, A, C, Q, R, Re, init_x, init_V,...
+[x, V, ~, loglik,~,~,~,~,~,~] = VV_kalman_filter(y, A, C, Q, R, Re, init_x, init_V,...
     InpecBiase,OptmInsp,RU,InspBU,ObsYears,Pn, OptBoundsData,...
     GlobalCondData(3,1),GlobalCondData,Nsigma);
 
 %% Run Kalman Smoother
-[Exsmooth,Vsmooth,s_Xsmooth,Status]=kalman_smoother(x,V,A,Q,Tdb,RunSmoother);
+[Exsmooth,Vsmooth,s_Xsmooth,Status]=VV_kalman_smoother(x,V,A,Q,Tdb,RunSmoother);
 if isempty(RegressionModel)
     ConditionVal=Exsmooth(1,2);
     %% Refining initial state estimate (condition)
@@ -42,12 +42,12 @@ if isempty(RegressionModel)
         init_V(3,3,:)=(TableOfParameters(1,4).^2);
     end
     %% Run Kalman Filter
-    [x, V, ~, loglik,~,~,~,~,~,~] = kalman_filter(y, A, C, Q,...
+    [x, V, ~, loglik,~,~,~,~,~,~] = VV_kalman_filter(y, A, C, Q,...
         R, Re, init_x, init_V,InpecBiase,OptmInsp,RU,InspBU,ObsYears,Pn,...
         OptBoundsData,GlobalCondData(3,1),GlobalCondData,Nsigma);
 
     %% Run Kalman Smoother
-    [Exsmooth,Vsmooth,s_Xsmooth,Status]=kalman_smoother(x,V,A,Q,Tdb,RunSmoother);
+    [Exsmooth,Vsmooth,s_Xsmooth,Status]=VV_kalman_smoother(x,V,A,Q,Tdb,RunSmoother);
 end
 
 
@@ -57,12 +57,12 @@ x(:,1:Tdb)=Exsmooth(:,1:Tdb);
 %% Run Kalman Filter - Perform Analyses with true parameters
 if ~isempty(ReTrue)
     % Run Kalman Filter
-    [xTrue, VTrue, ~, ~,~,~,~,~,~,~] = kalman_filter(y, A, C, QTrue, R,...
+    [xTrue, VTrue, ~, ~,~,~,~,~,~,~] = VV_kalman_filter(y, A, C, QTrue, R,...
         ReTrue, init_xTrue, init_VTrue,InpecBiaseTrue,OptmInsp,...
         RU,InspBU,ObsYears,Pn,OptBoundsData,GlobalCondData(3,1),...
         GlobalCondData,Nsigma);
     % smoother pass
-    [ExsmoothTrue,VsmoothTrue,s_XsmoothTrue,Status]=kalman_smoother(xTrue,...
+    [ExsmoothTrue,VsmoothTrue,s_XsmoothTrue,Status]=VV_kalman_smoother(xTrue,...
         VTrue,A,QTrue,Tdb,RunSmoother);
     MVvTrue=s_XsmoothTrue;
 end

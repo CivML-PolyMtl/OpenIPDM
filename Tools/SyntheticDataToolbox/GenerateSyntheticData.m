@@ -9,7 +9,8 @@ app.FinishNowCheckBox.Enable = 'On';
 pause(0.1);
 % Number of Observations per time series: weights
 if isempty(WeightedProb)
-    WeightedProb=[0,0,0.5403,0.3412,0.0940,0.0244,1.1998e-04,0,0,1.9980e-05];
+    %WeightedProb=[0,0,0.5403,0.3412,0.0940,0.0244,1.1998e-04,0,0,1.9980e-05];
+    WeightedProb = [0.0419,    0.0822,    0.1120,    0.2874,    0.3122,    0.1135,    0.0476,    0.0020,    0.0006,    0.0004,    0.0002];
 end
 %% Time Series Length
 TimeSeriesWindow=length(WeightedProb);
@@ -69,13 +70,13 @@ SplitWindow=round((MaxTimeCut-MinTimeCut)/3);
 if InterventionsCheck
     % Interventions Parameters
     if isempty(app.InterventionsParam)
-        load('InterventionsParam.mat');
+        load(sprintf(['%s/Parameters/SyntheticDataToolbox_InterventionsParam.mat'],pwd));
     else
         In=app.InterventionsParam;
     end
     
     % load decision making system 
-    DMS=readfis('DecisionMaker3.fis');
+    DMS=readfis(sprintf(['%s/Parameters/SyntheticDataToolbox_DecisionMaker3.fis'],pwd));
     InterventionTime_0=randi([5 9],DatasetSize,1);
 %     InterventionTime_0=randi([15 19],DatasetSize,1);
     %Priority: low: 0, mid:1.5, high: 3

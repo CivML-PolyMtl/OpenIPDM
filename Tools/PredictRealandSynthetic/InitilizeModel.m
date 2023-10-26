@@ -85,7 +85,7 @@ end
 init_x(1)=y(2);
 ConditionVal=mean(y(ObsIndexes));                                                     % initial condition (transformed space)
 MaxCondition=100;                                                           % max possible condition (original space)
-[Mtrv]=RevSpaceTransform(Pn,ConditionVal,100,25);                                  % initial condition (original space)
+[Mtrv]=VV_RevSpaceTransform(Pn,ConditionVal,100,25);                                  % initial condition (original space)
 DifferenceObs=MaxCondition-Mtrv;                                            % difference between max. condition and initial condition
 if is_synthetic
     init_x(2)=TableOfParameters{2,5}*DifferenceObs;                         % expected speed (t=0)
@@ -157,6 +157,6 @@ end
 
 dfct_n=@(xts,nts)(nts*exp(-xts.^nts))/gamma(1/nts);                         % dervative of transformation function
 d2fct_n=@(xts,nts)-(nts^2*xts^(nts - 1)*exp(-xts^nts))/gamma(1/nts);
-load('GlobalCondData');
-load('OptBoundsData');
+load(sprintf('%s/Parameters/PredictRealandSynthetic_GlobalCondData',pwd));
+load(sprintf('%s/Parameters/PredictRealandSynthetic_OptBoundsData',pwd));
 [~, Tdb] = size(y);

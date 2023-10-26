@@ -12,8 +12,8 @@ if size(app.AllElementsParameters,2)>1 && ~isempty(app.AllElementsParameters{Ind
     OptBoundsData=app.AllElementsParameters{Index,2}{1};
 end
 if isempty(OptBoundsData)
-    load(sprintf(['%s/Tools/ModelTraining/InitialParameterValues/SoftwareInitial_net.mat'],pwd));
-    load(sprintf(['%s/Tools/ModelTraining/InitialParameterValues/SoftwareInitialInt_net.mat'],pwd));
+    load(sprintf(['%s/Parameters/ModelTraining_SoftwareInitial_net.mat'],pwd));
+    load(sprintf(['%s/Parameters/ModelTraining_SoftwareInitialInt_net.mat'],pwd));
     app.AllElementsParameters{Index,2} = [];
     app.AllElementsParameters{Index,2}{1} = BoundsData;
     app.AllElementsParameters{Index,2}{7} = 'Actif Min.';

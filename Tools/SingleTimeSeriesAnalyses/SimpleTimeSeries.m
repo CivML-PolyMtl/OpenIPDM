@@ -45,8 +45,8 @@ if ~get(app.Constrained,'Value')
 end
 
 % parameters case
-Case1=get(app.Case1,'Value'); % default
-Case2=get(app.Case2,'Value'); % other test
+Case1=1;%get(app.Case1,'Value'); % default
+Case2=0;%get(app.Case2,'Value'); % other test
 % parameters
 % sigmaW
 % sigma Init Cond
@@ -107,7 +107,7 @@ end
 InitialCond=nanmean(y);%y(2);
 OriginalValues=100;
 MAxCondition=OriginalValues;
-[Mtrv]=RevSpaceTransform(Ncurve,InitialCond);
+[Mtrv]=single_RevSpaceTransform(Ncurve,InitialCond);
 % [~,MAxCondition]=SpaceTransformation(Ncurve,OriginalValues,100.01,25);
 % InitialCond(find(InitialCond>MAxCondition(end)))=MAxCondition(end);
 DfferenceObs=MAxCondition(end)-Mtrv;
@@ -122,7 +122,7 @@ init_V(3,3)=param(4)^2;
 
 
 % KF - Kalman filter type
-[Ex, Var, param, loglik, Exsmooth, Vsmooth]=HandCoded_KF(y,A,F,Q,R,param,...
+[Ex, Var, param, loglik, Exsmooth, Vsmooth]=single_HandCoded_KF(y,A,F,Q,R,param,...
     init_x,init_V,Ncurve,ConstrainedKF,InitCase,InterventionCheck,InterventionVector,...
     InterventionMu,InterventionSigma);   % Hand coded
 
@@ -135,21 +135,24 @@ VarF(:,:,1)=Var(:,:,end);
 %     VarF(:,:,t)=A*VarF(:,:,t-1)*A'+Q(param);
 % end
 for i=1:length(Exsmooth(1,:))
-    Up2Std(1,i)=(RevSpaceTransform(Ncurve,2*sqrt(Vsmooth(1,1,i))+Exsmooth(1,i))-RevSpaceTransform(Ncurve,Exsmooth(1,i)));
-    Down2Std(1,i)=(RevSpaceTransform(Ncurve,Exsmooth(1,i))-RevSpaceTransform(Ncurve,Exsmooth(1,i)-2*sqrt(Vsmooth(1,1,i))));
-    ExKF(1,i)=(RevSpaceTransform(Ncurve,Exsmooth(1,i)));
-    y(1,i)=RevSpaceTransform(Ncurve,y(1,i));
-    Rtop(i)=RevSpaceTransform(Ncurve,2*sqrt(R(i))+y(i))-RevSpaceTransform(Ncurve,y(i));
-    Rlow(i)=RevSpaceTransform(Ncurve,y(i))-RevSpaceTransform(Ncurve,y(i)-2*sqrt(R(i)));
+    Up2Std(1,i)=(single_RevSpaceTransform(Ncurve,2*sqrt(Vsmooth(1,1,i))+Exsmooth(1,i))-single_RevSpaceTransform(Ncurve,Exsmooth(1,i)));
+    Down2Std(1,i)=(single_RevSpaceTransform(Ncurve,Exsmooth(1,i))-single_RevSpaceTransform(Ncurve,Exsmooth(1,i)-2*sqrt(Vsmooth(1,1,i))));
+    ExKF(1,i)=(single_RevSpaceTransform(Ncurve,Exsmooth(1,i)));
+    y(1,i)=single_RevSpaceTransform(Ncurve,y(1,i));
+    Rtop(i)=single_RevSpaceTransform(Ncurve,2*sqrt(R(i))+y(i))-single_RevSpaceTransform(Ncurve,y(i));
+    Rlow(i)=single_RevSpaceTransform(Ncurve,y(i))-single_RevSpaceTransform(Ncurve,y(i)-2*sqrt(R(i)));
 end       
-figure(1)
-clf
-figure(2)
-clf
-figure(3)
-clf
+cla(app.UIAxes)
+cla(app.UIAxes_2)
+cla(app.UIAxes_3)
 if InterventionCheck
-    PlotKF_Interventions
+    single_PlotKF_Interventions();
 else
-    PlotKF
+    try
+        single_PlotKF();
+    catch ME
+        errorMessage = sprintf('Error in msgboxw():\n%s', ME.message);
+	    fprintf('%s\n', errorMessage);
+	    uiwait(warndlg(errorMessage));
+    end
 end

@@ -34,13 +34,13 @@ end
 if InterventionsCheck
     % Interventions Parameters
     if isempty(InterventionsParam)
-        load('InterventionsParam.mat');
+        load(sprintf(['%s/Parameters/SyntheticDataToolbox_InterventionsParam.mat'],pwd));
     else
         In= InterventionsParam;
     end
     
     % load decision making system 
-    DMS=readfis('DecisionMaker3.fis');
+    DMS=readfis(sprintf(['%s/Parameters/SyntheticDataToolbox_DecisionMaker3.fis'],pwd));
     InterventionTime=randi([5 9],1);
     %Priority: low: 0.5, mid:1.5, high: 2.5
     Priority=3.*rand(1,1);                

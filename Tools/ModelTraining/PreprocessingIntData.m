@@ -11,7 +11,7 @@ if size(app.AllElementsParameters,2)>1 && ~isempty(app.AllElementsParameters{Ind
     OptBoundsInt = app.AllElementsParameters{Index,2}{8}(:,2:3);
 end
 if isempty(OptBoundsInt)
-    load(sprintf(['%s/Tools/ModelTraining/InitialParameterValues/SoftwareInitialInt_net.mat'],pwd));
+    load(sprintf(['%s/Parameters/ModelTraining_SoftwareInitialInt_net.mat'],pwd));
     app.AllElementsParameters{Index,2}{8} = SoftwareInitialInt;
     OptBoundsInt=app.AllElementsParameters{Index,2}{8}(:,2:3);
 end

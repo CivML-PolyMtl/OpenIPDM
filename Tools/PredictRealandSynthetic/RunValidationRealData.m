@@ -152,7 +152,7 @@ else
         CorrInd=find(IncludedIndex==0);
         IncludedIndex(CorrInd)=[];
         for i=1:length(IncludedIndex)
-            EstimateCond(i,1)=(RevSpaceTransform(TableEstimatedParameters(1,end),...
+            EstimateCond(i,1)=(VV_RevSpaceTransform(TableEstimatedParameters(1,end),...
                 CondEstimate(IncludedIndex(i),1)));
             EstimateCondTr(i,1)=CondEstimate(IncludedIndex(i),1);
         end
