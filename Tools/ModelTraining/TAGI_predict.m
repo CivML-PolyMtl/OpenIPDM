@@ -25,6 +25,6 @@ function [pred_vel, pred_vel_var] = TAGI_predict(AnnModel, x_test)
         pred_vel_var = Sytest(:,1);
     end
     % cap the predicted velocity expected value and variance
-    pred_vel = max(min(0, pred_vel),-3);
+    pred_vel = max(min(-10^-5, pred_vel),-3);
     pred_vel_var = min(max(pred_vel_var,0.05^2),0.5^2);
 end
