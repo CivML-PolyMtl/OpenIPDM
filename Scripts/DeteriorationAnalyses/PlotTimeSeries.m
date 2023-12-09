@@ -81,12 +81,12 @@ cla(SpeedFigure);
 axis(SpeedFigure,'tight');
 plot(SpeedFigure,t1,E_X(2,1:length(t1)),CD1,'MarkerFaceColor',[1,1,1],'MarkerEdgeColor',CD2);
 hold(SpeedFigure);
-patch(SpeedFigure,[t1,fliplr(t1)],[E_X(2,1:length(t1))+s_X(2,1:length(t1)),fliplr(E_X(2,1:length(t1))-s_X(2,1:length(t1)))],CD2,'FaceAlpha',0.2,'EdgeColor','none')
-patch(SpeedFigure,[t1,fliplr(t1)],[E_X(2,1:length(t1))+s_X(8,1:length(t1)),fliplr(E_X(2,1:length(t1))-s_X(8,1:length(t1)))],'k','FaceAlpha',0.2,'EdgeColor','none')
+patch(SpeedFigure,[t1,fliplr(t1)],[E_X(2,1:length(t1))+s_X(2,1:length(t1)),fliplr(E_X(2,1:length(t1))-s_X(7,1:length(t1)))],CD2,'FaceAlpha',0.2,'EdgeColor','none')
+patch(SpeedFigure,[t1,fliplr(t1)],[E_X(2,1:length(t1))+s_X(8,1:length(t1)),fliplr(E_X(2,1:length(t1))-s_X(9,1:length(t1)))],'k','FaceAlpha',0.2,'EdgeColor','none')
 if ~isempty(IntTime)
     plot(SpeedFigure,t2,E_X(2,length(t1)+1:T),CD1,'MarkerFaceColor',[1,1,1],'MarkerEdgeColor',CD2)
-    patch(SpeedFigure,[t2,fliplr(t2)],[E_X(2,length(t1)+1:T)+s_X(7,length(t1)+1:T),fliplr(E_X(2,length(t1)+1:T)-s_X(7,length(t1)+1:T))],CD2,'FaceAlpha',0.2,'EdgeColor','none')
-    patch(SpeedFigure,[t2,fliplr(t2)],[E_X(2,length(t1)+1:T)+s_X(9,length(t1)+1:T),fliplr(E_X(2,length(t1)+1:T)-s_X(9,length(t1)+1:T))],'k','FaceAlpha',0.2,'EdgeColor','none')
+    patch(SpeedFigure,[t2,fliplr(t2)],[E_X(2,length(t1)+1:T)+s_X(2,length(t1)+1:T),fliplr(E_X(2,length(t1)+1:T)-s_X(7,length(t1)+1:T))],CD2,'FaceAlpha',0.2,'EdgeColor','none')
+    patch(SpeedFigure,[t2,fliplr(t2)],[E_X(2,length(t1)+1:T)+s_X(8,length(t1)+1:T),fliplr(E_X(2,length(t1)+1:T)-s_X(9,length(t1)+1:T))],'k','FaceAlpha',0.2,'EdgeColor','none')
     y_ver=min(ylim(SpeedFigure)):0.001:0;(min(E_X(2,:))-max(2*s_X(8,:))):0.001:0;%E_X(1,IntTime)-10:E_X(1,IntTime)+10;
     x_ver=(IntTime-1)*ones(1,length(y_ver))+YearSteps(1);
     plot(SpeedFigure,x_ver,y_ver,'k-.');

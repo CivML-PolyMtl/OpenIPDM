@@ -15,6 +15,10 @@ elseif NetAnalyses
     NumYearsSlider=round(app.ForecastYearsSliderNet.Value);
 end
 
+app.estimates_storage{1} = [];
+app.estimates_storage{2} = [];
+app.estimates_storage{3} = [];
+
 ElmTypeInd=find(strcmp(app.BridgeData(:,end),Elm));
 ElmType=app.BridgeData(ElmTypeInd(1),4);
 
@@ -289,6 +293,10 @@ if ~isempty(PriorParam)
                 end
                 [xtb,Std,yOr,Rtop,Rlow,yOr_unbiased]=BackTransformResults(y_Data,Re,Exsmooth,Std,Ncurve,y_unbiasedtransformed,100,25); % 
                 PlotTimeSeries(YearTotal,xtb,Std,yOr,yOr_unbiased,Rtop,Rlow,y_Data_before,InspectorIDLabel_y,InterventionVector,app.ElmCondition,app.ElmSpeed,ColorCode,InterventionType);
+
+                app.estimates_storage{1} = YearTotal;
+                app.estimates_storage{2} = xtb;
+                app.estimates_storage{3} = Std;
             end
             if sum(InterventionVector)>0
                 app.IntServiceLifeButton.Enable=1;

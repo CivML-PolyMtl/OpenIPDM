@@ -1,6 +1,9 @@
 ElemAnalyses=0;
 CatAnalyses=0;
 StrucAnalyses=0;
+app.estimates_storage{1} = [];
+app.estimates_storage{2} = [];
+app.estimates_storage{3} = [];
 Ncurve=app.curve_param;
 d.Value = 0; 
 YearsDuration=app.TotalYearsDuration;
@@ -105,6 +108,9 @@ app.NetworkResults.StrucVal=app.StructValue.Value;
 app.NetworkResults.Slider=app.ForecastYearsSliderNet.Value;
 ColorCode=4;
 PlotTimeSeries(YearTotal,xtb,Std,yOr,[],Rtop,Rlow,[],InspectorIDLabel_y,InterventionVector,app.NetCond,app.NetSpeed,ColorCode);
+app.estimates_storage{1} = YearTotal;
+app.estimates_storage{2} = xtb;
+app.estimates_storage{3} = Std;
 clc    
 function [Exsmooth,Vsmooth,MisStartStruc,y_Data,Re]=RunStructurewise(app,event,ElemAnalyses,CatAnalyses,StrucAnalyses,NetAnalyses)
     StrucStatus=unique(app.BridgeAttributes(:,12));

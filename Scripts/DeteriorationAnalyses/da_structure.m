@@ -1,5 +1,8 @@
 ElemAnalyses=0;
 CatAnalyses=0;
+app.estimates_storage{1} = [];
+app.estimates_storage{2} = [];
+app.estimates_storage{3} = [];
 Ncurve=app.curve_param;
 YearsDuration=app.TotalYearsDuration;
 YD=length(YearsDuration);
@@ -98,6 +101,9 @@ if StrucAnalyses
         [xtb,Std,yOr,Rtop,Rlow,y_empty]=BackTransformResults(y_Data,Re,Exsmooth,Std,Ncurve,[],100,25);
         InspectorIDLabel_y=round(yOr(~isnan(yOr)));                      % assigned just to have a value 
         PlotTimeSeries(YearTotal,xtb,Std,yOr,[],Rtop,Rlow,[],InspectorIDLabel_y,InterventionVector,app.StrucCond,app.StrucSpeed,ColorCode);
+        app.estimates_storage{1} = YearTotal;
+        app.estimates_storage{2} = xtb;
+        app.estimates_storage{3} = Std;
     else
         msgbox('The selected structure has no inspection data, or it has no model associated with it.', 'Analyses can not be performed','warn');
     end

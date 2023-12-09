@@ -1,4 +1,7 @@
 ElemAnalyses=0;
+app.estimates_storage{1} = [];
+app.estimates_storage{2} = [];
+app.estimates_storage{3} = [];
 Ncurve=app.curve_param;
 d.Value = 0; 
 YearsDuration=app.TotalYearsDuration;
@@ -89,6 +92,9 @@ if CatAnalyses && sum(y_Data~=0)>0
     [xtb,Std,yOr,Rtop,Rlow,y_empty]=BackTransformResults(y_Data,Re,Exsmooth,Std,Ncurve,[],100,25);
     InspectorIDLabel_y=round(yOr(~isnan(yOr)));                         % assigned just to have a value 
     PlotTimeSeries(YearTotal,xtb,Std,yOr,[],Rtop,Rlow,[],InspectorIDLabel_y,InterventionVector,app.CatCond,app.CatSpeed,ColorCode);
+    app.estimates_storage{1} = YearTotal;
+    app.estimates_storage{2} = xtb;
+    app.estimates_storage{3} = Std;
 end
 clc
 function [Exsmooth,Vsmooth,YearTotal,y_Data,Re,Be,Qte]=RunElementwise(Elm,app,ElemAnalyses,CatAnalyses,StrucAnalyses,NetAnalyses,CatReport)
