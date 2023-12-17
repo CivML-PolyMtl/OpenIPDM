@@ -64,12 +64,15 @@ if ~isempty(AllInspData)
 end
 if ~isempty(y_unbiased)
     plot(CondFigure,t,y_unbiased,'*','MarkerFaceColor',[0,0,1],'MarkerEdgeColor','r')
-    errorbar(CondFigure,t,y_unbiased,Rlow',Rtop','LineStyle','none','CapSize',20,'Color','blue','Linewidth',1)
+    errorbar(CondFigure,t,y_unbiased,Rlow',Rtop','LineStyle','none','CapSize',10,'Color','blue','Linewidth',1)
 else
-    errorbar(CondFigure,t,y,Rlow',Rtop','LineStyle','none','CapSize',20,'Color','blue','Linewidth',1)
+    errorbar(CondFigure,t,y,Rlow',Rtop','LineStyle','none','CapSize',10,'Color','blue','Linewidth',1)
 end
 text(CondFigure,t(find(~isnan(y))), y(find(~isnan(y)))-Rlow(find(~isnan(y)))-1, InspectorsID);
-set(CondFigure,'xtick',YearSteps)
+step_size = max(diff(floor(linspace(1,length(YearSteps),min(15,length(YearSteps))))));
+index_year = 1:step_size:length(YearSteps);
+index_year(end) = length(YearSteps);
+set(CondFigure,'xtick',YearSteps(index_year))
 xlim(CondFigure,[YearSteps(1),YearSteps(end)])
 ylim(CondFigure,[25,100])
 xtickangle(CondFigure,45)
@@ -99,7 +102,10 @@ if ~isempty(IntTime)
         patch(SpeedFigure,x_patch,y_patch,'k','FaceAlpha',0.2,'EdgeColor','none')
     end
 end
-set(SpeedFigure,'xtick',YearSteps)
+step_size = max(diff(floor(linspace(1,length(YearSteps), min(15,length(YearSteps))))));
+index_year = 1:2*step_size:length(YearSteps);
+index_year(end) = length(YearSteps);
+set(SpeedFigure,'xtick',YearSteps(index_year))
 xlim(SpeedFigure,[YearSteps(1),YearSteps(end)])
 xtickangle(SpeedFigure,45)
 set(SpeedFigure.YLabel,'String','Speed $\tilde{\dot{\mu}}_{t|T}$','interpreter','latex')
