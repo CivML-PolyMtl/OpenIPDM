@@ -127,3 +127,56 @@ for model_i=1:length(app.Tree.Children) % model type iterations: 2: SSM-KR or 1:
         end        
     end
 end
+
+% impute nans with gaussian mixture
+% TO BE IMPLEMENTED
+% filtere by Secondary and primary elements
+% gaussian mixture aggregation to impute nan values 
+% ind_emp = find(~cellfun(@isempty,(AllElementsParameters(:,8))));
+% 
+% NetExNA{1,1}=[nanmean(cellfun(@(c) c{1,1}(1,1), AllElementsParameters(ind_emp,6)));
+%             nanmean(cellfun(@(c) c{1,1}(2,1), AllElementsParameters(ind_emp,6)));
+%             nanmean(cellfun(@(c) c{1,1}(3,1), AllElementsParameters(ind_emp,6)))];
+% 
+% NetExNA{1,2}=[nanmean(cellfun(@(c) c{1,2}(1,1), AllElementsParameters(ind_imp,6)));
+%              nanmean(cellfun(@(c) c{1,2}(2,1), AllElementsParameters(ind_imp,6)));
+%             nanmean(cellfun(@(c) c{1,2}(3,1), AllElementsParameters(ind_imp,6)))];
+% 
+% NetExNA{1,3}=[nanmean(cellfun(@(c) c{1,3}(1,1), AllElementsParameters(ind_imp,6)));
+%             nanmean(cellfun(@(c) c{1,3}(2,1), AllElementsParameters(ind_imp,6)));
+%             nanmean(cellfun(@(c) c{1,3}(3,1), AllElementsParameters(ind_imp,6)))];
+% 
+% NoNanInd1=find(~isnan(cellfun(@(c) c(1,1), NetEx(:,1))));
+% NoNanInd2=find(~isnan(cellfun(@(c) c(1,1), NetEx(:,2))));
+% NoNanInd3=find(~isnan(cellfun(@(c) c(1,1), NetEx(:,3))));
+% NetVarMix_1=zeros(3);NetVarMix_2=zeros(3);NetVarMix_3=zeros(3);
+% for kt=1:length(NoNanInd1)
+%     NetVarMix_1=NetVarMix_1+(1./length(NoNanInd1))*(NetEx{NoNanInd1(kt),1}(:,1)-NetExNA{1,1}(:,1))*(NetEx{NoNanInd1(kt),1}(:,1)-NetExNA{1,1}(:,1))';
+% end
+% for kt=1:length(NoNanInd2)
+%     NetVarMix_2=NetVarMix_2+(1./length(NoNanInd2))*(NetEx{NoNanInd2(kt),2}(:,1)-NetExNA{1,2}(:,1))*(NetEx{NoNanInd2(kt),2}(:,1)-NetExNA{1,2}(:,1))';
+% end
+% for kt=1:length(NoNanInd3)
+%     NetVarMix_3=NetVarMix_3+(1./length(NoNanInd3))*(NetEx{NoNanInd3(kt),3}(:,1)-NetExNA{1,3}(:,1))*(NetEx{NoNanInd3(kt),3}(:,1)-NetExNA{1,3}(:,1))';
+% end
+%  
+% NetVarNA{1,1}=[nanmean(cellfun(@(c) c(1,1), NetVar(:,1))) 0 0;
+%             0 nanmean(cellfun(@(c) c(2,2), NetVar(:,1))) 0;
+%             0 0 nanmean(cellfun(@(c) c(3,3), NetVar(:,1)))]+NetVarMix_1;
+% NetVarNA{1,2}=[nanmean(cellfun(@(c) c(1,1), NetVar(:,2))) 0 0;
+%             0 nanmean(cellfun(@(c) c(2,2), NetVar(:,2))) 0;
+%             0 0 nanmean(cellfun(@(c) c(3,3), NetVar(:,2)))]+NetVarMix_2;
+% NetVarNA{1,3}=[nanmean(cellfun(@(c) c(1,1), NetVar(:,3))) 0 0;
+%             0 nanmean(cellfun(@(c) c(2,2), NetVar(:,3))) 0;
+%             0 0 nanmean(cellfun(@(c) c(3,3), NetVar(:,3)))]+NetVarMix_3;
+%         
+%  
+% TotParamNA{1,1}=[nanmean(cellfun(@(c) c(1,1), AllElementsParameters(ind_emp,8)));
+%                 nanmean(cellfun(@(c) c(1,2), TotParam(:,1)));
+%                 nanmean(cellfun(@(c) c(1,3), TotParam(:,1)))];
+% TotParamNA{1,2}=[nanmean(cellfun(@(c) c(1,1), TotParam(:,2)));
+%                 nanmean(cellfun(@(c) c(1,2), TotParam(:,2)));
+%                 nanmean(cellfun(@(c) c(1,3), TotParam(:,2)))];
+% TotParamNA{1,3}=[nanmean(cellfun(@(c) c(1,1), TotParam(:,3)));
+%                 nanmean(cellfun(@(c) c(1,2), TotParam(:,3)));
+%                 nanmean(cellfun(@(c) c(1,3), TotParam(:,3)))];

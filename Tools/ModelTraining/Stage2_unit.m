@@ -248,4 +248,11 @@ while keep_learning
     LLcr = LLcr_cat;
     LLcr_cat = 0;
 end
+% check for place holders and reomve them
+place_holder_id = find(strcmp(cellfun(@class,AllElementsParameters(:,2),'UniformOutput',false),'cell'));
+if ~isempty(place_holder_id)
+    for phi_ind = 1:length(place_holder_id)
+        AllElementsParameters{place_holder_id(phi_ind),2}=[];
+    end
+end
 diary off % flag to stop saving the console output beyond this point
