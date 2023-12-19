@@ -204,17 +204,19 @@ if ~isempty(PriorParam)
         for j=1:size(Vsmooth,3)
             Std(:,j)=sqrt(diag(Vsmooth(:,:,j)));
         end
-        [xtb_v,Std_v,~,~,~,~]=BackTransformResults(y_Data,Re,Exsmooth,Std,Ncurve,y_Data-reshape(Be,1,[]),100,25);
-        if app.condition_threshold
-            last_obs_ind = iaY(end);
-            if ElemAnalyses
-                threshold_value = app.MaintennaceSpinner.Value;
-            else
-                threshold_value = app.MaintennaceSpinner_cat.Value;
-            end
-            [~,threshold_trans]=SpaceTransformation(Ncurve, threshold_value, 100, 25);
-            for j=1:length(Exsmooth(1,last_obs_ind:end))-1
-                ThresholdCDF(j)=normcdf(threshold_trans,Exsmooth(1,last_obs_ind+j),sqrt(Vsmooth(1,1,last_obs_ind+j)));
+        if isreal(Std)
+            [xtb_v,Std_v,~,~,~,~]=BackTransformResults(y_Data,Re,Exsmooth,Std,Ncurve,y_Data-reshape(Be,1,[]),100,25);
+            if app.condition_threshold
+                last_obs_ind = iaY(end);
+                if ElemAnalyses
+                    threshold_value = app.MaintennaceSpinner.Value;
+                else
+                    threshold_value = app.MaintennaceSpinner_cat.Value;
+                end
+                [~,threshold_trans]=SpaceTransformation(Ncurve, threshold_value, 100, 25);
+                for j=1:length(Exsmooth(1,last_obs_ind:end))-1
+                    ThresholdCDF(j)=normcdf(threshold_trans,Exsmooth(1,last_obs_ind+j),sqrt(Vsmooth(1,1,last_obs_ind+j)));
+                end
             end
         end
         if ElemAnalyses
