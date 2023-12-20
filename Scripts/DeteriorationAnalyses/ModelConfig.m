@@ -37,7 +37,7 @@ IntervType=round(InterventionType/1000);                                    % In
 if InterventionType~=0
     for InType=1:length(IntervType)
         if IntervType>9
-            IntervType = fix(InterventionType./10.^fix(log10(InterventionType)));%
+            IntervType(IntervType) = fix(InterventionType(IntervType)./10.^fix(log10(InterventionType(IntervType))));%
         end
         R_param=IntParam{1,IntervType}; % col: InterventionType
         Q_r1=diag([R_param(1)^2 R_param(2)^2 R_param(3)^2]);                         % Local error (covariance)

@@ -9,6 +9,7 @@ if NumElms~=0
 else
     IntSL=nan(1,YD);
 end
+intervention_menu = find(strcmp(app.IntCodeDropDown.Value,app.IntCodeDropDown.Items));
 for i=1:NumElms
     if ~NetCatAnalyses
         d=uiprogressdlg(app.MainWindow,'Title','Please Wait',...
@@ -19,7 +20,7 @@ for i=1:NumElms
     Elm = Elms(i);
     SlCatAnalyses=0;
     [~,IntervType]=RunElementwiseSL(Elm,app,ElemAnalyses,CatAnalyses,StrucAnalyses,NetAnalyses,SlCatAnalyses);
-    if IntervType ~= 0
+    if IntervType == intervention_menu
         SlCatAnalyses=1;
         [IntCondServiceLife,~]=RunElementwiseSL(Elm,app,ElemAnalyses,CatAnalyses,StrucAnalyses,NetAnalyses,SlCatAnalyses);
     else
