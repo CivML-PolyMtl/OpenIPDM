@@ -1,0 +1,158 @@
+<deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
+  <configuration build-checksum="3842916956" file="C:\Users\zacha\Documents\just_update\openipdm_standalone\OpenIPDM_compiler.prj" location="C:\Users\zacha\Documents\just_update\openipdm_standalone" name="OpenIPDM_compiler" preferred-package-location="C:\Users\zacha\Documents\just_update\openipdm_standalone\OpenIPDM_compiler\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
+    <param.appname>OpenIPDM</param.appname>
+    <param.icon>${PROJECT_ROOT}\OpenIPDM_compiler_resources\icon.ico</param.icon>
+    <param.icons>
+      <file>${PROJECT_ROOT}\OpenIPDM_compiler_resources\icon_48.png</file>
+      <file>${PROJECT_ROOT}\OpenIPDM_compiler_resources\icon_32.png</file>
+      <file>${PROJECT_ROOT}\OpenIPDM_compiler_resources\icon_24.png</file>
+      <file>${PROJECT_ROOT}\OpenIPDM_compiler_resources\icon_16.png</file>
+    </param.icons>
+    <param.version>0.98.6</param.version>
+    <param.authnamewatermark>Zachary Hamida; James-A. Goulet</param.authnamewatermark>
+    <param.email>zac.hamida@gmail.com; james.a.goulet@gmail.com</param.email>
+    <param.company>BayesWorks</param.company>
+    <param.summary>OpenIPDM: open source toolbox for infrastructures probabilistic deterioration modelling</param.summary>
+    <param.description>OpenIPDM is a MATLAB open-source platform that stands for infrastructures probabilistic deterioration model. This software is developed to perform analyses on a network-scale visual inspection data, while accounting for the uncertainty associated with each inspector. The main application window in OpenIPDM enables assessing the structural deterioration behaviour and the effect of interventions at different levels starting from the structural element level up to the network level. OpenIPDM also include several toolboxes that facilitate performing verification and validation analyses on visual inspection data, in addition to learning model parameters. Furthermore, OpenIPDM has the capacity to handle missing data such as, missing interventions or missing structural attributes.</param.description>
+    <param.screenshot>${PROJECT_ROOT}\Help\OpenIPDMsmall.png</param.screenshot>
+    <param.guid />
+    <param.installpath.string>\BayesWorks\OpenIPDM\</param.installpath.string>
+    <param.installpath.combo>option.installpath.appdata</param.installpath.combo>
+    <param.logo>${PROJECT_ROOT}\OpenIPDM_icon_r.png</param.logo>
+    <param.install.notes />
+    <param.target.install.notes />
+    <param.intermediate>${PROJECT_ROOT}\OpenIPDM_compiler\for_testing</param.intermediate>
+    <param.files.only>${PROJECT_ROOT}\OpenIPDM_compiler\for_redistribution_files_only</param.files.only>
+    <param.output>${PROJECT_ROOT}\OpenIPDM_compiler\for_redistribution</param.output>
+    <param.logdir>${PROJECT_ROOT}\OpenIPDM_compiler</param.logdir>
+    <param.enable.clean.build>false</param.enable.clean.build>
+    <param.user.defined.mcr.options />
+    <param.target.type>subtarget.standalone</param.target.type>
+    <param.support.packages />
+    <param.web.mcr>true</param.web.mcr>
+    <param.package.mcr>false</param.package.mcr>
+    <param.no.mcr>false</param.no.mcr>
+    <param.web.mcr.name>MyAppInstaller_web</param.web.mcr.name>
+    <param.package.mcr.name>MyAppInstaller_mcr</param.package.mcr.name>
+    <param.no.mcr.name>MyAppInstaller_app</param.no.mcr.name>
+    <param.windows.command.prompt>true</param.windows.command.prompt>
+    <param.create.log>false</param.create.log>
+    <param.log.file />
+    <param.native.matlab>false</param.native.matlab>
+    <param.checkbox>false</param.checkbox>
+    <param.example />
+    <param.help.text>Syntax 
+	  -? 
+	 
+ Input Arguments 
+	 -?  print help on how to use the application 
+	 input arguments</param.help.text>
+    <unset>
+      <param.guid />
+      <param.installpath.string />
+      <param.install.notes />
+      <param.target.install.notes />
+      <param.intermediate />
+      <param.files.only />
+      <param.output />
+      <param.logdir />
+      <param.enable.clean.build />
+      <param.user.defined.mcr.options />
+      <param.target.type />
+      <param.support.packages />
+      <param.web.mcr />
+      <param.package.mcr />
+      <param.no.mcr />
+      <param.web.mcr.name />
+      <param.package.mcr.name />
+      <param.no.mcr.name />
+      <param.windows.command.prompt />
+      <param.create.log />
+      <param.log.file />
+      <param.native.matlab />
+      <param.checkbox />
+      <param.example />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}\OpenIPDM_standalone.mlapp</file>
+    </fileset.main>
+    <fileset.resources>
+      <file>${PROJECT_ROOT}\Scripts</file>
+      <file>${PROJECT_ROOT}\Tools</file>
+    </fileset.resources>
+    <fileset.package>
+      <file>${PROJECT_ROOT}\csv Data</file>
+      <file>${PROJECT_ROOT}\ExtractedData</file>
+      <file>${PROJECT_ROOT}\Figures</file>
+      <file>${PROJECT_ROOT}\Help</file>
+      <file>${PROJECT_ROOT}\Network Data</file>
+      <file>${PROJECT_ROOT}\Parameters</file>
+      <file>${PROJECT_ROOT}\Reports</file>
+    </fileset.package>
+    <fileset.depfun>
+      <file>${PROJECT_ROOT}\OpenIPDM_icon_r.png</file>
+    </fileset.depfun>
+    <build-deliverables>
+      <file location="${PROJECT_ROOT}\OpenIPDM_compiler\for_testing" name="OpenIPDM.exe" optional="false">C:\Users\zacha\Documents\just_update\openipdm_standalone\OpenIPDM_compiler\for_testing\OpenIPDM.exe</file>
+      <file location="${PROJECT_ROOT}\OpenIPDM_compiler\for_testing" name="splash.png" optional="false">C:\Users\zacha\Documents\just_update\openipdm_standalone\OpenIPDM_compiler\for_testing\splash.png</file>
+      <file location="${PROJECT_ROOT}\OpenIPDM_compiler\for_testing" name="readme.txt" optional="true">C:\Users\zacha\Documents\just_update\openipdm_standalone\OpenIPDM_compiler\for_testing\readme.txt</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>C:\Program Files\MATLAB\R2021b</root>
+      <toolboxes>
+        <toolbox name="matlabcoder" />
+        <toolbox name="embeddedcoder" />
+        <toolbox name="gpucoder" />
+        <toolbox name="fixedpoint" />
+        <toolbox name="matlabhdlcoder" />
+        <toolbox name="neuralnetwork" />
+      </toolboxes>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <embeddedcoder>
+          <enabled>true</enabled>
+        </embeddedcoder>
+      </toolbox>
+      <toolbox>
+        <gpucoder>
+          <enabled>true</enabled>
+        </gpucoder>
+      </toolbox>
+      <toolbox>
+        <fixedpoint>
+          <enabled>true</enabled>
+        </fixedpoint>
+      </toolbox>
+      <toolbox>
+        <matlabhdlcoder>
+          <enabled>true</enabled>
+        </matlabhdlcoder>
+      </toolbox>
+      <toolbox>
+        <neuralnetwork>
+          <enabled>true</enabled>
+        </neuralnetwork>
+      </toolbox>
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>10.0</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
