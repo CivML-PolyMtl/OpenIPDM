@@ -178,6 +178,7 @@ if ~isempty(PriorParam)
     InterventionType=str2double(app.Bridge_Int(ID_Int,4));
     InterventionYear=unique(str2double(app.Bridge_Int(ID_Int,2)));
     InterventionDuration=unique(str2double(app.Bridge_Int(ID_Int,2:3)),'rows');
+
     if isempty(InterventionType)
         InterventionType=0;
     end
@@ -201,6 +202,7 @@ if ~isempty(PriorParam)
                 Re,Be,PriorParam,init_x,init_V,Ncurve,ConstrainedKF,InterventionCheck,...
                 InterventionVector,InterventionMu_Network,InterventionVar_Network);
         end
+        
         for j=1:size(Vsmooth,3)
             Std(:,j)=sqrt(diag(Vsmooth(:,:,j)));
         end

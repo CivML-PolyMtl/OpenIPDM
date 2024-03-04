@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="4069297919" file="C:\Users\zacha\Documents\just_update\openipdm\OpenIPDM_compiler.prj" location="C:\Users\zacha\Documents\just_update\openipdm" name="OpenIPDM_compiler" preferred-package-location="C:\Users\zacha\Documents\just_update\openipdm\OpenIPDM_compiler\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="1186316745" file="C:\Users\zacha\Documents\just_update\openipdm\OpenIPDM_compiler.prj" location="C:\Users\zacha\Documents\just_update\openipdm" name="OpenIPDM_compiler" preferred-package-location="C:\Users\zacha\Documents\just_update\openipdm\OpenIPDM_compiler\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>OpenIPDM</param.appname>
     <param.icon>${PROJECT_ROOT}\OpenIPDM_compiler_resources\icon.ico</param.icon>
     <param.icons>
@@ -8,7 +8,7 @@
       <file>${PROJECT_ROOT}\OpenIPDM_compiler_resources\icon_24.png</file>
       <file>${PROJECT_ROOT}\OpenIPDM_compiler_resources\icon_16.png</file>
     </param.icons>
-    <param.version>0.98.7</param.version>
+    <param.version>0.98.8</param.version>
     <param.authnamewatermark>Zachary Hamida; James-A. Goulet</param.authnamewatermark>
     <param.email>zac.hamida@gmail.com; james.a.goulet@gmail.com</param.email>
     <param.company>BayesWorks</param.company>
