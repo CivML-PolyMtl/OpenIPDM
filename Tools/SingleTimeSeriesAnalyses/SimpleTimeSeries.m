@@ -125,7 +125,7 @@ init_V(3,3)=param(4)^2;
 [Ex, Var, param, loglik, Exsmooth, Vsmooth]=single_HandCoded_KF(y,A,F,Q,R,param,...
     init_x,init_V,Ncurve,ConstrainedKF,InitCase,InterventionCheck,InterventionVector,...
     InterventionMu,InterventionSigma);   % Hand coded
-
+Display("coucou je fait un test")
 % KF - Forecasts
 ExF(:,1)=Ex(:,end);
 VarF(:,:,1)=Var(:,:,end);
