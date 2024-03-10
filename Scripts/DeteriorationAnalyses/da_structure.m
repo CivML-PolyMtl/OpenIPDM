@@ -105,7 +105,13 @@ if StrucAnalyses
         app.estimates_storage{2} = xtb;
         app.estimates_storage{3} = Std;
     else
-        msgbox('The selected structure has no inspection data, or it has no model associated with it.', 'Analyses can not be performed','warn');
+        message = 'The selected structure has no inspection data, or it has no model associated with it.';
+        uialert(app.MainWindow,message,'Warning','Icon','warning');
+        close(d);
+        app.estimates_storage{1} = [];
+        app.estimates_storage{2} = [];
+        app.estimates_storage{3} = [];
+        clc
     end
 end
 clc
