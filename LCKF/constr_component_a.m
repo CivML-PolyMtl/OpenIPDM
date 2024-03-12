@@ -12,7 +12,7 @@ temp_extended(1:size(temp, 1), :) = temp;
 
 disp(temp_extended);
 A = [a, temp_extended];
-disp(A)
+
 row_indices = find(c == 1);
 col_indices = find(constrain_vector == 1);
 
