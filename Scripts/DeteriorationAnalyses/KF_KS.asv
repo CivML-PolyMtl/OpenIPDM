@@ -91,8 +91,8 @@ for t=0:T-1
             ExpectedCond(1:6,t+1)=UpdateExpected(A*ExpectedCond(:,t),F*(A*ExpectedCond(:,t)),sigmaXY,S,y(t+1),B(t+1)); 
             Variance(1:6,1:6,t+1)=UpdateVariance(UPvariance,S,sigmaXY);
         else
-            ExpectedCond(1:6,t+1)=A*ExpectedCond(:,t);
-            Variance(1:6,1:6,t+1)=UPvariance;
+            ExpectedCond(:,t+1)=A*ExpectedCond(:,t);
+            Variance(:,:,t+1)=UPvariance;
         end
         
         constrain_vector = [0, 1, 0, 0, 0, 0];
@@ -116,8 +116,8 @@ for t=0:T-1
             SpeedTracking_mu=0;
             SpeedTracking_var=0;
         end
-        SigmaForecast(1:6,t+1)=sqrt(diag(Variance(1:6,1:6,t+1)));
-        SigmaForecast(2,t+1)=sqrt(Variance(7,7,t+1));
+        SigmaForecast(1:6,t+1)=sqrt(diag(Variance(:,:,t+1)));
+        SigmaForecast(2,t+1)=sqrt(diag(Variance(:,:,t+1)));
         if ~isnan(y(t+1))
             Err=y(t+1)-F*(A*ExpectedCond(:,t));
             loglik(t+1)=log(normpdf(Err,0,sqrt(S)));

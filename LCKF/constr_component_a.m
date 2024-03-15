@@ -10,9 +10,8 @@ temp = c_bin * a * constrain_vector_bin'; % Have to be test in other cases
 temp_extended = zeros(row_count, size(temp, 2));
 temp_extended(1:size(temp, 1), :) = temp;
 
-disp(temp_extended);
 A = [a, temp_extended];
-
+disp(A)
 row_indices = find(c == 1);
 col_indices = find(constrain_vector == 1);
 
