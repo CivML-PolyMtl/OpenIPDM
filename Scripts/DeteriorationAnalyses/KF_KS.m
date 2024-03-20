@@ -8,6 +8,7 @@ if init_x(2)==0
                     InterventionCheck,InterventionVector,...
                     InterventionMu_Net,InterventionVar_Net,param);
     % Smoother
+    %A_smooth = [A;zeros(1,size(A,2))];
     TotalTimeSteps=length(Ex(1,:));
     ExF(:,TotalTimeSteps)=Ex(:,TotalTimeSteps);
     VarF(:,:,TotalTimeSteps)=VarKF(:,:,TotalTimeSteps);
@@ -30,6 +31,7 @@ end
     ConstrainedKF,InterventionCheck,InterventionVector,...
     InterventionMu_Net,InterventionVar_Net,param);
 % Smoother
+%A_smooth = [A;zeros(1,size(A,2))];
 TotalTimeSteps=length(Ex(1,:));
 ExF(:,TotalTimeSteps)=Ex(:,TotalTimeSteps);
 VarF(:,:,TotalTimeSteps)=VarKF(:,:,TotalTimeSteps);
@@ -97,7 +99,7 @@ for t=0:T-1
         
         constrain_vector = [0, 1, 0, 0, 0, 0];
 
-        [ExpectedCond(:,t+1), Variance(:,:,t+1)] = relu_constrain_step(ExpectedCond(1:6,t+1),Variance(1:6,1:6,t+1),constrain_vector, [-inf, -inf, -inf, -inf, -inf, -inf],[+inf, 0, +inf, +inf, +inf, +inf], false);
+        [ExpectedCond(:,t+1), Variance(:,:,t+1)] = relu_constrain_step(ExpectedCond(1:6,t+1),Variance(1:6,1:6,t+1),constrain_vector, [-inf, -1000, -inf, -inf, -inf, -inf],[+inf, 0, +inf, +inf, +inf, +inf], false);
         %%
         if InterventionVector(t+1)
             SpeedTracking_mu(1,1)=ExpectedCond(2,t+1);
@@ -151,9 +153,15 @@ for i=TotalTimeSteps-1:-1:Ending
             Q_R=zeros(6);
         end
     end
+
+    constrain_vector = [0, 1, 0, 0, 0, 0];
+
     Xpred=A*x(:,i);
     Vpred=A*Var(:,:,i)*A' + Q + Q_R;
-    J=Var(:,:,i)*A'*pinv(Vpred);
+    [Xpred, Vpred] = relu_constrain_step(Xpred,Vpred,constrain_vector, [-inf, -1000, -inf, -inf, -inf, -inf],[+inf, 0, +inf, +inf, +inf, +inf], false);
+    cross_cov = Var(:,:,i)*A';
+    cross_cov = cross_smooth(Xpred,Vpred,constrain_vector,cross_cov,[-inf, -1000, -inf, -inf, -inf, -inf],[+inf, 0, +inf, +inf, +inf, +inf]);
+    J= cross_cov*pinv(Vpred);
     ExSmooth(:,i)=x(:,i)+J*(ExSmooth(:,i+1)-Xpred);
     VarSmooth(:,:,i)=Var(:,:,i)+J*(VarSmooth(:,:,i+1)-Vpred)*J';
     ViIndex=find((2*sqrt(VarSmooth(2,2,i))+ExSmooth(2,i))>0);
@@ -166,7 +174,7 @@ for i=TotalTimeSteps-1:-1:Ending
         SpeedTracking_mu=0;
         SpeedTracking_var=0;
     end
-    KSConstraints();
+    %KSConstraints();
     if InterventionVector(i+1)
         SpeedTracking_mu(3,1)=ExSmooth(2,i);
         SpeedTracking_mu(4,1)=ExSmooth(5,i);
@@ -182,4 +190,8 @@ for i=TotalTimeSteps-1:-1:Ending
     end
 
 end
+
+ExSmooth(2,:) = ExSmooth(7,:);
+VarSmooth(2,2,:) = VarSmooth(7,7,:);
+
 end

@@ -154,7 +154,7 @@ if ~isempty(RegressionModel)
         x_tr = [x_cat, x_tr];
     end
     [pred_vel, pred_vel_var] = TAGI_predict(RegressionModel, x_tr);
-    
+    pred_vel = -0.3;
     init_x(2,:) = max(pred_vel,-3);
     init_V(2,2,:) = min(max(pred_vel_var,0.05^2),0.5^2);
     %% KR section
@@ -195,7 +195,7 @@ if ~isempty(RegressionModel)
     if init_x(2,:)>0 
         D=[1;1];
         d=[-5;0];
-        [init_x(2,1),init_V(2,2,1)]=KFConstraintsHandlingSeq(init_x(2,1),init_V(2,2,1),D,d,1);
+        [init_x(2,1),init_V(2,2,1)]=KFConstraintsHandlingSeq(init_x(2,1),init_V(2,2,1),D,d,1);%SSM-BNN
     end
 else
     init_x(2,:)=0;
