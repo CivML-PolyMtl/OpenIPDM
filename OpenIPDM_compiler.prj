@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="1186316745" file="C:\Users\zacha\Documents\just_update\openipdm\OpenIPDM_compiler.prj" location="C:\Users\zacha\Documents\just_update\openipdm" name="OpenIPDM_compiler" preferred-package-location="C:\Users\zacha\Documents\just_update\openipdm\OpenIPDM_compiler\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="3962347596" file="C:\Users\zacha\Documents\just_update\openipdm\OpenIPDM_compiler.prj" location="C:\Users\zacha\Documents\just_update\openipdm" name="OpenIPDM_compiler" preferred-package-location="C:\Users\zacha\Documents\just_update\openipdm\OpenIPDM_compiler\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>OpenIPDM</param.appname>
     <param.icon>${PROJECT_ROOT}\OpenIPDM_compiler_resources\icon.ico</param.icon>
     <param.icons>
