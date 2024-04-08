@@ -56,7 +56,7 @@ else
                 if ~isempty(RegressionModel)
                     app.StructureElements=MdataEngyUpdate(i,1:CID(i));
                 end
-                if sum(isnan(y))<1 && length(find(~isnan(y)))>3 && ismember(Insp(end),EngBias(:,3)) && MaxDiff<=15 && 2*length(find(diff(y)>5))<length(diff(y))
+                if sum(isnan(y))<1 && length(find(~isnan(y)))>3 && ismember(Insp(end),EngBias(:,1)) && MaxDiff<=15 && 2*length(find(diff(y)>5))<length(diff(y))
                     if ismember(i,RandAcceptedData) && ElementInd==1 && MaxDiff<=15
                         app.BatchMode=get(app.PlotTimeSeries,'Value');%1
                     elseif MaxDiff>15
@@ -100,15 +100,15 @@ else
                         Insp(DuplicatedIndex)=[];
                     end
                     for k=1:length(Insp)
-                        [~,ia,~] = intersect(EngBias(:,3),Insp(k));
+                        [~,ia,~] = intersect(EngBias(:,1),Insp(k));
                         if isempty(ia)
-                            Re(k)=mean(EngBias(:,2)).^2;
-                            InpecBiase(k)= EngBias(ia,1);
+                            Re(k)=mean(EngBias(:,3)).^2;
+                            InpecBiase(k)= mean(EngBias(:,2));
                             Inspemmited=Insp(k);
                         else
-                            Re(k)=EngBias(ia,2).^2;
-                            InpecBiase(k)= EngBias(ia,1);
-                            Inspemmited=EngBias(ia,3);
+                            Re(k)=EngBias(ia,3).^2;
+                            InpecBiase(k)= EngBias(ia,2);
+                            Inspemmited=EngBias(ia,1);
                         end
                     end
                     Remmited(CountVals,1)=sqrt(Re(end));
@@ -132,7 +132,7 @@ else
                     XassociatedSE(1:2,CountVals)=[ElementInd;StructureInd];
                     IndFinalObs=find(~isnan(y))+1;
                     CondEstimate(CountVals,1)=x(1,IndFinalObs(end));
-                    CondUncertainty(CountVals,1)=sqrt(Vvalues(1,1,IndFinalObs(end)));
+                    CondUncertainty(CountVals,1)=sqrt(Vvalues(1,1,IndFinalObs(end)));  
                     
                     
                     StructuralAttValues=MdataEngyUpdate(i,1:CID(i));
@@ -143,12 +143,12 @@ else
                 clear y Re ReZero StructureInd yearly Insp RU InspBU R InpecBiase
             end
         end
-        for i=1:length(InspOmmited)
-            EstmInspector=find(EngBias(:,3)==InspOmmited(i,1));
-            if ~isempty(EstmInspector)
-                IncludedIndex(i)=i;
+            for i=1:length(InspOmmited)
+                EstmInspector=find(EngBias(:,1)==InspOmmited(i,1));
+                if ~isempty(EstmInspector)
+                    IncludedIndex(i)=i;
+                end
             end
-        end
         CorrInd=find(IncludedIndex==0);
         IncludedIndex(CorrInd)=[];
         for i=1:length(IncludedIndex)
