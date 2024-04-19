@@ -391,7 +391,7 @@ if ~isempty(SEData)
         save(FullPathEx,'SSPDsorted');
         save(sprintf('%s/ExtractedData/MetaData_Intervention_%s.mat',OriginPWD,erase(ColsVal,"/")),'MetaData');
         save(FullPath_Inspectors,'Inspectors');
-        save(sprintf('%s/ExtractedData/StructuresID_%s.mat',OriginPWD, erase(ColsVal,"/")), 'NewID');
+        save(sprintf('%s/ExtractedData/StructuresID_Intervention_%s.mat',OriginPWD, erase(ColsVal,"/")), 'NewID');
     else
         FullPathEx=sprintf('%s/ExtractedData/InspectionData_%s.mat',OriginPWD,erase(ColsVal,"/"));
         FullPath_Inspectors=sprintf('%s/ExtractedData/Inspectors_%s.mat',OriginPWD,erase(ColsVal,"/"));
