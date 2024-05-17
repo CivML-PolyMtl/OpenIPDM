@@ -8,7 +8,7 @@
       <file>${PROJECT_ROOT}\OpenIPDM_compiler_resources\icon_24.png</file>
       <file>${PROJECT_ROOT}\OpenIPDM_compiler_resources\icon_16.png</file>
     </param.icons>
-    <param.version>0.98.8</param.version>
+    <param.version>0.98.9</param.version>
     <param.authnamewatermark>Zachary Hamida; James-A. Goulet</param.authnamewatermark>
     <param.email>zac.hamida@gmail.com; james.a.goulet@gmail.com</param.email>
     <param.company>BayesWorks</param.company>
