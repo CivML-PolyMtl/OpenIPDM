@@ -92,7 +92,7 @@ if ~exist([FullPath 'TrainingData_' erase(ElementName,"/") '.mat'],'file')
             ElementData.ModelValid.StrucAtt = cat(3, ElementData.ModelValid.StrucAtt, ElementData.ModelValid.init_x);
             ElementData.ModelTest.StrucAtt = cat(3, ElementData.ModelTest.StrucAtt, ElementData.ModelTest.init_x);
         end
-        save([FullPath 'TrainingData_' erase(ElementName,"/") '.mat'],'ElementData');
+        save([FullPath 'TrainingData_' erase(ElementName,"/") '.mat'],'ElementData', '-v7.3');
     end
 else
     Success = 1;

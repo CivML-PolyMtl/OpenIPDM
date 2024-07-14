@@ -4,13 +4,13 @@ StopCr=0.999;
 LLcr=-10^12;
 LLcr_cat = 0;
 LLprev=-10^18;
-StallVal1=10;
+StallVal1=3;
 StallInit1=0;
 
 
 LLcr_cats = -10^12 * ones(1,total_num_elements);
 LLprev_cats = -10^18 * ones(1,total_num_elements);
-StallVal2 = 10 * ones(1,total_num_elements);
+StallVal2 = 3 * ones(1,total_num_elements);
 StallInit2 = 0 * ones(1,total_num_elements);
 
 Stored_RegressionModel = cell(length(app.Tree.Children),max(length(app.Tree.Children(1).Children),length(app.Tree.Children(2).Children)));
@@ -80,7 +80,7 @@ while keep_learning
                             StructuralAttributes,KRparam(2:end),KRparam(1),...
                             KernelParameters{1},KernelParameters{2},[],[],[],AnnModel),...
                             PARAM,'log_transform','no','output','original','laplace',...
-                            'no','convergence_tol',1E-1,'bounds',boundsQ);
+                            'no','convergence_tol',5E-1,'bounds',boundsQ);
                         PARAM = Qparam;
                         StructuralAttributes=ElementData.StrucAtt;
                         AnnModel.evaluate_mode = 0;
@@ -122,7 +122,7 @@ while keep_learning
                             Q, x0, s2_X0,PARAM,[0 0],InspectorsData{1},[],Ncurve,...
                             OptimizationProceedure,OptLevel,...
                             SpeedConstraints,1),PARAM,'log_transform','no','output','original','laplace',...
-                            'no','convergence_tol',1E-1,'bounds',boundsQ);
+                            'no','convergence_tol',5E-1,'bounds',boundsQ);
                         PARAM = Qparam;
 %                         Qparam = PARAM;
                     end
