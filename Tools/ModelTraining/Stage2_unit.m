@@ -255,4 +255,3 @@ if ~isempty(place_holder_id)
         AllElementsParameters{place_holder_id(phi_ind),2}=[];
     end
 end
-diary off % flag to stop saving the console output beyond this point
