@@ -17,7 +17,6 @@ Stored_RegressionModel = cell(length(app.Tree.Children),max(length(app.Tree.Chil
 Stored_QParam = cell(length(app.Tree.Children),max(length(app.Tree.Children(1).Children),length(app.Tree.Children(2).Children)));
 stored_inspectors_params = [];
 stored_init_estim = [];
-stopped_learning = zeros(1,total_num_elements);
 
 keep_learning = 1;
 
@@ -51,7 +50,7 @@ while keep_learning
                 app.Tree.SelectedNodes=app.Tree.Children(model_i).Children(elem_j);
                 ElementData=load([FullPath 'TrainingData_' erase(ElementName,"/") '_' sprintf('%d',Ncurve) '.mat']);
                 ElementData=struct2cell(ElementData);
-                ElementData=ElementData{1};
+                ElementData=ElementData{1};     
                 Index=find(strcmp(app.AllElementsParameters(:,1),ElementName));
                 if model_i==1
                     IncludeStructuralAtt=0;
@@ -72,7 +71,7 @@ while keep_learning
                 if IncludeStructuralAtt
                     AnnModel = AllElementsParameters{Index,4};
                     AnnModel.categ_st_att_ind = Material_index(elem_j);
-                    if ~stopped_learning(j)
+                    if ~stopped_learning_1(elem_j)
                         [Qparam,~,~,~]=Newton_Raphson(@(PARAM) AnalysisObjective(ElementData,...
                             InspectorsData{1}(:,1),InspStrucIndex,OptBoundsData,A,F,...
                             Q, x0, s2_X0,PARAM,[0 0],InspectorsData{1},[],Ncurve,...
@@ -91,7 +90,7 @@ while keep_learning
                             ElementData.StrucAtt,KRparam(2:end),KRparam(1),...
                             KernelParameters{1},KernelParameters{2},[],[],[],AnnModel);
                         AnnModel = AnnModel_params;
-                        bnn_available(j) = 1;
+                        bnn_available(elem_j) = 1;
                     end
                     AnnModel.cont_training = 1;
                     AnnModel.evaluate_mode = 1; % ensures AnalysisObjective returns loglik using TAGI to initialize speeds
@@ -115,7 +114,7 @@ while keep_learning
                     fprintf('Valid L.L. : %d \n',ValLogLik)
                     fprintf('Test L.L. : %d \n',TestLogLik)
                 else
-                    if ~stopped_learning(j)
+                    if ~stopped_learning_1(elem_j)
                         %% commented this temp - note that convergence tol is relaxed from 1e-4 to 1e-1
                         [Qparam,~,~,fx_NR]=Newton_Raphson(@(PARAM) AnalysisObjective(ElementData,...
                             InspectorsData{1}(:,1),InspStrucIndex,OptBoundsData,A,F,...
@@ -125,7 +124,7 @@ while keep_learning
                             'no','convergence_tol',5E-1,'bounds',boundsQ);
                         PARAM = Qparam;
 %                         Qparam = PARAM;
-                    end
+                end
 %                     Qparam=PARAM;
                     % validation with validation set
                     [~,~,~,~,~,LogLikVal]=AnalysisObjective(ElementData.ModelValid,...
@@ -191,20 +190,21 @@ while keep_learning
                     PARAM = Qparam;
                     AllElementsParameters{Index,2}=PARAM;
                     AllElementsParameters{Index,4}=AnnModel;
-                    stopped_learning(j) = 1;
+                    stopped_learning_1(elem_j) = 1;
+                    save([SavePath '/AutoSave_' 'learning_status_1.mat'],'stopped_learning_1');
                 else
                     if IncludeStructuralAtt
                         Stored_RegressionModel{model_i, elem_j} = AnnModel;
                     end
                     Stored_QParam{model_i, elem_j} = AllElementsParameters{Index,2};%Qparam;
                 end
-                save([SavePath '/AutoSave_' erase(ElementName,"/") '.mat'],'AllElementsParameters');
+                save([SavePath '/AutoSave_' 'AllElementsParameters.mat'],'AllElementsParameters');
                 
                 if LLcr_cats(j)/LLprev_cats(j)>0.95
-                    StallInit2=StallInit2+1;
+                    StallInit2(j) = StallInit2(j)+1;
                 end
                 if (LLcr_cats(j)/LLprev_cats(j))>= StopCr && (OI  || StallInit2(j)<StallVal2(j))
-                    stopped_learning(j) = 1;
+                    stopped_learning_1(elem_j) = 1;
                     if ~isempty(Stored_QParam{model_i, elem_j})
                         AllElementsParameters{Index,2} = Stored_QParam{model_i, elem_j};
                     end
@@ -213,8 +213,9 @@ while keep_learning
                             AllElementsParameters{Index,4}  = Stored_RegressionModel{model_i, elem_j};
                         end
                     end
+                    save([SavePath '/AutoSave_' 'learning_status_1.mat'],'stopped_learning_1');
                 end
-                if sum(stopped_learning) == total_num_elements
+                if sum(stopped_learning_1) == total_num_elements
                     keep_learning = 0;
                 end
                 
@@ -236,7 +237,7 @@ while keep_learning
                         SpeedConstraints,1);
                     TestLogLik=sum(LogLikVal);
                 end
-                if joint_inspector_train || stopped_learning(j)
+                if joint_inspector_train || stopped_learning_1(elem_j)
                     LLprev_cats(j) = LLcr_cats(j);
                     break
                 end

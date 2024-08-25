@@ -388,14 +388,16 @@ if ~isempty(SEData)
         FullPathEx=sprintf('%s/ExtractedData/InspectionData_Intervention_%s.mat',OriginPWD,erase(ColsVal,"/"));
         FullPath_Inspectors=sprintf('%s/ExtractedData/Inspectors_int_%s.mat',OriginPWD,erase(ColsVal,"/"));
         save(sprintf('%s/ExtractedData/NumAfterIntervention_%s.mat',OriginPWD,erase(ColsVal,"/")),'NumObsAfterIntervention');
-        save(FullPathEx,'SSPDsorted', '-v7.3');
+        SSPDsorted = hlp_serialize(SSPDsorted);
+        save(FullPathEx,'SSPDsorted');
         save(sprintf('%s/ExtractedData/MetaData_Intervention_%s.mat',OriginPWD,erase(ColsVal,"/")),'MetaData');
         save(FullPath_Inspectors,'Inspectors');
         save(sprintf('%s/ExtractedData/StructuresID_Intervention_%s.mat',OriginPWD, erase(ColsVal,"/")), 'NewID');
     else
         FullPathEx=sprintf('%s/ExtractedData/InspectionData_%s.mat',OriginPWD,erase(ColsVal,"/"));
         FullPath_Inspectors=sprintf('%s/ExtractedData/Inspectors_%s.mat',OriginPWD,erase(ColsVal,"/"));
-        save(FullPathEx,'SSPDsorted', '-v7.3');
+        SSPDsorted = hlp_serialize(SSPDsorted);
+        save(FullPathEx,'SSPDsorted');
         save(sprintf('%s/ExtractedData/MetaData_%s.mat',OriginPWD,erase(ColsVal,"/")),'MetaData');
         save(FullPath_Inspectors,'Inspectors');
         save(sprintf('%s/ExtractedData/StructuresID_%s.mat',OriginPWD, erase(ColsVal,"/")), 'NewID');

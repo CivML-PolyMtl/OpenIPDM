@@ -99,4 +99,5 @@ This project is licensed under the MIT license - see the [LICENSE](LICENSE.md) f
 
     - Kevin Murphy ([Kalman filter toolbox for Matlab](https://www.cs.ubc.ca/~murphyk/Software/Kalman/kalman.html#other))
     - Dan Simon ([Constrained Kalman filter](https://academic.csuohio.edu/simond/ConstrKF/))
+    - Christian Kothe (2024). Fast serialize/deserialize (https://www.mathworks.com/matlabcentral/fileexchange/34564-fast-serialize-deserialize), MATLAB Central File Exchange. Retrieved August 25, 2024.
 

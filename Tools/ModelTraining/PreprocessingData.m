@@ -68,10 +68,12 @@ if ~exist([FullPath 'InspectionData_' erase(ElementName,"/") '.mat'],'file') && 
     InspectionData=load(FullPathEx);
     InspectionData=struct2cell(InspectionData);
     InspectionData=InspectionData{1};
+    InspectionData = hlp_deserialize(InspectionData);
 else
     InspectionData=load([FullPath 'InspectionData_' erase(ElementName,"/") '.mat']);
     InspectionData=struct2cell(InspectionData);
     InspectionData=InspectionData{1};
+    InspectionData = hlp_deserialize(InspectionData);
     InspectorsData=load([FullPath 'Inspectors_' erase(ElementName,"/") '.mat']);
     InspectorsData=struct2cell(InspectorsData);
 end
@@ -92,7 +94,9 @@ if ~exist([FullPath 'TrainingData_' erase(ElementName,"/") '.mat'],'file')
             ElementData.ModelValid.StrucAtt = cat(3, ElementData.ModelValid.StrucAtt, ElementData.ModelValid.init_x);
             ElementData.ModelTest.StrucAtt = cat(3, ElementData.ModelTest.StrucAtt, ElementData.ModelTest.init_x);
         end
-        save([FullPath 'TrainingData_' erase(ElementName,"/") '.mat'],'ElementData', '-v7.3');
+        AllInspectors = ElementData.AllInspectors;
+        ElementData.AllInspectors = arrayfun(@(x) sparse(AllInspectors{x}), 1:numel(AllInspectors), 'UniformOutput', false);
+        save([FullPath 'TrainingData_' erase(ElementName,"/") '.mat'],'ElementData');
     end
 else
     Success = 1;

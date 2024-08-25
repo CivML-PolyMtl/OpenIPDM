@@ -23,14 +23,14 @@ InitN=OptBoundsData(1,2);
 FinN=OptBoundsData(1,3);
 LogLikCR=-10^10;
 cla(app.UIAxes);
-if ResumeTraining
-    InitN = AllElementsParameters{Index,10};
-end
 LL_validation = 0;
 LL_validation_prev = -10^8;
 
-AllElementsParameters = app.AllElementsParameters;
+if ~app.ResumeTraining
+    AllElementsParameters = app.AllElementsParameters;
+end
 Material_index = ones(1,length(app.Tree.Children(2).Children));
+
 for Ncurve=InitN:FinN
     for model_i=1:length(app.Tree.Children) % model type iterations: 2: SSM-KR or 1: SSM
         for elem_j=1:length(app.Tree.Children(model_i).Children)
@@ -86,13 +86,10 @@ for Ncurve=InitN:FinN
             elseif strcmp(app.Switch.Value, 'Synthetic')
                 Material_index(elem_j) = 0;
             end
-            save([FullPath 'TrainingData_' erase(ElementName,"/") '_' sprintf('%d',Ncurve) '.mat'],'ElementData', '-v7.3');
-            if ResumeTraining
-                PARAM = AllElementsParameters{Index,2};
-                InspectorsData{1} = AllElementsParameters{Index,3};
-                Stored_InspectorData = InspectorsData;
-                Stored_QParam = PARAM;
-            else
+            save([FullPath 'TrainingData_' erase(ElementName,"/") '_' sprintf('%d',Ncurve) '.mat'],'ElementData');
+
+            
+            if ~stopped_learning(elem_j)
                 % initial parameter values
                 PARAM=[OptBoundsData(2,1) OptBoundsData(3,1) OptBoundsData(4,1) ...
                     OptBoundsData(5,1) OptBoundsData(6,1) OptBoundsData(7,1)];
@@ -109,6 +106,10 @@ for Ncurve=InitN:FinN
                 LogLik=fx_NR(end);%-10000;%
                 Stored_QParam = PARAM;
                 Stored_InspectorData = [];
+                stopped_learning(elem_j) = 1;
+                save([SavePath '/AutoSave_' 'learning_status_0.mat'],'stopped_learning');
+            else
+                PARAM = AllElementsParameters{Index,2};
             end
             % save parameters
             AllElementsParameters{Index,2}=PARAM;
@@ -144,7 +145,9 @@ for Ncurve=InitN:FinN
                     end
                 end
             end
-            AllElementsParameters{Index,4}=AnnModel;
+            if isempty(AllElementsParameters{Index,4})
+                AllElementsParameters{Index,4}=AnnModel;
+            end
         end
     end
     save([SavePath '/AutoSave_' 'AllElementsParameters.mat'],'AllElementsParameters');

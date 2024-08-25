@@ -46,6 +46,7 @@ if ~exist([FullPath 'InspectionData_Intervention_' erase(ElementName,"/") '.mat'
         InspectionData=load(FullPathEx);
         InspectionData=struct2cell(InspectionData);
         InspectionData=InspectionData{1};
+        InspectionData = hlp_deserialize(InspectionData);
     else
         InspectionData = [];
     end
@@ -53,6 +54,7 @@ else
     InspectionData=load([FullPath 'InspectionData_Intervention_' erase(ElementName,"/") '.mat']);
     InspectionData=struct2cell(InspectionData);
     InspectionData=InspectionData{1};
+    InspectionData = hlp_deserialize(InspectionData);
 %     InspectorsData=load([FullPath 'Inspectors_int_' ElementName '.mat']);
 %     InspectorsData=struct2cell(InspectorsData);
 end
