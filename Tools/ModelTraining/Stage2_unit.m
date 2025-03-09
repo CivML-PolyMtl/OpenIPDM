@@ -34,8 +34,16 @@ while keep_learning
     OptLevel=3;
     j=1;
     for model_i=1:length(app.Tree.Children) % model type iterations: 2: SSM-KR or 1: SSM
+        if model_i == 1
+            total_number_elements = length(app.Tree.Children(model_i).Children);
+        else
+            total_number_elements = length(app.Tree.Children(model_i-1).Children);
+        end
+
         for elem_j=1:length(app.Tree.Children(model_i).Children)
             loop_over_category = 1; % to differentiate independent from joint estimation 
+            global_element_ind = (model_i - 1) * total_number_elements + elem_j;
+
             while loop_over_category
                 ElementName= app.Tree.Children(model_i).Children(elem_j).Text;
                 d.Value = (elem_j/NumCats)/1.2;
@@ -71,7 +79,7 @@ while keep_learning
                 if IncludeStructuralAtt
                     AnnModel = AllElementsParameters{Index,4};
                     AnnModel.categ_st_att_ind = Material_index(elem_j);
-                    if ~stopped_learning_1(elem_j)
+                    if ~stopped_learning_1(global_element_ind)
                         [Qparam,~,~,~]=Newton_Raphson(@(PARAM) AnalysisObjective(ElementData,...
                             InspectorsData{1}(:,1),InspStrucIndex,OptBoundsData,A,F,...
                             Q, x0, s2_X0,PARAM,[0 0],InspectorsData{1},[],Ncurve,...
@@ -114,7 +122,7 @@ while keep_learning
                     fprintf('Valid L.L. : %d \n',ValLogLik)
                     fprintf('Test L.L. : %d \n',TestLogLik)
                 else
-                    if ~stopped_learning_1(elem_j)
+                    if ~stopped_learning_1(global_element_ind)
                         %% commented this temp - note that convergence tol is relaxed from 1e-4 to 1e-1
                         [Qparam,~,~,fx_NR]=Newton_Raphson(@(PARAM) AnalysisObjective(ElementData,...
                             InspectorsData{1}(:,1),InspStrucIndex,OptBoundsData,A,F,...
@@ -123,7 +131,7 @@ while keep_learning
                             SpeedConstraints,1),PARAM,'log_transform','no','output','original','laplace',...
                             'no','convergence_tol',5E-1,'bounds',boundsQ);
                         PARAM = Qparam;
-%                         Qparam = PARAM;
+
                 end
 %                     Qparam=PARAM;
                     % validation with validation set
@@ -190,7 +198,7 @@ while keep_learning
                     PARAM = Qparam;
                     AllElementsParameters{Index,2}=PARAM;
                     AllElementsParameters{Index,4}=AnnModel;
-                    stopped_learning_1(elem_j) = 1;
+                    stopped_learning_1(global_element_ind) = 1;
                     save([SavePath '/AutoSave_' 'learning_status_1.mat'],'stopped_learning_1');
                 else
                     if IncludeStructuralAtt
@@ -204,7 +212,7 @@ while keep_learning
                     StallInit2(j) = StallInit2(j)+1;
                 end
                 if (LLcr_cats(j)/LLprev_cats(j))>= StopCr && (OI  || StallInit2(j)<StallVal2(j))
-                    stopped_learning_1(elem_j) = 1;
+                    stopped_learning_1(global_element_ind) = 1;
                     if ~isempty(Stored_QParam{model_i, elem_j})
                         AllElementsParameters{Index,2} = Stored_QParam{model_i, elem_j};
                     end
@@ -237,7 +245,7 @@ while keep_learning
                         SpeedConstraints,1);
                     TestLogLik=sum(LogLikVal);
                 end
-                if joint_inspector_train || stopped_learning_1(elem_j)
+                if joint_inspector_train || stopped_learning_1(global_element_ind)
                     LLprev_cats(j) = LLcr_cats(j);
                     break
                 end

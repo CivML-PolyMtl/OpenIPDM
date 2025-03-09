@@ -26,14 +26,24 @@ cla(app.UIAxes);
 LL_validation = 0;
 LL_validation_prev = -10^8;
 
-if ~app.ResumeTraining
+if app.ResumefromlaststopCheckBox.Value == 0
     AllElementsParameters = app.AllElementsParameters;
 end
 Material_index = ones(1,length(app.Tree.Children(2).Children));
 
+
 for Ncurve=InitN:FinN
     for model_i=1:length(app.Tree.Children) % model type iterations: 2: SSM-KR or 1: SSM
-        for elem_j=1:length(app.Tree.Children(model_i).Children)
+
+        total_number_elements = length(app.Tree.Children(model_i).Children);
+        if model_i > 1
+            total_number_prev = length(app.Tree.Children(model_i -1 ).Children);
+        else
+            total_number_prev = length(app.Tree.Children(model_i).Children);
+        end
+
+        for elem_j=1:total_number_elements
+            global_element_ind = (model_i - 1) * total_number_prev + elem_j;
             ElementName= app.Tree.Children(model_i).Children(elem_j).Text;
             d.Value = (elem_j/NumCats)/1.2;
             d.Message=sprintf('Started training structural category %s',ElementName);
@@ -89,7 +99,7 @@ for Ncurve=InitN:FinN
             save([FullPath 'TrainingData_' erase(ElementName,"/") '_' sprintf('%d',Ncurve) '.mat'],'ElementData');
 
             
-            if ~stopped_learning(elem_j)
+            if ~stopped_learning(global_element_ind)
                 % initial parameter values
                 PARAM=[OptBoundsData(2,1) OptBoundsData(3,1) OptBoundsData(4,1) ...
                     OptBoundsData(5,1) OptBoundsData(6,1) OptBoundsData(7,1)];
@@ -106,10 +116,12 @@ for Ncurve=InitN:FinN
                 LogLik=fx_NR(end);%-10000;%
                 Stored_QParam = PARAM;
                 Stored_InspectorData = [];
-                stopped_learning(elem_j) = 1;
+                stopped_learning(global_element_ind) = 1;
                 save([SavePath '/AutoSave_' 'learning_status_0.mat'],'stopped_learning');
             else
-                PARAM = AllElementsParameters{Index,2};
+                if ~iscell(AllElementsParameters{Index,2})
+                    PARAM = AllElementsParameters{Index,2};
+                end
             end
             % save parameters
             AllElementsParameters{Index,2}=PARAM;
@@ -149,8 +161,9 @@ for Ncurve=InitN:FinN
                 AllElementsParameters{Index,4}=AnnModel;
             end
         end
+        save([SavePath '/AutoSave_' 'AllElementsParameters.mat'],'AllElementsParameters');
     end
-    save([SavePath '/AutoSave_' 'AllElementsParameters.mat'],'AllElementsParameters');
+    
     Stage2_unit();
     LL_validation = sum(LLprev_cats);
     if LL_validation > LL_validation_prev

@@ -39,7 +39,7 @@ while (LLcr/LLprev)<= StopCr && (OI  || ( StallInit1<StallVal1))
                 check_init = find(init_estim(:,2)==0);
                 if ~isempty(check_init)
                     init_estim(check_init,2) = 1;
-                    init_estim(check_init,3) = PARAM(2);
+                    init_estim(check_init,3) = AllElementsParameters{Index,2}(2);
                     init_estim(check_init,4) = 12;
                 end
             else
@@ -48,7 +48,7 @@ while (LLcr/LLprev)<= StopCr && (OI  || ( StallInit1<StallVal1))
                 init_estim = stored_init_estim(iai,:);
                 init_estim(:,1) = 0;
                 init_estim(:,2) = 1;
-                init_estim(:,3) = PARAM(2);
+                init_estim(:,3) = AllElementsParameters{Index,2}(2);
                 init_estim(:,4) = 12;
             end
             InspectorsData=load([FullPath 'Inspectors_' erase(ElementName,"/") '.mat']);
